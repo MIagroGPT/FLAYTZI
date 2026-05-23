@@ -118,6 +118,35 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
     });
   }
 
+  const placesMap = {};
+  const placesList = apiData.places || [];
+  if (Array.isArray(placesList)) {
+    placesList.forEach(place => {
+      placesMap[place.id] = place;
+    });
+  } else if (typeof placesList === 'object') {
+    Object.keys(placesList).forEach(id => {
+      placesMap[id] = placesList[id];
+    });
+  }
+
+  const getCarrierObj = (carrierId) => {
+    const raw = carriersMap[String(carrierId)];
+    if (!raw) return { name: 'Alaska Airlines', code: 'AS' };
+    const code = (raw.alt_id || raw.display_code || 'AS').toUpperCase();
+    return { name: raw.name || 'Alaska Airlines', code };
+  };
+
+  const getPlaceIATA = (placeId) => {
+    const place = placesMap[String(placeId)];
+    return place ? (place.display_code || '').toUpperCase() : String(placeId);
+  };
+
+  const getPlaceCity = (placeId) => {
+    const place = placesMap[String(placeId)];
+    return place ? (place.name || '') : String(placeId);
+  };
+
   const results = [];
 
   itineraries.forEach(itinerary => {
@@ -135,36 +164,36 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
     const segmentCarriers = outSegmentIds.map(segId => {
       const seg = segmentsMap[segId];
       if (!seg) return null;
-      return seg.carrier_id || seg.marketing_carrier_id || seg.operating_carrier_id || '';
+      const id = seg.carrier_id || seg.marketing_carrier_id || seg.operating_carrier_id || '';
+      return getCarrierObj(id).code;
     }).filter(Boolean);
 
     // Filtrar: Solo Alaska Airlines (AS, QX, OO) o OneWorld partners (AA, IB, BA, AY)
-    const isAlaskaOrOneWorld = segmentCarriers.some(carrierCode => {
-      const code = String(carrierCode).toUpperCase();
-      return ['AS', 'QX', 'OO', 'AA', 'IB', 'BA', 'AY'].some(val => code.includes(val));
+    const isAlaskaOrOneWorld = segmentCarriers.some(code => {
+      return ['AS', 'QX', 'OO', 'AA', 'IB', 'BA', 'AY'].includes(code);
     });
 
     if (!isAlaskaOrOneWorld) return;
 
-    const carrierId = segmentCarriers[0] || 'AS';
-    const carrierObj = carriersMap[carrierId] || { name: 'Alaska Airlines', code: 'AS' };
-    const airlineName = carrierObj.name || 'Alaska Airlines';
-    const carrierCode = carrierObj.code || carrierId;
+    const firstSeg = segmentsMap[outSegmentIds[0]];
+    const firstCarrierId = firstSeg ? (firstSeg.carrier_id || firstSeg.marketing_carrier_id || '') : '';
+    const carrierObj = getCarrierObj(firstCarrierId);
+    const airlineName = carrierObj.name;
+    const carrierCode = carrierObj.code;
 
     const outSegmentCarriersList = outSegmentIds.map(segId => {
       const seg = segmentsMap[segId];
       if (!seg) return null;
-      const carrierCodeId = seg.operating_carrier_id || seg.carrier_id || seg.marketing_carrier_id || '';
-      return carriersMap[carrierCodeId] || { name: 'Alaska Airlines', code: carrierCodeId };
+      const id = seg.operating_carrier_id || seg.carrier_id || seg.marketing_carrier_id || '';
+      return getCarrierObj(id);
     }).filter(Boolean);
 
     const outPartner = outSegmentCarriersList.find(c => {
-      const code = String(c.code).toUpperCase();
-      return ['AA', 'IB', 'BA', 'AY'].includes(code);
+      return ['AA', 'IB', 'BA', 'AY'].includes(c.code);
     });
 
     const operatingAirlineName = outPartner ? outPartner.name : airlineName;
-    const operatingAirlineLogo = outPartner ? outPartner.code.toUpperCase() : (carrierCode === 'QX' || carrierCode === 'OO' ? 'AS' : carrierCode.toUpperCase());
+    const operatingAirlineLogo = outPartner ? outPartner.code : carrierCode;
 
     const firstSegment = segmentsMap[outSegmentIds[0]];
     const lastSegment = segmentsMap[outSegmentIds[outSegmentIds.length - 1]];
@@ -182,25 +211,25 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
       const scaleAirports = outSegmentIds.slice(0, -1).map(segId => {
         const seg = segmentsMap[segId];
         if (!seg) return '';
-        const code = seg.destination_place_id || seg.arrival_airport || '';
-        if (!code) return '';
+        const placeId = seg.destination_place_id || seg.arrival_airport || '';
+        if (!placeId) return '';
         
-        const city = getAirportCity(String(code));
-        const country = getAirportCountry(String(code));
+        const scaleIATA = getPlaceIATA(placeId);
+        const city = getAirportCity(scaleIATA) || getPlaceCity(placeId);
+        const country = getAirportCountry(scaleIATA);
+        const formattedCountry = country ? `, ${country}` : '';
         
         // Determinar si hay codeshare
         const segmentCarrierId = seg.carrier_id || seg.marketing_carrier_id || '';
-        const segmentCarrierObj = carriersMap[segmentCarrierId] || {};
-        const segmentCarrierName = segmentCarrierObj.name || '';
-        const segmentCarrierCode = segmentCarrierObj.code || segmentCarrierId;
+        const segmentCarrierObj = getCarrierObj(segmentCarrierId);
         
         let codeshareStr = '';
-        if (segmentCarrierCode && segmentCarrierCode.toUpperCase() !== 'AS') {
-          const cleanName = segmentCarrierName.replace(/\s*Airlines\s*/i, '').replace(/\s*Airways\s*/i, '');
+        if (segmentCarrierObj.code !== 'AS') {
+          const cleanName = segmentCarrierObj.name.replace(/\s*Airlines\s*/i, '').replace(/\s*Airways\s*/i, '');
           codeshareStr = ` (Codeshare ${cleanName})`;
         }
         
-        return `${city}, ${country} (${String(code).toUpperCase()})${codeshareStr}`;
+        return `${city}${formattedCountry} (${scaleIATA})${codeshareStr}`;
       }).filter(Boolean);
       stopDetails = `${stops} escala${stops > 1 ? 's' : ''} en ${scaleAirports.join(', ')}`;
     }
@@ -215,10 +244,13 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
     }
     officialPriceUSD = Math.round(officialPriceUSD);
 
-    const destCode = outboundLeg.destination_place_id || lastSegment.destination_place_id || '';
-    const originCode = outboundLeg.origin_place_id || firstSegment.origin_place_id || '';
+    const destPlaceId = outboundLeg.destination_place_id || lastSegment.destination_place_id || '';
+    const originPlaceId = outboundLeg.origin_place_id || firstSegment.origin_place_id || '';
     
-    const region = getAirportRegion(String(destCode));
+    const originIATA = getPlaceIATA(originPlaceId);
+    const destIATA = getPlaceIATA(destPlaceId);
+    
+    const region = getAirportRegion(destIATA);
     let discountRate = 0.35;
     if (region === 'EU') {
       discountRate = 0.40;
@@ -260,12 +292,12 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
       operatingAirline: operatingAirlineName,
       operatingLogo: cleanCarrierLogo(operatingAirlineLogo),
       flightNumber: flightNumber,
-      origin: String(originCode).toUpperCase(),
-      originCity: getAirportCity(String(originCode)),
-      originAirport: getAirportName(String(originCode)),
-      destination: String(destCode).toUpperCase(),
-      destinationCity: getAirportCity(String(destCode)),
-      destinationAirport: getAirportName(String(destCode)),
+      origin: originIATA,
+      originCity: getAirportCity(originIATA) || getPlaceCity(originPlaceId),
+      originAirport: getAirportName(originIATA) || getPlaceCity(originPlaceId),
+      destination: destIATA,
+      destinationCity: getAirportCity(destIATA) || getPlaceCity(destPlaceId),
+      destinationAirport: getAirportName(destIATA) || getPlaceCity(destPlaceId),
       depTime,
       arrTime,
       depDate: getFormattedDate(firstSegment.departure || outboundLeg.departure || ''),
@@ -305,25 +337,25 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
               const inScaleAirports = inSegmentIds.slice(0, -1).map(segId => {
                 const seg = segmentsMap[segId];
                 if (!seg) return '';
-                const code = seg.destination_place_id || seg.arrival_airport || '';
-                if (!code) return '';
+                const placeId = seg.destination_place_id || seg.arrival_airport || '';
+                if (!placeId) return '';
                 
-                const city = getAirportCity(String(code));
-                const country = getAirportCountry(String(code));
+                const scaleIATA = getPlaceIATA(placeId);
+                const city = getAirportCity(scaleIATA) || getPlaceCity(placeId);
+                const country = getAirportCountry(scaleIATA);
+                const formattedCountry = country ? `, ${country}` : '';
                 
                 // Determinar si hay codeshare
                 const segmentCarrierId = seg.carrier_id || seg.marketing_carrier_id || '';
-                const segmentCarrierObj = carriersMap[segmentCarrierId] || {};
-                const segmentCarrierName = segmentCarrierObj.name || '';
-                const segmentCarrierCode = segmentCarrierObj.code || segmentCarrierId;
+                const segmentCarrierObj = getCarrierObj(segmentCarrierId);
                 
                 let codeshareStr = '';
-                if (segmentCarrierCode && segmentCarrierCode.toUpperCase() !== 'AS') {
-                  const cleanName = segmentCarrierName.replace(/\s*Airlines\s*/i, '').replace(/\s*Airways\s*/i, '');
+                if (segmentCarrierObj.code !== 'AS') {
+                  const cleanName = segmentCarrierObj.name.replace(/\s*Airlines\s*/i, '').replace(/\s*Airways\s*/i, '');
                   codeshareStr = ` (Codeshare ${cleanName})`;
                 }
                 
-                return `${city}, ${country} (${String(code).toUpperCase()})${codeshareStr}`;
+                return `${city}${formattedCountry} (${scaleIATA})${codeshareStr}`;
               }).filter(Boolean);
               inStopDetails = `${inStops} escala${inStops > 1 ? 's' : ''} en ${inScaleAirports.join(', ')}`;
             }
@@ -331,42 +363,38 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
             const inDurationFormatted = `${Math.floor(inDurationMin / 60)}h ${inDurationMin % 60}m`;
 
             // Obtener el carrier del regreso
-            const inSegmentCarriers = inSegmentIds.map(segId => {
-              const seg = segmentsMap[segId];
-              return seg ? seg.carrier_id || seg.marketing_carrier_id || seg.operating_carrier_id || '' : '';
-            }).filter(Boolean);
-            const inCarrierId = inSegmentCarriers[0] || 'AS';
-            const inCarrierObj = carriersMap[inCarrierId] || { name: 'Alaska Airlines', code: 'AS' };
-            const inAirlineName = inCarrierObj.name || 'Alaska Airlines';
-            const inCarrierCode = inCarrierObj.code || inCarrierId;
+            const firstInSeg = segmentsMap[inSegmentIds[0]];
+            const firstInCarrierId = firstInSeg ? (firstInSeg.carrier_id || firstInSeg.marketing_carrier_id || '') : '';
+            const inCarrierObj = getCarrierObj(firstInCarrierId);
+            const inAirlineName = inCarrierObj.name;
+            const inCarrierCode = inCarrierObj.code;
 
             const inSegmentCarriersList = inSegmentIds.map(segId => {
               const seg = segmentsMap[segId];
               if (!seg) return null;
-              const carrierCodeId = seg.operating_carrier_id || seg.carrier_id || seg.marketing_carrier_id || '';
-              return carriersMap[carrierCodeId] || { name: 'Alaska Airlines', code: carrierCodeId };
+              const id = seg.operating_carrier_id || seg.carrier_id || seg.marketing_carrier_id || '';
+              return getCarrierObj(id);
             }).filter(Boolean);
 
             const inPartner = inSegmentCarriersList.find(c => {
-              const code = String(c.code).toUpperCase();
-              return ['AA', 'IB', 'BA', 'AY'].includes(code);
+              return ['AA', 'IB', 'BA', 'AY'].includes(c.code);
             });
 
             const inOperatingAirlineName = inPartner ? inPartner.name : inAirlineName;
-            const inOperatingAirlineLogo = inPartner ? inPartner.code.toUpperCase() : (inCarrierCode === 'QX' || inCarrierCode === 'OO' ? 'AS' : inCarrierCode.toUpperCase());
+            const inOperatingAirlineLogo = inPartner ? inPartner.code : inCarrierCode;
 
             parsedItinerary.returnFlight = {
               flightNumber: inFirstSeg.marketing_flight_number || inFirstSeg.designator || `AS-${Math.floor(100 + Math.random() * 900)}`,
               airline: inAirlineName,
-              logo: inCarrierCode === 'QX' || inCarrierCode === 'OO' ? 'AS' : (['AS', 'AA', 'IB', 'BA', 'AY'].includes(inCarrierCode.toUpperCase()) ? inCarrierCode.toUpperCase() : 'AS'),
+              logo: inCarrierCode === 'QX' || inCarrierCode === 'OO' ? 'AS' : (['AS', 'AA', 'IB', 'BA', 'AY'].includes(inCarrierCode) ? inCarrierCode : 'AS'),
               operatingAirline: inOperatingAirlineName,
               operatingLogo: cleanCarrierLogo(inOperatingAirlineLogo),
-              origin: String(destCode).toUpperCase(),
-              originCity: getAirportCity(String(destCode)),
-              originAirport: getAirportName(String(destCode)),
-              destination: String(originCode).toUpperCase(),
-              destinationCity: getAirportCity(String(originCode)),
-              destinationAirport: getAirportName(String(originCode)),
+              origin: destIATA,
+              originCity: getAirportCity(destIATA) || getPlaceCity(destPlaceId),
+              originAirport: getAirportName(destIATA) || getPlaceCity(destPlaceId),
+              destination: originIATA,
+              destinationCity: getAirportCity(originIATA) || getPlaceCity(originPlaceId),
+              destinationAirport: getAirportName(originIATA) || getPlaceCity(originPlaceId),
               depTime: inDepTime,
               arrTime: inArrTime,
               depDate: getFormattedDate(inFirstSeg.departure || inboundLeg.departure || ''),
