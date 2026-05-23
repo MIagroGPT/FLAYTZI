@@ -1,63 +1,21 @@
 [
   {
-    "airline": "Aeroméxico",
-    "logo": "AM",
+    "airline": "Alaska Airlines",
+    "logo": "AS",
     "flights": [
-      { "flightNumber": "AM1", "depTime": "12:15", "arrTime": "06:20", "duration": "11h 05m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 1150 },
-      { "flightNumber": "AM21", "depTime": "18:40", "arrTime": "13:10", "duration": "11h 30m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 1280 },
-      { "flightNumber": "AM103", "depTime": "07:30", "arrTime": "16:45", "duration": "14h 15m", "stops": 1, "stopDetails": "1 escala en JFK", "basePriceUSD": 980 }
-    ]
-  },
-  {
-    "airline": "Iberia",
-    "logo": "IB",
-    "flights": [
-      { "flightNumber": "IB6402", "depTime": "13:00", "arrTime": "06:10", "duration": "10h 10m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 1200 },
-      { "flightNumber": "IB6400", "depTime": "20:25", "arrTime": "13:35", "duration": "10h 10m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 1350 },
-      { "flightNumber": "IB6408", "depTime": "16:15", "arrTime": "11:50", "duration": "12h 35m", "stops": 1, "stopDetails": "1 escala en BCN", "basePriceUSD": 1050 }
-    ]
-  },
-  {
-    "airline": "Lufthansa",
-    "logo": "LH",
-    "flights": [
-      { "flightNumber": "LH499", "depTime": "20:55", "arrTime": "14:40", "duration": "10h 45m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 1300 },
-      { "flightNumber": "LH511", "depTime": "17:15", "arrTime": "11:30", "duration": "11h 15m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 1420 },
-      { "flightNumber": "LH432", "depTime": "09:10", "arrTime": "21:30", "duration": "15h 20m", "stops": 1, "stopDetails": "1 escala en FRA", "basePriceUSD": 1100 }
-    ]
-  },
-  {
-    "airline": "Delta Air Lines",
-    "logo": "DL",
-    "flights": [
-      { "flightNumber": "DL244", "depTime": "08:30", "arrTime": "14:55", "duration": "5h 25m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 450 },
-      { "flightNumber": "DL918", "depTime": "15:45", "arrTime": "22:10", "duration": "5h 25m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 520 },
-      { "flightNumber": "DL402", "depTime": "11:15", "arrTime": "20:50", "duration": "8h 35m", "stops": 1, "stopDetails": "1 escala en ATL", "basePriceUSD": 380 }
-    ]
-  },
-  {
-    "airline": "Air France",
-    "logo": "AF",
-    "flights": [
-      { "flightNumber": "AF179", "depTime": "19:55", "arrTime": "13:30", "duration": "10h 35m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 1250 },
-      { "flightNumber": "AF203", "depTime": "23:45", "arrTime": "18:10", "duration": "11h 25m", "stops": 1, "stopDetails": "1 escala en CDG", "basePriceUSD": 1150 }
-    ]
-  },
-  {
-    "airline": "British Airways",
-    "logo": "BA",
-    "flights": [
-      { "flightNumber": "BA242", "depTime": "21:00", "arrTime": "14:15", "duration": "10h 15m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 1400 },
-      { "flightNumber": "BA246", "depTime": "13:30", "arrTime": "23:55", "duration": "13h 25m", "stops": 1, "stopDetails": "1 escala en LHR", "basePriceUSD": 1220 }
-    ]
-  },
-  {
-    "airline": "United Airlines",
-    "logo": "UA",
-    "flights": [
-      { "flightNumber": "UA321", "depTime": "06:00", "arrTime": "10:15", "duration": "3h 15m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 390 },
-      { "flightNumber": "UA852", "depTime": "16:30", "arrTime": "20:55", "duration": "3h 25m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 420 },
-      { "flightNumber": "UA410", "depTime": "12:00", "arrTime": "17:45", "duration": "4h 45m", "stops": 1, "stopDetails": "1 escala en IAH", "basePriceUSD": 310 }
+      { "flightNumber": "AS128", "depTime": "07:30", "arrTime": "15:45", "duration": "5h 15m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 380 },
+      { "flightNumber": "AS266", "depTime": "12:15", "arrTime": "20:30", "duration": "5h 15m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 420 },
+      { "flightNumber": "AS412", "depTime": "16:40", "arrTime": "01:05", "duration": "5h 25m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 395 },
+      { "flightNumber": "AS103", "depTime": "09:00", "arrTime": "19:15", "duration": "7h 15m", "stops": 1, "stopDetails": "1 escala en SEA", "basePriceUSD": 310 },
+      { "flightNumber": "AS851", "depTime": "08:30", "arrTime": "11:45", "duration": "6h 15m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 450 },
+      { "flightNumber": "AS829", "depTime": "17:10", "arrTime": "20:25", "duration": "6h 15m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 490 },
+      { "flightNumber": "AS93", "depTime": "11:15", "arrTime": "13:45", "duration": "3h 30m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 280 },
+      { "flightNumber": "AS144", "depTime": "18:30", "arrTime": "21:00", "duration": "3h 30m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 295 },
+      { "flightNumber": "AS240", "depTime": "08:15", "arrTime": "14:35", "duration": "5h 20m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 340 },
+      { "flightNumber": "AS288", "depTime": "13:30", "arrTime": "19:10", "duration": "4h 40m", "stops": 0, "stopDetails": "Directo", "basePriceUSD": 310 },
+      { "flightNumber": "AS6120", "depTime": "18:45", "arrTime": "12:15", "duration": "9h 30m", "stops": 0, "stopDetails": "Directo (Codeshare British Airways)", "basePriceUSD": 1150 },
+      { "flightNumber": "AS6140", "depTime": "15:20", "arrTime": "10:35", "duration": "10h 15m", "stops": 0, "stopDetails": "Directo (Codeshare Air France)", "basePriceUSD": 1280 },
+      { "flightNumber": "AS6160", "depTime": "16:40", "arrTime": "11:00", "duration": "11h 20m", "stops": 0, "stopDetails": "Directo (Codeshare Iberia)", "basePriceUSD": 1200 }
     ]
   }
 ]

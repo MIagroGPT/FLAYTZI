@@ -1,4 +1,8 @@
 [
+  { "code": "SEA", "name": "Seattle-Tacoma International Airport", "city": "Seattle", "country": "Estados Unidos", "region": "US" },
+  { "code": "ANC", "name": "Ted Stevens Anchorage International Airport", "city": "Anchorage", "country": "Estados Unidos", "region": "US" },
+  { "code": "PDX", "name": "Portland International Airport", "city": "Portland", "country": "Estados Unidos", "region": "US" },
+  { "code": "HNL", "name": "Daniel K. Inouye International Airport", "city": "Honolulu", "country": "Estados Unidos", "region": "US" },
   { "code": "MEX", "name": "Aeropuerto Internacional de la Ciudad de México", "city": "Ciudad de México", "country": "México", "region": "LATAM" },
   { "code": "CUN", "name": "Aeropuerto Internacional de Cancún", "city": "Cancún", "country": "México", "region": "LATAM" },
   { "code": "MTY", "name": "Aeropuerto Internacional de Monterrey", "city": "Monterrey", "country": "México", "region": "LATAM" },

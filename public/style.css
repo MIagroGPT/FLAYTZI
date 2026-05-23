@@ -774,6 +774,7 @@ h1, h2, h3, h4, h5, h6 {
 .airline-logo-badge.AF { background-color: #002395; color: #ffffff; border-color: #002395; }
 .airline-logo-badge.BA { background-color: #0A1B3F; color: #ffffff; border-color: #0A1B3F; }
 .airline-logo-badge.UA { background-color: #1A36B6; color: #ffffff; border-color: #1A36B6; }
+.airline-logo-badge.AS { background-color: #01426a; color: #ffffff; border-color: #01426a; }
 
 .airline-details {
   display: flex;

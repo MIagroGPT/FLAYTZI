@@ -356,6 +356,23 @@ function renderFlightCards(flights) {
           <span class="flight-badge-pill badge-passengers"><i class="fa-solid fa-user"></i> ${flight.passengers} Pasajero(s)</span>
           <span class="flight-badge-pill badge-saving-tag"><i class="fa-solid fa-tags"></i> Ahorro Neto: ${savingFormatted}</span>
         </div>
+
+        <!-- AGREGAR EQUIPAJE DINÁMICO CON TARIFAS CORPORATIVAS OPTIMIZADAS -->
+        <div class="baggage-selector-block" style="margin: 12px 0; padding: 10px; background: rgba(16, 185, 129, 0.05); border-radius: var(--border-radius); border: 1px dashed rgba(16, 185, 129, 0.2);">
+          <span class="baggage-title" style="font-size: 13px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+            <i class="fa-solid fa-suitcase"></i> Agregar Equipaje (Optimizado Flytzi)
+          </span>
+          <div class="baggage-options" style="display: flex; flex-wrap: wrap; gap: 12px;">
+            <label class="baggage-option" style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-dark); cursor: pointer;">
+              <input type="checkbox" onchange="toggleBaggage(this, '${flight.flightId}', 'carryOn')" style="width: 16px; height: 16px; accent-color: var(--primary);">
+              <span>Mano (+${formatCurrency(flight.pricing.carryOnPriceFlytzi)} USD <span style="text-decoration: line-through; color: var(--text-muted); font-size: 10px;">reg: ${formatCurrency(flight.pricing.carryOnPriceOfficial)}</span>)</span>
+            </label>
+            <label class="baggage-option" style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-dark); cursor: pointer;">
+              <input type="checkbox" onchange="toggleBaggage(this, '${flight.flightId}', 'checked')" style="width: 16px; height: 16px; accent-color: var(--primary);">
+              <span>Documentado (+${formatCurrency(flight.pricing.checkedPriceFlytzi)} USD <span style="text-decoration: line-through; color: var(--text-muted); font-size: 10px;">reg: ${formatCurrency(flight.pricing.checkedPriceOfficial)}</span>)</span>
+            </label>
+          </div>
+        </div>
         
         <div class="prices-display">
           <span class="market-price-crossed">Mercado regular: ${officialPriceFormatted} USD</span>
@@ -407,6 +424,57 @@ function filterResults(filterType) {
   renderFlightCards(searchState.filteredFlights);
 }
 
+// Variable global para registrar equipaje seleccionado en cada vuelo cotizado
+const selectedBaggage = {};
+
+function toggleBaggage(checkbox, flightId, type) {
+  if (!selectedBaggage[flightId]) {
+    selectedBaggage[flightId] = { carryOn: false, checked: false };
+  }
+  selectedBaggage[flightId][type] = checkbox.checked;
+
+  // Encontrar el vuelo original
+  const flight = searchState.flights.find(f => f.flightId === flightId);
+  if (!flight) return;
+
+  // Calcular nuevos totales agregando los costos adicionales de equipaje
+  let extraOfficial = 0;
+  let extraFlytzi = 0;
+
+  if (selectedBaggage[flightId].carryOn) {
+    extraOfficial += flight.pricing.carryOnPriceOfficial;
+    extraFlytzi += flight.pricing.carryOnPriceFlytzi;
+  }
+  if (selectedBaggage[flightId].checked) {
+    extraOfficial += flight.pricing.checkedPriceOfficial;
+    extraFlytzi += flight.pricing.checkedPriceFlytzi;
+  }
+
+  const newOfficial = flight.pricing.officialPrice + extraOfficial;
+  const newFlytzi = flight.pricing.flytziPrice + extraFlytzi;
+  const newSaving = newOfficial - newFlytzi;
+
+  // Actualizar DOM en la tarjeta específica
+  const card = checkbox.closest('.flight-card');
+  if (card) {
+    // Actualizar visualización de ahorro
+    const savingElement = card.querySelector(`.badge-saving-tag`);
+    if (savingElement) {
+      savingElement.innerHTML = `<i class="fa-solid fa-tags"></i> Ahorro Neto: ${formatCurrency(newSaving)}`;
+    }
+    // Actualizar precio de mercado de forma dinámica
+    const marketPriceElement = card.querySelector(`.market-price-crossed`);
+    if (marketPriceElement) {
+      marketPriceElement.textContent = `Mercado regular: ${formatCurrency(newOfficial)} USD`;
+    }
+    // Actualizar precio Flytzi destacado
+    const flytziPriceElement = card.querySelector(`.flytzi-price-highlight`);
+    if (flytziPriceElement) {
+      flytziPriceElement.innerHTML = `${formatCurrency(newFlytzi)} <span class="price-sub-label">USD (Tarifa Privada)</span>`;
+    }
+  }
+}
+
 // 7. FLUJO DE CONVERSIÓN: DISPARADOR WHATSAPP BUSINESS CTA
 function triggerWhatsAppBooking(flightId) {
   const flight = searchState.flights.find(f => f.flightId === flightId);
@@ -414,10 +482,30 @@ function triggerWhatsAppBooking(flightId) {
 
   const passengers = flight.passengers;
   const cabin = flight.cabinClass;
-  const flytziPrice = formatCurrency(flight.pricing.flytziPrice);
-  const saving = formatCurrency(flight.pricing.saving);
+
+  // Calcular precios base agregando equipaje
+  let extraOfficial = 0;
+  let extraFlytzi = 0;
+  let baggageList = [];
+
+  const baggage = selectedBaggage[flightId] || { carryOn: false, checked: false };
+
+  if (baggage.carryOn) {
+    extraOfficial += flight.pricing.carryOnPriceOfficial;
+    extraFlytzi += flight.pricing.carryOnPriceFlytzi;
+    baggageList.push("👜 Equipaje de Mano (Carry-on)");
+  }
+  if (baggage.checked) {
+    extraOfficial += flight.pricing.checkedPriceOfficial;
+    extraFlytzi += flight.pricing.checkedPriceFlytzi;
+    baggageList.push("🧳 Equipaje Documentado (Checked Bag)");
+  }
+
+  const finalOfficial = flight.pricing.officialPrice + extraOfficial;
+  const finalFlytzi = flight.pricing.flytziPrice + extraFlytzi;
+  const finalSaving = finalOfficial - finalFlytzi;
   const discount = flight.pricing.discountPercent;
-  
+
   // Construir mensaje estructurado premium para WhatsApp
   let message = `¡Hola Flytzi! Me interesa reservar la Tarifa Privada optimizada en dólares para el siguiente vuelo:\n\n`;
   message += `✈️ RUTA: ${flight.originCity} (${flight.origin}) hacia ${flight.destinationCity} (${flight.destination})\n`;
@@ -428,13 +516,23 @@ function triggerWhatsAppBooking(flightId) {
   }
   
   message += `👥 PASAJEROS: ${passengers} (${cabin})\n`;
-  message += `💳 TARIFA PRIVADA: ${flytziPrice} USD\n`;
-  message += `🎉 DESCUENTO APLICADO: ${discount}% (Ahorro total de ${saving} USD)\n\n`;
+  
+  if (baggageList.length > 0) {
+    message += `📦 EQUIPAJE INCLUIDO:\n`;
+    baggageList.forEach(item => {
+      message += `   - ${item}\n`;
+    });
+  } else {
+    message += `📦 EQUIPAJE INCLUIDO: Ninguno seleccionado (Solo artículo personal)\n`;
+  }
+
+  message += `💳 TARIFA PRIVADA TOTAL: ${formatCurrency(finalFlytzi)} USD\n`;
+  message += `🎉 DESCUENTO APLICADO: ${discount}% (Ahorro total de ${formatCurrency(finalSaving)} USD)\n\n`;
   message += `🔑 CÓDIGO DE RUTA OPTIMIZADO: [${flight.flightId}]\n\n`;
   message += `Por favor confirmen la disponibilidad del inventario privado para proceder con la emisión del boleto oficial. ¡Gracias!`;
 
-  // Teléfono ficticio de WhatsApp Business de Flytzi
-  const phoneNumber = "5215500000000"; 
+  // WhatsApp Business de Flytzi (Prueba)
+  const phoneNumber = "583314790654"; 
   const waUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
 
   // Abrir ventana en pestaña nueva

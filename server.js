@@ -95,112 +95,176 @@ app.get('/api/flights', (req, res) => {
   }
 
   // Generar itinerarios de vuelos de forma híbrida y realista
+  // Generar itinerarios de vuelos de forma híbrida y realista
   const results = [];
 
-  // Mapeamos plantillas y generamos vuelos realistas
-  flightTemplates.forEach(airlineObj => {
-    // Tomamos vuelos de esta aerolínea
-    // Si es una ruta larga transatlántica (ej. LATAM -> Europa), priorizamos aerolíneas de largo alcance
-    // De lo contrario generamos opciones mezcladas para dar variedad premium
-    airlineObj.flights.forEach(fTemplate => {
-      // Ajustar duración y escalas en base a si es una ruta continental o intercontinental
-      const isIntercontinental = 
-        (originAirport.region === 'LATAM' && destAirport.region === 'EU') ||
-        (originAirport.region === 'EU' && destAirport.region === 'LATAM') ||
-        (originAirport.region === 'US' && destAirport.region === 'EU');
+  // Mapeamos las plantillas de Alaska Airlines y adaptamos cada una a la ruta consultada
+  const alaskaTemplates = flightTemplates.find(a => a.logo === 'AS') || { airline: 'Alaska Airlines', logo: 'AS', flights: [] };
 
-      // Filtro realista: no mostrar vuelos muy cortos (ej. de 3h) si es intercontinental, etc.
-      const durationHours = parseInt(fTemplate.duration);
-      if (isIntercontinental && durationHours < 6) return;
-      if (!isIntercontinental && durationHours > 8) return;
+  alaskaTemplates.flights.forEach((fTemplate, index) => {
+    // Determinar duración y paradas realistas basadas en la distancia/ruta
+    let duration = fTemplate.duration;
+    let stops = fTemplate.stops;
+    let stopDetails = fTemplate.stopDetails;
+    let flightNumber = fTemplate.flightNumber;
+    let basePriceUSD = fTemplate.basePriceUSD;
+    let airlineName = alaskaTemplates.airline;
 
-      // Calcular precio base ajustado por clase
-      let classMultiplier = 1.0;
-      if (cabin === 'business') {
-        classMultiplier = 3.8; // Tarifa Business es típicamente 3.8 veces la económica
+    const isIntercontinental = 
+      (originAirport.region === 'LATAM' && destAirport.region === 'EU') ||
+      (originAirport.region === 'EU' && destAirport.region === 'LATAM') ||
+      (originAirport.region === 'US' && destAirport.region === 'EU') ||
+      (originAirport.region === 'EU' && destAirport.region === 'US');
+
+    const isMexicoRoute = 
+      (originAirport.country === 'México' || destAirport.country === 'México');
+
+    // Adaptar itinerarios al tipo de ruta consultada
+    if (isIntercontinental) {
+      // Rutas a Europa: Simular códigos compartidos OneWorld (British Airways, Iberia, etc.)
+      airlineName = "Alaska Airlines";
+      const partners = ["Iberia", "British Airways", "Finnair"];
+      const partner = partners[index % partners.length];
+      
+      stops = 1;
+      if (destAirport.region === 'EU') {
+        const hub = partner === 'Iberia' ? 'MAD' : (partner === 'British Airways' ? 'LHR' : 'HEL');
+        stopDetails = `1 escala en ${hub} (Codeshare ${partner})`;
+      } else {
+        stopDetails = `1 escala en SEA (Codeshare ${partner})`;
+      }
+      
+      // Ajustar duración intercontinental
+      duration = `${10 + (index * 2)}h ${15 + (index * 10)}m`;
+      // Precios de larga distancia
+      basePriceUSD = 950 + (index * 150);
+    } else if (isMexicoRoute) {
+      // Vuelos a México
+      stops = index % 2 === 0 ? 0 : 1;
+      stopDetails = stops === 0 ? 'Directo' : '1 escala en LAX';
+      duration = stops === 0 ? '4h 50m' : '7h 15m';
+      basePriceUSD = 320 + (index * 45);
+    } else {
+      // Vuelos domésticos dentro de EE. UU. (ej: Seattle a Los Ángeles, o JFK a SEA)
+      stops = index === 2 ? 1 : 0;
+      stopDetails = stops === 0 ? 'Directo' : '1 escala en SFO';
+      duration = stops === 0 ? '2h 45m' : '5h 10m';
+      basePriceUSD = 180 + (index * 60);
+    }
+
+    // Ajustar multiplicador de clase
+    let classMultiplier = 1.0;
+    if (cabin === 'business') {
+      classMultiplier = 3.2; // Alaska First/Business es aprox 3.2 veces económica
+    }
+
+    // Añadir aleatoriedad diaria basada en la fecha para dinamismo
+    const dateHash = departureDate.split('-').reduce((acc, val) => acc + parseInt(val), 0);
+    const randomFactor = 0.95 + ((dateHash % 10) / 100); // Factor entre 0.95 y 1.05
+
+    let finalBasePrice = Math.round(basePriceUSD * classMultiplier * randomFactor * passengerCount);
+
+    // --- CALCULADOR DINÁMICO FLYTZI ---
+    const priceOfficial = finalBasePrice;
+    const priceFlytzi = Math.round(priceOfficial * (1 - discountRate));
+    const savingUSD = priceOfficial - priceFlytzi;
+    const discountPercent = Math.round(discountRate * 100);
+
+    // --- LÓGICA DE PRECIOS DE EQUIPAJE SEGÚN LA RUTA (POR PERSONA Y TRAYECTO) ---
+    const bagMultiplier = (returnDate ? 2 : 1) * passengerCount;
+    let carryOnBase = 30;
+    let checkedBase = 40;
+
+    if (isIntercontinental) {
+      carryOnBase = 55;
+      checkedBase = 75;
+    } else if (isMexicoRoute) {
+      carryOnBase = 40;
+      checkedBase = 55;
+    }
+
+    const carryOnPriceOfficial = carryOnBase * bagMultiplier;
+    const carryOnPriceFlytzi = Math.round(carryOnPriceOfficial * (1 - discountRate));
+    const checkedPriceOfficial = checkedBase * bagMultiplier;
+    const checkedPriceFlytzi = Math.round(checkedPriceOfficial * (1 - discountRate));
+
+    // Generar ID de vuelo único
+    const flightId = `FL-${flightNumber}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+
+    // Crear itinerario de Ida
+    const outbound = {
+      flightId,
+      airline: airlineName,
+      logo: alaskaTemplates.logo,
+      flightNumber: flightNumber,
+      origin: originAirport.code,
+      originCity: originAirport.city,
+      originAirport: originAirport.name,
+      destination: destAirport.code,
+      destinationCity: destAirport.city,
+      destinationAirport: destAirport.name,
+      depTime: fTemplate.depTime,
+      arrTime: fTemplate.arrTime,
+      depDate: getFormattedDate(departureDate),
+      depDateRaw: departureDate,
+      duration: duration,
+      stops: stops,
+      stopDetails: stopDetails,
+      cabinClass: cabin === 'business' ? 'Business / Primera' : 'Económica',
+      passengers: passengerCount,
+      pricing: {
+        officialPrice: priceOfficial,
+        flytziPrice: priceFlytzi,
+        saving: savingUSD,
+        discountPercent,
+        currency: 'USD',
+        carryOnPriceOfficial,
+        carryOnPriceFlytzi,
+        checkedPriceOfficial,
+        checkedPriceFlytzi
+      }
+    };
+
+    // Si es viaje redondo, crear itinerario de regreso realista
+    if (returnDate) {
+      const returnFlightNumber = flightNumber.replace(/\d+/, (n) => parseInt(n) + 1);
+      const returnPriceOfficial = Math.round(priceOfficial * 0.95);
+      const returnPriceFlytzi = Math.round(returnPriceOfficial * (1 - discountRate));
+      const returnSavingUSD = returnPriceOfficial - returnPriceFlytzi;
+
+      let returnStopDetails = stopDetails;
+      if (stops === 1) {
+        if (destAirport.region === 'EU') {
+          returnStopDetails = stopDetails.replace(/en [A-Z]{3}/, `en ${originAirport.code}`);
+        } else {
+          returnStopDetails = stopDetails.replace('LAX', 'SEA').replace('SFO', 'SEA');
+        }
       }
 
-      // Añadir una pequeña aleatoriedad diaria realista basada en la fecha para simular "mercado dinámico"
-      const dateHash = departureDate.split('-').reduce((acc, val) => acc + parseInt(val), 0);
-      const randomFactor = 0.9 + ((dateHash % 10) / 50); // Factor entre 0.9 y 1.1
-
-      let basePriceUSD = fTemplate.basePriceUSD * classMultiplier * randomFactor * passengerCount;
-      basePriceUSD = Math.round(basePriceUSD);
-
-      // --- CALCULADOR DINÁMICO FLYTZI ---
-      const priceOfficial = basePriceUSD;
-      const priceFlytzi = Math.round(priceOfficial * (1 - discountRate));
-      const savingUSD = priceOfficial - priceFlytzi;
-      const discountPercent = Math.round(discountRate * 100);
-
-      // Generar ID único del itinerario
-      const flightId = `FL-${fTemplate.flightNumber}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
-
-      // Crear itinerario de Ida
-      const outbound = {
-        flightId,
-        airline: airlineObj.airline,
-        logo: airlineObj.logo,
-        flightNumber: fTemplate.flightNumber,
-        origin: originAirport.code,
-        originCity: originAirport.city,
-        originAirport: originAirport.name,
-        destination: destAirport.code,
-        destinationCity: destAirport.city,
-        destinationAirport: destAirport.name,
-        depTime: fTemplate.depTime,
-        arrTime: fTemplate.arrTime,
-        depDate: getFormattedDate(departureDate),
-        depDateRaw: departureDate,
-        duration: fTemplate.duration,
-        stops: fTemplate.stops,
-        stopDetails: fTemplate.stopDetails,
-        cabinClass: cabin === 'business' ? 'Business' : 'Económica',
-        passengers: passengerCount,
-        pricing: {
-          officialPrice: priceOfficial,
-          flytziPrice: priceFlytzi,
-          saving: savingUSD,
-          discountPercent,
-          currency: 'USD'
-        }
+      outbound.returnFlight = {
+        flightNumber: returnFlightNumber,
+        origin: destAirport.code,
+        originCity: destAirport.city,
+        originAirport: destAirport.name,
+        destination: originAirport.code,
+        destinationCity: originAirport.city,
+        destinationAirport: originAirport.name,
+        depTime: fTemplate.arrTime === '01:05' || fTemplate.arrTime === '20:30' ? '18:15' : '10:45',
+        arrTime: fTemplate.depTime === '07:30' || fTemplate.depTime === '09:00' ? '23:30' : '07:15',
+        depDate: getFormattedDate(returnDate),
+        depDateRaw: returnDate,
+        duration: duration,
+        stops: stops,
+        stopDetails: returnStopDetails,
       };
 
-      // Si es viaje redondo, crear itinerario de regreso realista
-      if (returnDate) {
-        // Encontrar plantilla de regreso (puede ser el mismo número de vuelo u otro)
-        const returnFlightNumber = fTemplate.flightNumber.replace(/\d+/, (n) => parseInt(n) + 1);
-        
-        // Simular regreso con leve variación en horarios y precios oficiales
-        const returnPriceOfficial = Math.round(priceOfficial * 0.95);
-        const returnPriceFlytzi = Math.round(returnPriceOfficial * (1 - discountRate));
-        const returnSavingUSD = returnPriceOfficial - returnPriceFlytzi;
+      // Actualizar precios del paquete redondo
+      outbound.pricing.officialPrice += returnPriceOfficial;
+      outbound.pricing.flytziPrice += returnPriceFlytzi;
+      outbound.pricing.saving += returnSavingUSD;
+    }
 
-        outbound.returnFlight = {
-          flightNumber: returnFlightNumber,
-          origin: destAirport.code,
-          originCity: destAirport.city,
-          originAirport: destAirport.name,
-          destination: originAirport.code,
-          destinationCity: originAirport.city,
-          destinationAirport: originAirport.name,
-          depTime: fTemplate.arrTime === '06:10' || fTemplate.arrTime === '06:20' ? '18:15' : '10:45',
-          arrTime: fTemplate.depTime === '12:15' || fTemplate.depTime === '13:00' ? '23:30' : '07:15',
-          depDate: getFormattedDate(returnDate),
-          depDateRaw: returnDate,
-          duration: fTemplate.duration,
-          stops: fTemplate.stops,
-          stopDetails: fTemplate.stopDetails === 'Directo' ? 'Directo' : `1 escala en ${originAirport.code === 'MEX' ? 'MIA' : 'JFK'}`,
-        };
-
-        // Actualizar precios del paquete redondo
-        outbound.pricing.officialPrice += returnPriceOfficial;
-        outbound.pricing.flytziPrice += returnPriceFlytzi;
-        outbound.pricing.saving += returnSavingUSD;
-      }
-
-      results.push(outbound);
-    });
+    results.push(outbound);
   });
 
   // Ordenar resultados: primero los más económicos o de mayor descuento
