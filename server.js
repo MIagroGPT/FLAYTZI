@@ -426,7 +426,7 @@ app.get('/api/flights', async (req, res) => {
   }
 
   let finalFlights = [];
-  const apiKey = process.env.FLIGHT_API_KEY || '6a11ff72bffbe305a6da9473';
+  const apiKey = process.env.FLIGHT_API_KEY || '6a1228d7df900c058c4e9339';
   const adults = passengerCount;
   const cabinClassMap = cabin === 'business' ? 'Business' : 'Economy';
   const isRound = (req.query.returnDate && returnDate);
