@@ -282,7 +282,7 @@ function renderFlightCards(flights) {
           <div class="airline-logo-badge ${flight.logo}">${flight.logo}</div>
           <div class="airline-details">
             <span class="airline-name">${flight.airline}</span>
-            <span class="flight-code">${flight.flightNumber} • Ida</span>
+            <span class="flight-code">${flight.flightNumber} • Ida: ${flight.depDate}</span>
           </div>
         </div>
         <div class="flight-timeline">
@@ -317,7 +317,7 @@ function renderFlightCards(flights) {
             <div class="airline-logo-badge ${flight.logo}">${flight.logo}</div>
             <div class="airline-details">
               <span class="airline-name">${flight.airline}</span>
-              <span class="flight-code">${ret.flightNumber} • Regreso</span>
+              <span class="flight-code">${ret.flightNumber} • Regreso: ${ret.depDate}</span>
             </div>
           </div>
           <div class="flight-timeline">
