@@ -279,9 +279,10 @@ function renderFlightCards(flights) {
     let outboundHTML = `
       <div class="itinerary-row ${flight.returnFlight ? '' : 'no-border'}">
         <div class="airline-info">
-          <div class="airline-logo-badge ${flight.logo}">${flight.logo}</div>
+          <div class="airline-logo-badge ${flight.operatingLogo || flight.logo}">${flight.operatingLogo || flight.logo}</div>
           <div class="airline-details">
             <span class="airline-name">${flight.airline}</span>
+            <span style="font-size: 11px; color: var(--accent); font-weight: 700; margin-top: 1px;"><i class="fa-solid fa-circle-check"></i> Aerolínea Operadora: ${flight.operatingAirline || flight.airline}</span>
             <span class="flight-code">${flight.flightNumber} • Ida: ${flight.depDate}</span>
           </div>
         </div>
@@ -314,9 +315,10 @@ function renderFlightCards(flights) {
       inboundHTML = `
         <div class="itinerary-row no-border">
           <div class="airline-info">
-            <div class="airline-logo-badge ${flight.logo}">${flight.logo}</div>
+            <div class="airline-logo-badge ${ret.operatingLogo || ret.logo || flight.logo}">${ret.operatingLogo || ret.logo || flight.logo}</div>
             <div class="airline-details">
-              <span class="airline-name">${flight.airline}</span>
+              <span class="airline-name">${ret.airline || flight.airline}</span>
+              <span style="font-size: 11px; color: var(--accent); font-weight: 700; margin-top: 1px;"><i class="fa-solid fa-circle-check"></i> Aerolínea Operadora: ${ret.operatingAirline || ret.airline || flight.airline}</span>
               <span class="flight-code">${ret.flightNumber} • Regreso: ${ret.depDate}</span>
             </div>
           </div>
@@ -515,6 +517,15 @@ function triggerWhatsAppBooking(flightId) {
     baggageList
   };
 
+  // Calcular la aerolínea operadora para mostrar en el resumen del modal
+  let operadorasStr = flight.operatingAirline || flight.airline;
+  if (flight.returnFlight) {
+    const retOp = flight.returnFlight.operatingAirline || flight.returnFlight.airline || flight.airline;
+    if (retOp !== operadorasStr) {
+      operadorasStr += ` / ${retOp}`;
+    }
+  }
+
   // Llenar el resumen del vuelo en el paso 1
   const summaryDiv = document.getElementById('booking-flight-summary');
   if (summaryDiv) {
@@ -529,6 +540,8 @@ function triggerWhatsAppBooking(flightId) {
         <span><strong>Clase:</strong> ${flight.cabinClass}</span>
         <span>•</span>
         <span><strong>Pasajeros:</strong> ${flight.passengers}</span>
+        <span>•</span>
+        <span><strong>Operador:</strong> ${operadorasStr}</span>
         ${baggageList.length > 0 ? `<span>•</span><span><strong>Equipaje:</strong> ${baggageList.join(', ')}</span>` : ''}
       </div>
     `;
@@ -684,8 +697,16 @@ function processStripePayment(event) {
     document.getElementById('rec-pass-dob').textContent = pass.dob;
     document.getElementById('rec-pass-email').textContent = pass.email;
     document.getElementById('rec-pass-phone').textContent = pass.phone;
+    let operadorasStr = flight.operatingAirline || flight.airline;
+    if (flight.returnFlight) {
+      const retOp = flight.returnFlight.operatingAirline || flight.returnFlight.airline || flight.airline;
+      if (retOp !== operadorasStr) {
+        operadorasStr += ` / ${retOp}`;
+      }
+    }
+
     document.getElementById('rec-flight-route').textContent = `${flight.originCity} (${flight.origin}) hacia ${flight.destinationCity} (${flight.destination})`;
-    document.getElementById('rec-flight-code').textContent = `${flight.flightNumber} (${flight.cabinClass})`;
+    document.getElementById('rec-flight-code').textContent = `${flight.flightNumber} (${flight.cabinClass}) [Operador: ${operadorasStr}]`;
     document.getElementById('rec-flight-baggage').textContent = totals.baggageList.length > 0 ? totals.baggageList.join(' + ') : 'Ninguno (Solo artículo personal)';
     document.getElementById('rec-flight-total').textContent = `${formatCurrency(totals.finalFlytzi)} USD`;
     document.getElementById('rec-flight-locator').textContent = locatorCode;
@@ -721,10 +742,13 @@ function sendReceiptToWhatsApp() {
   
   message += `✈️ ITINERARIO DE VUELO:\n`;
   message += `   - Ruta: ${flight.originCity} (${flight.origin}) a ${flight.destinationCity} (${flight.destination})\n`;
-  message += `   - Vuelo Ida: ${flight.flightNumber} (${flight.cabinClass}) el ${flight.depDate}\n`;
+  
+  const opIda = flight.operatingAirline || flight.airline;
+  message += `   - Vuelo Ida: ${flight.flightNumber} (${flight.cabinClass}) el ${flight.depDate} (Operado por: ${opIda})\n`;
   
   if (flight.returnFlight) {
-    message += `   - Vuelo Regreso: ${flight.returnFlight.flightNumber} el ${flight.returnFlight.depDate}\n`;
+    const opVuelta = flight.returnFlight.operatingAirline || flight.returnFlight.airline || flight.airline;
+    message += `   - Vuelo Regreso: ${flight.returnFlight.flightNumber} el ${flight.returnFlight.depDate} (Operado por: ${opVuelta})\n`;
   }
   
   message += `   - Pasajeros: ${flight.passengers}\n`;

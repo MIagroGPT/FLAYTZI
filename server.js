@@ -77,6 +77,19 @@ function getAirportCountry(code) {
   return airport ? airport.country : '';
 }
 
+// Helper para encontrar el nombre de un aeropuerto por IATA
+function getAirportName(code) {
+  const airport = airports.find(a => a.code === code.toUpperCase());
+  return airport ? airport.name : '';
+}
+
+// Helper para limpiar y validar el código del logo del transportista para CSS
+function cleanCarrierLogo(logoCode) {
+  const code = String(logoCode).toUpperCase();
+  const validLogos = ['IB', 'AM', 'LH', 'DL', 'AF', 'BA', 'UA', 'AS', 'AA', 'AY'];
+  return validLogos.includes(code) ? code : 'AS';
+}
+
 // 2. Parser para las respuestas crudas de FlightAPI.io
 function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip) {
   const itineraries = apiData.itineraries || [];
@@ -137,6 +150,21 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
     const carrierObj = carriersMap[carrierId] || { name: 'Alaska Airlines', code: 'AS' };
     const airlineName = carrierObj.name || 'Alaska Airlines';
     const carrierCode = carrierObj.code || carrierId;
+
+    const outSegmentCarriersList = outSegmentIds.map(segId => {
+      const seg = segmentsMap[segId];
+      if (!seg) return null;
+      const carrierCodeId = seg.operating_carrier_id || seg.carrier_id || seg.marketing_carrier_id || '';
+      return carriersMap[carrierCodeId] || { name: 'Alaska Airlines', code: carrierCodeId };
+    }).filter(Boolean);
+
+    const outPartner = outSegmentCarriersList.find(c => {
+      const code = String(c.code).toUpperCase();
+      return ['AA', 'IB', 'BA', 'AY'].includes(code);
+    });
+
+    const operatingAirlineName = outPartner ? outPartner.name : airlineName;
+    const operatingAirlineLogo = outPartner ? outPartner.code.toUpperCase() : (carrierCode === 'QX' || carrierCode === 'OO' ? 'AS' : carrierCode.toUpperCase());
 
     const firstSegment = segmentsMap[outSegmentIds[0]];
     const lastSegment = segmentsMap[outSegmentIds[outSegmentIds.length - 1]];
@@ -229,6 +257,8 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
       flightId,
       airline: airlineName,
       logo: carrierCode === 'QX' || carrierCode === 'OO' ? 'AS' : (['AS', 'AA', 'IB', 'BA', 'AY'].includes(carrierCode.toUpperCase()) ? carrierCode.toUpperCase() : 'AS'),
+      operatingAirline: operatingAirlineName,
+      operatingLogo: cleanCarrierLogo(operatingAirlineLogo),
       flightNumber: flightNumber,
       origin: String(originCode).toUpperCase(),
       originCity: getAirportCity(String(originCode)),
@@ -300,8 +330,37 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
             const inDurationMin = inboundLeg.duration || 120;
             const inDurationFormatted = `${Math.floor(inDurationMin / 60)}h ${inDurationMin % 60}m`;
 
+            // Obtener el carrier del regreso
+            const inSegmentCarriers = inSegmentIds.map(segId => {
+              const seg = segmentsMap[segId];
+              return seg ? seg.carrier_id || seg.marketing_carrier_id || seg.operating_carrier_id || '' : '';
+            }).filter(Boolean);
+            const inCarrierId = inSegmentCarriers[0] || 'AS';
+            const inCarrierObj = carriersMap[inCarrierId] || { name: 'Alaska Airlines', code: 'AS' };
+            const inAirlineName = inCarrierObj.name || 'Alaska Airlines';
+            const inCarrierCode = inCarrierObj.code || inCarrierId;
+
+            const inSegmentCarriersList = inSegmentIds.map(segId => {
+              const seg = segmentsMap[segId];
+              if (!seg) return null;
+              const carrierCodeId = seg.operating_carrier_id || seg.carrier_id || seg.marketing_carrier_id || '';
+              return carriersMap[carrierCodeId] || { name: 'Alaska Airlines', code: carrierCodeId };
+            }).filter(Boolean);
+
+            const inPartner = inSegmentCarriersList.find(c => {
+              const code = String(c.code).toUpperCase();
+              return ['AA', 'IB', 'BA', 'AY'].includes(code);
+            });
+
+            const inOperatingAirlineName = inPartner ? inPartner.name : inAirlineName;
+            const inOperatingAirlineLogo = inPartner ? inPartner.code.toUpperCase() : (inCarrierCode === 'QX' || inCarrierCode === 'OO' ? 'AS' : inCarrierCode.toUpperCase());
+
             parsedItinerary.returnFlight = {
               flightNumber: inFirstSeg.marketing_flight_number || inFirstSeg.designator || `AS-${Math.floor(100 + Math.random() * 900)}`,
+              airline: inAirlineName,
+              logo: inCarrierCode === 'QX' || inCarrierCode === 'OO' ? 'AS' : (['AS', 'AA', 'IB', 'BA', 'AY'].includes(inCarrierCode.toUpperCase()) ? inCarrierCode.toUpperCase() : 'AS'),
+              operatingAirline: inOperatingAirlineName,
+              operatingLogo: cleanCarrierLogo(inOperatingAirlineLogo),
               origin: String(destCode).toUpperCase(),
               originCity: getAirportCity(String(destCode)),
               originAirport: getAirportName(String(destCode)),
@@ -395,6 +454,8 @@ app.get('/api/flights', async (req, res) => {
       let flightNumber = fTemplate.flightNumber;
       let basePriceUSD = fTemplate.basePriceUSD;
       let airlineName = alaskaTemplates.airline;
+      let opAirline = "Alaska Airlines";
+      let opLogo = "AS";
 
       const isDomesticMexico = 
         (originAirport.country === 'México' && destAirport.country === 'México');
@@ -418,6 +479,8 @@ app.get('/api/flights', async (req, res) => {
         airlineName = "Alaska Airlines";
         const partners = ["Iberia", "British Airways", "Finnair"];
         const partner = partners[index % partners.length];
+        opAirline = partner;
+        opLogo = partner === 'Iberia' ? 'IB' : (partner === 'British Airways' ? 'BA' : 'AY');
         stops = 1;
         if (destAirport.region === 'EU') {
           const hubCode = partner === 'Iberia' ? 'MAD' : (partner === 'British Airways' ? 'LHR' : 'HEL');
@@ -479,6 +542,8 @@ app.get('/api/flights', async (req, res) => {
         flightId,
         airline: airlineName,
         logo: alaskaTemplates.logo,
+        operatingAirline: opAirline,
+        operatingLogo: cleanCarrierLogo(opLogo),
         flightNumber: flightNumber,
         origin: originAirport.code,
         originCity: originAirport.city,
@@ -525,6 +590,10 @@ app.get('/api/flights', async (req, res) => {
 
         outbound.returnFlight = {
           flightNumber: returnFlightNumber,
+          airline: isIntercontinental ? (partner === 'Iberia' ? 'Iberia' : (partner === 'British Airways' ? 'British Airways' : 'Finnair')) : "Alaska Airlines",
+          logo: isIntercontinental ? (partner === 'Iberia' ? 'IB' : (partner === 'British Airways' ? 'BA' : 'AY')) : 'AS',
+          operatingAirline: isIntercontinental ? (partner === 'Iberia' ? 'Iberia' : (partner === 'British Airways' ? 'British Airways' : 'Finnair')) : "Alaska Airlines",
+          operatingLogo: isIntercontinental ? cleanCarrierLogo(partner === 'Iberia' ? 'IB' : (partner === 'British Airways' ? 'BA' : 'AY')) : 'AS',
           origin: destAirport.code,
           originCity: destAirport.city,
           originAirport: destAirport.name,
