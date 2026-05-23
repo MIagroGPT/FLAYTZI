@@ -265,7 +265,7 @@
           </div>
           <h3 class="guarantee-title">Web Check-in Siempre Garantizado</h3>
           <p class="guarantee-desc">
-            Tienes la seguridad absoluta de que siempre podrás realizar el Web Check-in de tu vuelo sin contratiempos. Nuestro equipo de concierge gestiona tus asientos preferenciales y pases de abordar de manera 100% garantizada.
+            Tienes la seguridad absoluta de que siempre podrás realizar el Web Check-in de tu vuelo sin contratiempos directamente en la plataforma oficial de la aerolínea utilizando tu código de reserva.
           </p>
         </div>
       </div>
@@ -428,22 +428,22 @@
             <div class="step-item">
               <div class="step-num">01</div>
               <div class="step-text">
-                <h4>Metabúsqueda en Canales Privados</h4>
-                <p>Monitoreamos tarifas oficiales y las cruzamos con bases de datos globales de consolidadores, mayoristas e inventarios de millas privadas de aerolíneas aliadas.</p>
+                <h4>Metabúsqueda con Inteligencia Artificial</h4>
+                <p>Nuestra Inteligencia Artificial avanzada cruza y analiza en tiempo real las bases de datos globales de consolidadores, mayoristas e inventarios de millas corporativas, identificando al instante oportunidades ocultas de optimización con el máximo nivel de seguridad y precisión para tu viaje.</p>
               </div>
             </div>
             <div class="step-item">
               <div class="step-num">02</div>
               <div class="step-text">
                 <h4>Cálculo de Optimización Dinámica</h4>
-                <p>Aplicamos nuestro motor algorítmico exclusivo para reestructurar tarifas de rutas internacionales (ahorrando 40% a Europa y 30% a EE. UU.) al emitir billetes con inventarios corporativos bloqueados.</p>
+                <p>Aplicamos nuestro motor algorítmico exclusivo para reestructurar tarifas de rutas internacionales (ahorrando 40% a Europa y 30% a EE. UU.) para emitir las mejores oportunidades flexibles de itinerarios corporativos, garantizando la máxima protección y validez oficial en tus boletos.</p>
               </div>
             </div>
             <div class="step-item">
               <div class="step-num">03</div>
               <div class="step-text">
-                <h4>Validación y Redirección a WhatsApp</h4>
-                <p>Por seguridad bancaria y de inventario, nuestro Concierge humano valida la disponibilidad en el backend y emite el boleto oficial en minutos a través de un chat seguro de WhatsApp Business.</p>
+                <h4>Reserva Segura y Pago de Oportunidad</h4>
+                <p>Seleccionas tu itinerario óptimo, completas los datos de los pasajeros de forma 100% blindada aceptando nuestras estrictas políticas de confidencialidad, y liquidas de manera directa la tarifa de oportunidad exclusiva para emitir tu reserva oficial al instante.</p>
               </div>
             </div>
           </div>
@@ -493,6 +493,230 @@
       </div>
     </div>
   </footer>
+
+  <!-- FLOATING BADGE & MODAL FOR DATA CONFIDENTIALITY -->
+  <!-- Botón Flotante de Privacidad -->
+  <!-- MÓDULO DE RESERVA & PASARELA DE PAGO STRIPE (SIMULADA) -->
+  <div id="booking-modal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 650px;">
+      
+      <!-- Paso 1: Formulario de Datos del Pasajero -->
+      <div id="booking-step-form" class="booking-step">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-plane-departure text-highlight"></i> 1. Datos de Pasajeros y Reserva</h3>
+          <span class="modal-close" onclick="closeBookingModal()">&times;</span>
+        </div>
+        <form id="passenger-data-form" onsubmit="goToPaymentStep(event)">
+          <div class="modal-body">
+            
+            <!-- Resumen Rápido del Vuelo -->
+            <div class="booking-flight-summary" id="booking-flight-summary" style="margin-bottom: 20px; padding: 12px; background: var(--bg-light); border-radius: var(--border-radius); border: 1.5px solid var(--border-color);">
+              <!-- Llenado dinámicamente con JS -->
+            </div>
+
+            <!-- Grid de Formulario de Pasajero -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group" style="grid-column: span 2;">
+                <label for="pass-name"><i class="fa-solid fa-user"></i> Nombre y Apellidos Completos (Como en Pasaporte)</label>
+                <input type="text" id="pass-name" placeholder="Ej: Rodrigo Espinosa Mendoza" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-passport"><i class="fa-solid fa-passport"></i> Número de Pasaporte</label>
+                <input type="text" id="pass-passport" placeholder="Ej: P98210432" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-expiry"><i class="fa-regular fa-calendar-times"></i> Fecha de Vencimiento Pasaporte</label>
+                <input type="date" id="pass-expiry" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-country"><i class="fa-solid fa-globe"></i> País de Emisión del Pasaporte</label>
+                <input type="text" id="pass-country" placeholder="Ej: México" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-email"><i class="fa-solid fa-envelope"></i> Correo Electrónico</label>
+                <input type="email" id="pass-email" placeholder="Ej: rodrigo@empresa.com" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-phone"><i class="fa-solid fa-phone"></i> Teléfono Principal (Móvil)</label>
+                <input type="tel" id="pass-phone" placeholder="Ej: +52 55 4321 0987" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-alt-phone"><i class="fa-solid fa-square-phone"></i> Número Alternativo de Contacto</label>
+                <input type="tel" id="pass-alt-phone" placeholder="Ej: +52 55 9876 5432" required>
+              </div>
+            </div>
+
+            <!-- Checkbox de Políticas de Datos -->
+            <div style="margin-top: 20px; padding: 12px; background: rgba(16, 185, 129, 0.05); border-radius: var(--border-radius); border: 1.5px solid rgba(16, 185, 129, 0.15);">
+              <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-dark); font-weight: 500;">
+                <input type="checkbox" id="accept-data-policy" required style="width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px;">
+                <span>He leído y acepto expresamente la <a href="javascript:openPrivacyModal()" style="color: var(--accent); font-weight: 700; text-decoration: underline;">Política de Confidencialidad y Protección de Datos</a> de Flytzi Aero Privado. Acepto que mis datos de pasaporte se usarán estrictamente para la emisión oficial del boleto.</span>
+              </label>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeBookingModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Continuar al Pago Seguro <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Paso 2: Pasarela de Pago Stripe (Simulada) -->
+      <div id="booking-step-payment" class="booking-step" style="display: none;">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-credit-card text-highlight"></i> 2. Pasarela de Pago Seguro</h3>
+          <span class="modal-close" onclick="closeBookingModal()">&times;</span>
+        </div>
+        <form id="stripe-payment-form" onsubmit="processStripePayment(event)">
+          <div class="modal-body">
+            
+            <!-- Resumen de Facturación -->
+            <div class="stripe-billing-summary" id="stripe-billing-summary" style="margin-bottom: 24px; padding: 16px; background: var(--bg-light); border-radius: var(--border-radius); border: 1.5px solid var(--border-color);">
+              <!-- Llenado dinámicamente con JS -->
+            </div>
+
+            <!-- Interfaz de Pago Stripe -->
+            <div class="stripe-box" style="padding: 20px; border: 1.5px solid rgba(110, 120, 240, 0.4); border-radius: var(--border-radius); background: #fafbff; box-shadow: 0 4px 12px rgba(110, 120, 240, 0.05);">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1.5px solid #eceffd; padding-bottom: 12px;">
+                <span style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px; color: #6772e5; display: flex; align-items: center; gap: 8px;">
+                  <i class="fab fa-stripe" style="font-size: 32px;"></i> Elementos de Pago
+                </span>
+                <span style="font-size: 11px; font-weight: 700; color: #a1afbe; background: #eceffd; padding: 4px 8px; border-radius: 4px; text-transform: uppercase;">Modo de Pruebas</span>
+              </div>
+
+              <!-- Formulario de Tarjeta de Crédito -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group" style="grid-column: span 2;">
+                  <label style="color: #6772e5; font-size: 11px;"><i class="fa-solid fa-credit-card"></i> Número de Tarjeta</label>
+                  <input type="text" id="stripe-card-number" placeholder="4242 4242 4242 4242" maxlength="19" required style="border-color: rgba(110, 120, 240, 0.25); background: #ffffff;">
+                </div>
+                <div class="form-group">
+                  <label style="color: #6772e5; font-size: 11px;"><i class="fa-regular fa-calendar"></i> Fecha Expiración</label>
+                  <input type="text" id="stripe-card-expiry" placeholder="MM/AA" maxlength="5" required style="border-color: rgba(110, 120, 240, 0.25); background: #ffffff;">
+                </div>
+                <div class="form-group">
+                  <label style="color: #6772e5; font-size: 11px;"><i class="fa-solid fa-lock"></i> CVC</label>
+                  <input type="password" id="stripe-card-cvc" placeholder="Ej: 123" maxlength="4" required style="border-color: rgba(110, 120, 240, 0.25); background: #ffffff;">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                  <label style="color: #6772e5; font-size: 11px;"><i class="fa-solid fa-user-tag"></i> Nombre del Titular de la Tarjeta</label>
+                  <input type="text" id="stripe-card-holder" placeholder="Ej: Rodrigo Espinosa Mendoza" required style="border-color: rgba(110, 120, 240, 0.25); background: #ffffff;">
+                </div>
+              </div>
+
+              <div style="margin-top: 16px; display: flex; align-items: center; gap: 8px; font-size: 11px; color: #a1afbe; font-weight: 500;">
+                <i class="fa-solid fa-lock" style="color: #10b981;"></i> Conexión encriptada SSL de 256 bits y cumplimiento PCI-DSS Nivel 1.
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="goToStep('form')"><i class="fa-solid fa-arrow-left"></i> Atrás</button>
+            <button type="submit" class="btn btn-primary" id="stripe-submit-btn" style="background-color: #6772e5; border-color: #6772e5;">
+              <span>Pagar con Stripe</span> <i class="fab fa-stripe-s"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Paso 3: Confirmación de Pago Exitoso -->
+      <div id="booking-step-success" class="booking-step" style="display: none; text-align: center;">
+        <div class="modal-header" style="background-color: rgba(16, 185, 129, 0.05); border-bottom-color: rgba(16, 185, 129, 0.15);">
+          <h3 style="color: #0f9d58;"><i class="fa-solid fa-circle-check"></i> Transacción Aprobada Exitosamente</h3>
+          <span class="modal-close" onclick="closeBookingModal()">&times;</span>
+        </div>
+        <div class="modal-body" style="padding: 30px;">
+          
+          <div class="success-checkmark-wrapper" style="margin-bottom: 20px;">
+            <div class="success-icon" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 2.5px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto; color: var(--accent); font-size: 40px; animation: bounceIn 0.6s ease;">
+              <i class="fa-solid fa-check"></i>
+            </div>
+          </div>
+
+          <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; color: var(--primary); margin-bottom: 8px;">¡Muchas Gracias por tu Pago!</h2>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">La pasarela de Stripe ha confirmado la transacción del inventario de forma segura y exitosa.</p>
+
+          <!-- Detalles del Ticket Generado -->
+          <div class="receipt-box" style="text-align: left; padding: 20px; border-radius: var(--border-radius); background: var(--bg-light); border: 1.5px solid var(--border-color); font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.6; margin-bottom: 24px;">
+            <div style="border-bottom: 1.5px dashed var(--border-color); padding-bottom: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary);">DETALLES DEL RECIBO</span>
+              <span class="badge-saving-tag" style="background: rgba(16, 185, 129, 0.1); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-weight: 700;">CONFIRMADO</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;">
+              <div><strong>Pasajero Titular:</strong> <span id="rec-pass-name">-</span></div>
+              <div><strong>Pasaporte:</strong> <span id="rec-pass-passport">-</span></div>
+              <div><strong>Email:</strong> <span id="rec-pass-email">-</span></div>
+              <div><strong>Contacto:</strong> <span id="rec-pass-phone">-</span></div>
+              <div style="grid-column: span 2; margin-top: 4px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                <strong>Ruta Reservada:</strong> <span id="rec-flight-route">-</span>
+              </div>
+              <div style="grid-column: span 2;">
+                <strong>Código de Vuelo:</strong> <span id="rec-flight-code">-</span>
+              </div>
+              <div style="grid-column: span 2;">
+                <strong>Equipaje Seleccionado:</strong> <span id="rec-flight-baggage">-</span>
+              </div>
+              <div style="grid-column: span 2; margin-top: 4px; border-top: 1px solid var(--border-color); padding-top: 8px; font-size: 14px;">
+                <strong style="color: var(--primary);">Monto Pagado:</strong> <strong id="rec-flight-total" style="color: var(--accent); font-size: 16px;">-</strong>
+              </div>
+              <div style="grid-column: span 2; font-size: 11px; color: var(--text-muted); margin-top: 8px; display: flex; flex-direction: column; gap: 2px;">
+                <div>🔑 CÓDIGO LOCALIZADOR: <strong id="rec-flight-locator" style="color: var(--primary);">-</strong></div>
+                <div>💳 STRIPE CHARGE ID: <strong id="rec-stripe-id" style="color: var(--primary);">-</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1.5px solid rgba(16, 185, 129, 0.15); border-radius: var(--border-radius); font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 24px;">
+            🔒 <strong>Paso Final Operativo:</strong> Tu reserva ya está emitida en el sistema GDS global. Para mayor comodidad, haz clic en el botón de abajo para enviar tu comprobante, recibir tu pase de abordar de forma directa en tu WhatsApp de soporte y activar tu Web Check-in garantizado.
+          </div>
+
+        </div>
+        <div class="modal-footer" style="justify-content: center; background-color: rgba(16, 185, 129, 0.05); border-top-color: rgba(16, 185, 129, 0.15);">
+          <button class="btn btn-primary" onclick="sendReceiptToWhatsApp()" style="background-color: var(--accent); border-color: var(--accent); font-size: 15px; padding: 12px 30px; border-radius: 30px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
+            Recibir pase de abordar por WhatsApp <i class="fab fa-whatsapp"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="floating-privacy-badge" onclick="openPrivacyModal()">
+    <i class="fa-solid fa-shield-halved"></i> <span>Privacidad de Datos</span>
+  </div>
+
+  <!-- Estructura del Modal de Confidencialidad -->
+  <div id="privacy-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-lock text-highlight"></i> Directiva de Confidencialidad & Protección de Datos</h3>
+        <span class="modal-close" onclick="closePrivacyModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p class="intro-text">En <strong>Flytzi Aero Privado</strong>, la seguridad y el anonimato de tu información son pilares institucionales. Procesamos tus datos bajo el estándar internacional de cifrado bancario militar.</p>
+        
+        <div class="policy-section">
+          <h4><i class="fa-solid fa-user-shield"></i> 1. Blindaje de Información de Pasajeros</h4>
+          <p>Toda la información personal, números de pasaporte y detalles de contacto proporcionados para la emisión de boletos se encriptan bajo protocolos AES-256 en bases de datos desconectadas de internet público. Solo se asocian temporalmente al itinerario para la validación oficial en el NDC de Alaska Airlines.</p>
+        </div>
+
+        <div class="policy-section">
+          <h4><i class="fa-solid fa-circle-check"></i> 2. Cero Fugas y Uso Exclusivo</h4>
+          <p>Tus datos son procesados bajo políticas estrictas de no-divulgación (NDA). Flytzi garantiza que tu información jamás será vendida, compartida o utilizada con fines comerciales ajenos a la emisión de tu boleto. Toda la consulta de inventario por Inteligencia Artificial se realiza mediante tokens cifrados anónimos.</p>
+        </div>
+
+        <div class="policy-section">
+          <h4><i class="fa-solid fa-credit-card"></i> 3. Seguridad en Pagos Exclusivos</h4>
+          <p>La liquidación de tu tarifa de oportunidad privada se procesa bajo certificación de cumplimiento PCI-DSS Nivel 1. Los datos financieros sensibles nunca se guardan en nuestros servidores locales y cuentan con protección total contra contratiempos.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closePrivacyModal()">Aceptar y Cerrar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts JavaScript -->
   <script src="app.js"></script>

@@ -1494,3 +1494,234 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2;
 }
 
+/* ==========================================================================
+   FLOATING PRIVACY BADGE & MODAL STYLES (FINTECH STYLE)
+   ========================================================================== */
+.floating-privacy-badge {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(11, 25, 44, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 30px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 32px rgba(11, 25, 44, 0.25);
+  cursor: pointer;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.floating-privacy-badge:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
+  background: rgba(11, 25, 44, 0.95);
+}
+
+.floating-privacy-badge i {
+  color: var(--accent);
+  font-size: 14px;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(11, 25, 44, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding: 16px;
+}
+
+.modal-backdrop.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Modal Card */
+.modal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  box-shadow: 0 24px 64px rgba(11, 25, 44, 0.18);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.modal-backdrop.active .modal-card {
+  transform: scale(1);
+}
+
+/* Modal Header */
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1.5px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-light);
+}
+
+.modal-header h3 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.modal-close {
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--text-dark);
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-dark);
+}
+
+.intro-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+.policy-section {
+  margin-bottom: 20px;
+}
+
+.policy-section h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.policy-section h4 i {
+  color: var(--accent);
+}
+
+.policy-section p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1.5px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  background-color: var(--bg-light);
+}
+
+.modal-footer button {
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Styles for stripe elements checkout inputs and boxes */
+#stripe-payment-form input {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  color: #32325d !important;
+}
+
+#stripe-payment-form input::placeholder {
+  color: #aab7c4;
+}
+
+#stripe-payment-form input:focus {
+  border-color: #6772e5 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 0 0 rgba(110, 120, 240, 0.07) !important;
+}
+
+.booking-flight-summary, .stripe-billing-summary {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+}
+
+.success-icon i {
+  animation: scaleUpCheck 0.4s ease-out 0.4s both;
+  opacity: 0;
+}
+
+@keyframes scaleUpCheck {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+

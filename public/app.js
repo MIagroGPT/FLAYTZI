@@ -386,7 +386,7 @@ function renderFlightCards(flights) {
         
         <div>
           <button class="btn btn-primary btn-book" onclick="triggerWhatsAppBooking('${flight.flightId}')">
-            Reservar Tarifa Privada <i class="fab fa-whatsapp"></i>
+            Confirma tu reserva
           </button>
         </div>
       </div>
@@ -475,61 +475,259 @@ function toggleBaggage(checkbox, flightId, type) {
   }
 }
 
-// 7. FLUJO DE CONVERSIÓN: DISPARADOR WHATSAPP BUSINESS CTA
+// 7. FLUJO DE CONVERSIÓN: REGISTRO DE PASAJEROS & PASARELA STRIPE SIMULADA
 function triggerWhatsAppBooking(flightId) {
   const flight = searchState.flights.find(f => f.flightId === flightId);
   if (!flight) return;
 
-  const passengers = flight.passengers;
-  const cabin = flight.cabinClass;
+  // Registrar el vuelo activo
+  searchState.activeBookingFlight = flight;
 
-  // Calcular precios base agregando equipaje
+  // Calcular precios totales con equipaje incluido
   let extraOfficial = 0;
   let extraFlytzi = 0;
   let baggageList = [];
-
   const baggage = selectedBaggage[flightId] || { carryOn: false, checked: false };
 
   if (baggage.carryOn) {
     extraOfficial += flight.pricing.carryOnPriceOfficial;
     extraFlytzi += flight.pricing.carryOnPriceFlytzi;
-    baggageList.push("👜 Equipaje de Mano (Carry-on)");
+    baggageList.push("👜 Equipaje de Mano");
   }
   if (baggage.checked) {
     extraOfficial += flight.pricing.checkedPriceOfficial;
     extraFlytzi += flight.pricing.checkedPriceFlytzi;
-    baggageList.push("🧳 Equipaje Documentado (Checked Bag)");
+    baggageList.push("🧳 Equipaje Documentado");
   }
 
   const finalOfficial = flight.pricing.officialPrice + extraOfficial;
   const finalFlytzi = flight.pricing.flytziPrice + extraFlytzi;
   const finalSaving = finalOfficial - finalFlytzi;
-  const discount = flight.pricing.discountPercent;
 
-  // Construir mensaje estructurado premium para WhatsApp
-  let message = `¡Hola Flytzi! Me interesa reservar la Tarifa Privada optimizada en dólares para el siguiente vuelo:\n\n`;
-  message += `✈️ RUTA: ${flight.originCity} (${flight.origin}) hacia ${flight.destinationCity} (${flight.destination})\n`;
-  message += `📅 FECHA SALIDA: ${flight.depDate} (Vuelo ${flight.flightNumber})\n`;
+  // Guardar totales calculados de la reserva activa
+  searchState.activeBookingTotals = {
+    finalOfficial,
+    finalFlytzi,
+    finalSaving,
+    baggageList
+  };
+
+  // Llenar el resumen del vuelo en el paso 1
+  const summaryDiv = document.getElementById('booking-flight-summary');
+  if (summaryDiv) {
+    summaryDiv.innerHTML = `
+      <div style="font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary); font-size: 14px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+        <span>✈️ ${flight.originCity} (${flight.origin}) ➔ ${flight.destinationCity} (${flight.destination})</span>
+        <span style="color: var(--accent);">${formatCurrency(finalFlytzi)} USD</span>
+      </div>
+      <div style="font-size: 12px; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 8px;">
+        <span><strong>Vuelo:</strong> ${flight.flightNumber}</span>
+        <span>•</span>
+        <span><strong>Clase:</strong> ${flight.cabinClass}</span>
+        <span>•</span>
+        <span><strong>Pasajeros:</strong> ${flight.passengers}</span>
+        ${baggageList.length > 0 ? `<span>•</span><span><strong>Equipaje:</strong> ${baggageList.join(', ')}</span>` : ''}
+      </div>
+    `;
+  }
+
+  // Resetear el formulario de pasajeros y el checkbox
+  document.getElementById('passenger-data-form').reset();
+  document.getElementById('accept-data-policy').checked = false;
+
+  // Mostrar el modal en el paso 1
+  goToStep('form');
+  openBookingModal();
+}
+
+function openBookingModal() {
+  const modal = document.getElementById('booking-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.offsetHeight; // Reflow
+    modal.classList.add('active');
+  }
+}
+
+function closeBookingModal() {
+  const modal = document.getElementById('booking-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 300);
+  }
+}
+
+function goToStep(step) {
+  const steps = ['form', 'payment', 'success'];
+  steps.forEach(s => {
+    const el = document.getElementById(`booking-step-${s}`);
+    if (el) {
+      el.style.display = s === step ? 'block' : 'none';
+    }
+  });
+}
+
+function goToPaymentStep(event) {
+  event.preventDefault();
+
+  // Validar aceptación de políticas de datos
+  const acceptCheck = document.getElementById('accept-data-policy');
+  if (!acceptCheck || !acceptCheck.checked) {
+    alert("Debes leer y aceptar las políticas de confidencialidad y protección de datos para continuar.");
+    return;
+  }
+
+  // Capturar los datos del formulario de pasajeros
+  searchState.passengerDetails = {
+    name: document.getElementById('pass-name').value.trim(),
+    passport: document.getElementById('pass-passport').value.trim(),
+    expiry: document.getElementById('pass-expiry').value,
+    country: document.getElementById('pass-country').value.trim(),
+    email: document.getElementById('pass-email').value.trim(),
+    phone: document.getElementById('pass-phone').value.trim(),
+    altPhone: document.getElementById('pass-alt-phone').value.trim()
+  };
+
+  const flight = searchState.activeBookingFlight;
+  const totals = searchState.activeBookingTotals;
+
+  // Llenar el resumen de Stripe
+  const stripeSummary = document.getElementById('stripe-billing-summary');
+  if (stripeSummary) {
+    stripeSummary.innerHTML = `
+      <div style="font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary); font-size: 14px; margin-bottom: 8px; border-bottom: 1.5px dashed var(--border-color); padding-bottom: 6px;">
+        RESUMEN DE FACTURACIÓN (STRIPE SECURE)
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+        <span style="color: var(--text-muted);">Itinerario (${flight.origin} - ${flight.destination}):</span>
+        <span style="font-weight: 600; color: var(--text-dark);">${formatCurrency(flight.pricing.flytziPrice)} USD</span>
+      </div>
+      ${totals.baggageList.length > 0 ? `
+      <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+        <span style="color: var(--text-muted);">Cargos de Equipaje Adicional:</span>
+        <span style="font-weight: 600; color: var(--text-dark);">${formatCurrency(totals.finalFlytzi - flight.pricing.flytziPrice)} USD</span>
+      </div>
+      ` : ''}
+      <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 6px; border-top: 1px solid var(--border-color); padding-top: 6px; font-weight: 700;">
+        <span style="color: var(--primary);">Total a Pagar con Stripe:</span>
+        <span style="color: var(--accent); font-size: 15px;">${formatCurrency(totals.finalFlytzi)} USD</span>
+      </div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; text-decoration: line-through;">
+        Tarifa de mercado regular: ${formatCurrency(totals.finalOfficial)} USD (Ahorro total: ${formatCurrency(totals.finalSaving)} USD)
+      </div>
+    `;
+  }
+
+  // Pre-llenar el titular de tarjeta en el formulario de Stripe
+  document.getElementById('stripe-card-holder').value = searchState.passengerDetails.name;
+  
+  // Limpiar campos de tarjeta
+  document.getElementById('stripe-card-number').value = '';
+  document.getElementById('stripe-card-expiry').value = '';
+  document.getElementById('stripe-card-cvc').value = '';
+
+  // Moverse al paso de pago Stripe
+  goToStep('payment');
+}
+
+function processStripePayment(event) {
+  event.preventDefault();
+
+  const cardNum = document.getElementById('stripe-card-number').value.replace(/\s/g, '');
+  const cardExpiry = document.getElementById('stripe-card-expiry').value;
+  const cardCvc = document.getElementById('stripe-card-cvc').value;
+  const cardHolder = document.getElementById('stripe-card-holder').value.trim();
+
+  // Validaciones simuladas básicas de Stripe
+  if (cardNum.length < 15) {
+    alert("Por favor ingresa un número de tarjeta válido de 15 o 16 dígitos.");
+    return;
+  }
+  if (!cardExpiry.includes('/')) {
+    alert("Por favor ingresa la fecha de vencimiento en formato MM/AA.");
+    return;
+  }
+  if (cardCvc.length < 3) {
+    alert("Por favor ingresa un código de seguridad (CVC) válido.");
+    return;
+  }
+
+  // Bloquear botón de envío y simular procesamiento Stripe
+  const submitBtn = document.getElementById('stripe-submit-btn');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Procesando con Stripe...`;
+
+  setTimeout(() => {
+    // Generar IDs aleatorios realistas de Stripe y GDS
+    const stripeChargeId = `ch_${Math.random().toString(36).substring(2, 10).toUpperCase()}_STRIPE_${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const locatorCode = `AS-${searchState.passengerDetails.passport.substring(0, 3).toUpperCase()}-${searchState.activeBookingFlight.flightNumber}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+    // Registrar en el estado global
+    searchState.activeBookingReceipt = {
+      stripeChargeId,
+      locatorCode
+    };
+
+    // Actualizar recibo visual en el Paso 3
+    const flight = searchState.activeBookingFlight;
+    const totals = searchState.activeBookingTotals;
+    const pass = searchState.passengerDetails;
+
+    document.getElementById('rec-pass-name').textContent = pass.name;
+    document.getElementById('rec-pass-passport').textContent = pass.passport;
+    document.getElementById('rec-pass-email').textContent = pass.email;
+    document.getElementById('rec-pass-phone').textContent = pass.phone;
+    document.getElementById('rec-flight-route').textContent = `${flight.originCity} (${flight.origin}) hacia ${flight.destinationCity} (${flight.destination})`;
+    document.getElementById('rec-flight-code').textContent = `${flight.flightNumber} (${flight.cabinClass})`;
+    document.getElementById('rec-flight-baggage').textContent = totals.baggageList.length > 0 ? totals.baggageList.join(' + ') : 'Ninguno (Solo artículo personal)';
+    document.getElementById('rec-flight-total').textContent = `${formatCurrency(totals.finalFlytzi)} USD`;
+    document.getElementById('rec-flight-locator').textContent = locatorCode;
+    document.getElementById('rec-stripe-id').textContent = stripeChargeId;
+
+    // Restaurar botón
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = `<span>Pagar con Stripe</span> <i class="fab fa-stripe-s"></i>`;
+
+    // Moverse al paso de éxito
+    goToStep('success');
+  }, 2500); // 2.5s para simular procesamiento analítico de alta seguridad
+}
+
+function sendReceiptToWhatsApp() {
+  const flight = searchState.activeBookingFlight;
+  const totals = searchState.activeBookingTotals;
+  const pass = searchState.passengerDetails;
+  const receipt = searchState.activeBookingReceipt;
+
+  if (!flight || !pass || !receipt) return;
+
+  // Construir mensaje estructurado premium de reserva y pago para WhatsApp
+  let message = `¡Hola Flytzi! He completado mi reserva y procesado el pago seguro en Stripe exitosamente. A continuación los detalles oficiales:\n\n`;
+  message += `🔑 CÓDIGO LOCALIZADOR: [${receipt.locatorCode}]\n`;
+  message += `💳 STRIPE CHARGE ID: [${receipt.stripeChargeId}]\n\n`;
+  
+  message += `👤 DATOS DEL PASAJERO:\n`;
+  message += `   - Nombre: ${pass.name}\n`;
+  message += `   - Pasaporte: ${pass.passport} (Emisión: ${pass.country} | Vence: ${pass.expiry})\n`;
+  message += `   - Email: ${pass.email}\n`;
+  message += `   - Teléfono: ${pass.phone} (Alt: ${pass.altPhone || 'Ninguno'})\n\n`;
+  
+  message += `✈️ ITINERARIO DE VUELO:\n`;
+  message += `   - Ruta: ${flight.originCity} (${flight.origin}) a ${flight.destinationCity} (${flight.destination})\n`;
+  message += `   - Vuelo Ida: ${flight.flightNumber} (${flight.cabinClass}) el ${flight.depDate}\n`;
   
   if (flight.returnFlight) {
-    message += `📅 FECHA REGRESO: ${flight.returnFlight.depDate} (Vuelo ${flight.returnFlight.flightNumber})\n`;
+    message += `   - Vuelo Regreso: ${flight.returnFlight.flightNumber} el ${flight.returnFlight.depDate}\n`;
   }
   
-  message += `👥 PASAJEROS: ${passengers} (${cabin})\n`;
-  
-  if (baggageList.length > 0) {
-    message += `📦 EQUIPAJE INCLUIDO:\n`;
-    baggageList.forEach(item => {
-      message += `   - ${item}\n`;
-    });
-  } else {
-    message += `📦 EQUIPAJE INCLUIDO: Ninguno seleccionado (Solo artículo personal)\n`;
-  }
+  message += `   - Pasajeros: ${flight.passengers}\n`;
+  message += `   - Equipaje: ${totals.baggageList.length > 0 ? totals.baggageList.join(' + ') : 'Solo artículo personal'}\n\n`;
 
-  message += `💳 TARIFA PRIVADA TOTAL: ${formatCurrency(finalFlytzi)} USD\n`;
-  message += `🎉 DESCUENTO APLICADO: ${discount}% (Ahorro total de ${formatCurrency(finalSaving)} USD)\n\n`;
-  message += `🔑 CÓDIGO DE RUTA OPTIMIZADO: [${flight.flightId}]\n\n`;
-  message += `Por favor confirmen la disponibilidad del inventario privado para proceder con la emisión del boleto oficial. ¡Gracias!`;
+  message += `💰 MONTO TOTAL LIQUIDADO: ${formatCurrency(totals.finalFlytzi)} USD\n`;
+  message += `🎉 AHORRO TOTAL DIRECTO: ${formatCurrency(totals.finalSaving)} USD (Ahorraste ${flight.pricing.discountPercent}%)\n\n`;
+  message += `Por favor procedan con la validación final del itinerario en su sistema interno y envíenme mi Pase de Abordar oficial. ¡Excelente servicio!`;
 
   // WhatsApp Business de Flytzi (Prueba)
   const phoneNumber = "523314790654"; 
@@ -585,3 +783,69 @@ function goToSlide(index) {
   updateCarousel();
   startAutoSlide(); // Volver a iniciar el ciclo
 }
+
+// 9. LÓGICA DE CONTROL DEL MODAL DE CONFIDENCIALIDAD DE DATOS
+function openPrivacyModal() {
+  const modal = document.getElementById('privacy-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    // Forzar reflow para animación
+    modal.offsetHeight; 
+    modal.classList.add('active');
+  }
+}
+
+function closePrivacyModal() {
+  const modal = document.getElementById('privacy-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    // Esperar a que la animación termine antes de ocultar
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 300);
+  }
+}
+
+// Cerrar al hacer clic fuera del modal card
+window.addEventListener('click', (event) => {
+  const modal = document.getElementById('privacy-modal');
+  if (event.target === modal) {
+    closePrivacyModal();
+  }
+  
+  const bookingModal = document.getElementById('booking-modal');
+  if (event.target === bookingModal) {
+    closeBookingModal();
+  }
+});
+
+// FORMATEADORES DINÁMICOS DE ENTRADA STRIPE
+document.addEventListener('DOMContentLoaded', () => {
+  const cardInput = document.getElementById('stripe-card-number');
+  const expiryInput = document.getElementById('stripe-card-expiry');
+
+  if (cardInput) {
+    cardInput.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      let formatted = '';
+      for (let i = 0; i < value.length; i++) {
+        if (i > 0 && i % 4 === 0) {
+          formatted += ' ';
+        }
+        formatted += value[i];
+      }
+      e.target.value = formatted;
+    });
+  }
+
+  if (expiryInput) {
+    expiryInput.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 2) {
+        e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      } else {
+        e.target.value = value;
+      }
+    });
+  }
+});
