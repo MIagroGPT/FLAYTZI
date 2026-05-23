@@ -396,6 +396,9 @@ app.get('/api/flights', async (req, res) => {
       let basePriceUSD = fTemplate.basePriceUSD;
       let airlineName = alaskaTemplates.airline;
 
+      const isDomesticMexico = 
+        (originAirport.country === 'México' && destAirport.country === 'México');
+
       const isIntercontinental = 
         (originAirport.region === 'LATAM' && destAirport.region === 'EU') ||
         (originAirport.region === 'EU' && destAirport.region === 'LATAM') ||
@@ -405,7 +408,13 @@ app.get('/api/flights', async (req, res) => {
       const isMexicoRoute = 
         (originAirport.country === 'México' || destAirport.country === 'México');
 
-      if (isIntercontinental) {
+      if (isDomesticMexico) {
+        // Vuelos internos dentro de México (ej. MEX a GDL, MEX a MTY)
+        stops = index % 2 === 0 ? 0 : 1;
+        stopDetails = stops === 0 ? 'Directo' : '1 escala en Monterrey, México (MTY)';
+        duration = stops === 0 ? '1h 10m' : '3h 30m';
+        basePriceUSD = 90 + (index * 20); // Tarifas más económicas realistas para vuelos internos cortos
+      } else if (isIntercontinental) {
         airlineName = "Alaska Airlines";
         const partners = ["Iberia", "British Airways", "Finnair"];
         const partner = partners[index % partners.length];
