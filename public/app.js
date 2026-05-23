@@ -221,8 +221,9 @@ function handleSearch(event) {
   // Desplazamiento suave hacia la sección de resultados
   resultsSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+  const flexDates = document.getElementById('flex-dates-check').checked;
   // Construir consulta url
-  let url = `/api/flights?origin=${origin}&destination=${destination}&departureDate=${departureDate}&passengers=${passengers}&cabinClass=${cabinClass}`;
+  let url = `/api/flights?origin=${origin}&destination=${destination}&departureDate=${departureDate}&passengers=${passengers}&cabinClass=${cabinClass}&flexDates=${flexDates}`;
   if (searchState.tripType === 'roundtrip' && returnDate) {
     url += `&returnDate=${returnDate}`;
   }
@@ -351,10 +352,12 @@ function renderFlightCards(flights) {
       
       <!-- LÓGICA DEL CALCULADOR Y CTA -->
       <div class="flight-price-actions">
-        <div class="flight-badge-row">
+        <div class="flight-badge-row" style="gap: 8px 12px; margin-bottom: 12px;">
+          ${flight.isFlexibleDate ? `<span class="flight-badge-pill" style="background: #FFFBEB; color: #D97706; font-weight: 700; border: 1px solid #FCD34D; font-size: 11px;"><i class="fa-solid fa-calendar-days"></i> Fecha Flexible (${flight.flexibleDateDiff})</span>` : ''}
           <span class="flight-badge-pill badge-cabin"><i class="fa-solid fa-crown"></i> Clase ${flight.cabinClass}</span>
           <span class="flight-badge-pill badge-passengers"><i class="fa-solid fa-user"></i> ${flight.passengers} Pasajero(s)</span>
           <span class="flight-badge-pill badge-saving-tag"><i class="fa-solid fa-tags"></i> Ahorro Neto: ${savingFormatted}</span>
+          <span class="flight-badge-pill" style="background: rgba(110, 120, 240, 0.1); color: #6772e5; font-weight: 700; border: 1px solid rgba(110, 120, 240, 0.2); font-size: 11px;"><i class="fa-solid fa-gem"></i> Inventario de Millas Elegible</span>
         </div>
 
         <!-- AGREGAR EQUIPAJE DINÁMICO CON TARIFAS CORPORATIVAS OPTIMIZADAS -->
