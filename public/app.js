@@ -532,7 +532,7 @@ function triggerWhatsAppBooking(flightId) {
   message += `Por favor confirmen la disponibilidad del inventario privado para proceder con la emisión del boleto oficial. ¡Gracias!`;
 
   // WhatsApp Business de Flytzi (Prueba)
-  const phoneNumber = "583314790654"; 
+  const phoneNumber = "523314790654"; 
   const waUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
 
   // Abrir ventana en pestaña nueva
