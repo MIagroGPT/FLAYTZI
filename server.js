@@ -71,10 +71,10 @@ function getAirportCity(code) {
   return airport ? airport.city : code;
 }
 
-// Helper para encontrar el nombre de un aeropuerto por IATA
-function getAirportName(code) {
+// Helper para encontrar el país de un aeropuerto por IATA
+function getAirportCountry(code) {
   const airport = airports.find(a => a.code === code.toUpperCase());
-  return airport ? airport.name : `${code} International Airport`;
+  return airport ? airport.country : '';
 }
 
 // 2. Parser para las respuestas crudas de FlightAPI.io
@@ -153,7 +153,26 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
     if (stops > 0) {
       const scaleAirports = outSegmentIds.slice(0, -1).map(segId => {
         const seg = segmentsMap[segId];
-        return seg ? seg.destination_place_id || seg.arrival_airport : '';
+        if (!seg) return '';
+        const code = seg.destination_place_id || seg.arrival_airport || '';
+        if (!code) return '';
+        
+        const city = getAirportCity(String(code));
+        const country = getAirportCountry(String(code));
+        
+        // Determinar si hay codeshare
+        const segmentCarrierId = seg.carrier_id || seg.marketing_carrier_id || '';
+        const segmentCarrierObj = carriersMap[segmentCarrierId] || {};
+        const segmentCarrierName = segmentCarrierObj.name || '';
+        const segmentCarrierCode = segmentCarrierObj.code || segmentCarrierId;
+        
+        let codeshareStr = '';
+        if (segmentCarrierCode && segmentCarrierCode.toUpperCase() !== 'AS') {
+          const cleanName = segmentCarrierName.replace(/\s*Airlines\s*/i, '').replace(/\s*Airways\s*/i, '');
+          codeshareStr = ` (Codeshare ${cleanName})`;
+        }
+        
+        return `${city}, ${country} (${String(code).toUpperCase()})${codeshareStr}`;
       }).filter(Boolean);
       stopDetails = `${stops} escala${stops > 1 ? 's' : ''} en ${scaleAirports.join(', ')}`;
     }
@@ -255,7 +274,26 @@ function parseFlightApiResponse(apiData, cabinClass, passengerCount, isRoundtrip
             if (inStops > 0) {
               const inScaleAirports = inSegmentIds.slice(0, -1).map(segId => {
                 const seg = segmentsMap[segId];
-                return seg ? seg.destination_place_id || seg.arrival_airport : '';
+                if (!seg) return '';
+                const code = seg.destination_place_id || seg.arrival_airport || '';
+                if (!code) return '';
+                
+                const city = getAirportCity(String(code));
+                const country = getAirportCountry(String(code));
+                
+                // Determinar si hay codeshare
+                const segmentCarrierId = seg.carrier_id || seg.marketing_carrier_id || '';
+                const segmentCarrierObj = carriersMap[segmentCarrierId] || {};
+                const segmentCarrierName = segmentCarrierObj.name || '';
+                const segmentCarrierCode = segmentCarrierObj.code || segmentCarrierId;
+                
+                let codeshareStr = '';
+                if (segmentCarrierCode && segmentCarrierCode.toUpperCase() !== 'AS') {
+                  const cleanName = segmentCarrierName.replace(/\s*Airlines\s*/i, '').replace(/\s*Airways\s*/i, '');
+                  codeshareStr = ` (Codeshare ${cleanName})`;
+                }
+                
+                return `${city}, ${country} (${String(code).toUpperCase()})${codeshareStr}`;
               }).filter(Boolean);
               inStopDetails = `${inStops} escala${inStops > 1 ? 's' : ''} en ${inScaleAirports.join(', ')}`;
             }
@@ -373,21 +411,23 @@ app.get('/api/flights', async (req, res) => {
         const partner = partners[index % partners.length];
         stops = 1;
         if (destAirport.region === 'EU') {
-          const hub = partner === 'Iberia' ? 'MAD' : (partner === 'British Airways' ? 'LHR' : 'HEL');
-          stopDetails = `1 escala en ${hub} (Codeshare ${partner})`;
+          const hubCode = partner === 'Iberia' ? 'MAD' : (partner === 'British Airways' ? 'LHR' : 'HEL');
+          const hubCity = getAirportCity(hubCode);
+          const hubCountry = getAirportCountry(hubCode);
+          stopDetails = `1 escala en ${hubCity}, ${hubCountry} (${hubCode}) (Codeshare ${partner})`;
         } else {
-          stopDetails = `1 escala en SEA (Codeshare ${partner})`;
+          stopDetails = `1 escala en Seattle, Estados Unidos (SEA) (Codeshare ${partner})`;
         }
         duration = `${10 + (index * 2)}h ${15 + (index * 10)}m`;
         basePriceUSD = 950 + (index * 150);
       } else if (isMexicoRoute) {
         stops = index % 2 === 0 ? 0 : 1;
-        stopDetails = stops === 0 ? 'Directo' : '1 escala en LAX';
+        stopDetails = stops === 0 ? 'Directo' : '1 escala en Los Ángeles, Estados Unidos (LAX)';
         duration = stops === 0 ? '4h 50m' : '7h 15m';
         basePriceUSD = 320 + (index * 45);
       } else {
         stops = index === 2 ? 1 : 0;
-        stopDetails = stops === 0 ? 'Directo' : '1 escala en SFO';
+        stopDetails = stops === 0 ? 'Directo' : '1 escala en San Francisco, Estados Unidos (SFO)';
         duration = stops === 0 ? '2h 45m' : '5h 10m';
         basePriceUSD = 180 + (index * 60);
       }

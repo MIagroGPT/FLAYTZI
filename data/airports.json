@@ -25,5 +25,7 @@
   { "code": "EZE", "name": "Aeropuerto Internacional Ministro Pistarini", "city": "Buenos Aires", "country": "Argentina", "region": "LATAM" },
   { "code": "GRU", "name": "Aeroporto Internacional de Guarulhos", "city": "São Paulo", "country": "Brasil", "region": "LATAM" },
   { "code": "LIM", "name": "Aeropuerto Internacional Jorge Chávez", "city": "Lima", "country": "Perú", "region": "LATAM" },
-  { "code": "SCL", "name": "Aeropuerto Internacional Arturo Merino Benítez", "city": "Santiago", "country": "Chile", "region": "LATAM" }
+  { "code": "SCL", "name": "Aeropuerto Internacional Arturo Merino Benítez", "city": "Santiago", "country": "Chile", "region": "LATAM" },
+  { "code": "HEL", "name": "Helsinki Airport", "city": "Helsinki", "country": "Finlandia", "region": "EU" }
 ]
+
