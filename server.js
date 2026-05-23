@@ -405,8 +405,19 @@ app.get('/api/flights', async (req, res) => {
     return res.status(400).json({ error: 'Origen o destino no válidos en nuestro sistema' });
   }
 
-  // Determinar lógica de descuento según el destino
+  // Verificar si la ruta está dentro de la cobertura válida:
+  // Hacia Estados Unidos, dentro de Estados Unidos, hacia Europa, dentro de Europa, o entre Europa y Estados Unidos.
+  // Esto significa que al menos uno de los dos aeropuertos debe pertenecer a la región 'US' o 'EU'.
+  const originRegion = originAirport.region;
   const destRegion = destAirport.region;
+  const isValidRoute = (originRegion === 'US' || originRegion === 'EU' || destRegion === 'US' || destRegion === 'EU');
+
+  if (!isValidRoute) {
+    console.warn(`[Flytzi Backend] Ruta no permitida/soportada: ${origin.toUpperCase()} -> ${destination.toUpperCase()}. Retornando 0 vuelos.`);
+    return res.json([]);
+  }
+
+  // Determinar lógica de descuento según el destino
   let discountRate = 0.35; // Descuento por defecto
   if (destRegion === 'EU') {
     discountRate = 0.40; // 40% para Europa
@@ -457,9 +468,6 @@ app.get('/api/flights', async (req, res) => {
       let opAirline = "Alaska Airlines";
       let opLogo = "AS";
 
-      const isDomesticMexico = 
-        (originAirport.country === 'México' && destAirport.country === 'México');
-
       const isIntercontinental = 
         (originAirport.region === 'LATAM' && destAirport.region === 'EU') ||
         (originAirport.region === 'EU' && destAirport.region === 'LATAM') ||
@@ -469,13 +477,7 @@ app.get('/api/flights', async (req, res) => {
       const isMexicoRoute = 
         (originAirport.country === 'México' || destAirport.country === 'México');
 
-      if (isDomesticMexico) {
-        // Vuelos internos dentro de México (ej. MEX a GDL, MEX a MTY)
-        stops = index % 2 === 0 ? 0 : 1;
-        stopDetails = stops === 0 ? 'Directo' : '1 escala en Monterrey, México (MTY)';
-        duration = stops === 0 ? '1h 10m' : '3h 30m';
-        basePriceUSD = 90 + (index * 20); // Tarifas más económicas realistas para vuelos internos cortos
-      } else if (isIntercontinental) {
+      if (isIntercontinental) {
         airlineName = "Alaska Airlines";
         const partners = ["Iberia", "British Airways", "Finnair"];
         const partner = partners[index % partners.length];
