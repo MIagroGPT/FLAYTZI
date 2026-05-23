@@ -584,6 +584,7 @@ function goToPaymentStep(event) {
     name: document.getElementById('pass-name').value.trim(),
     passport: document.getElementById('pass-passport').value.trim(),
     expiry: document.getElementById('pass-expiry').value,
+    dob: document.getElementById('pass-dob').value,
     country: document.getElementById('pass-country').value.trim(),
     email: document.getElementById('pass-email').value.trim(),
     phone: document.getElementById('pass-phone').value.trim(),
@@ -677,6 +678,7 @@ function processStripePayment(event) {
 
     document.getElementById('rec-pass-name').textContent = pass.name;
     document.getElementById('rec-pass-passport').textContent = pass.passport;
+    document.getElementById('rec-pass-dob').textContent = pass.dob;
     document.getElementById('rec-pass-email').textContent = pass.email;
     document.getElementById('rec-pass-phone').textContent = pass.phone;
     document.getElementById('rec-flight-route').textContent = `${flight.originCity} (${flight.origin}) hacia ${flight.destinationCity} (${flight.destination})`;
@@ -710,7 +712,7 @@ function sendReceiptToWhatsApp() {
   
   message += `👤 DATOS DEL PASAJERO:\n`;
   message += `   - Nombre: ${pass.name}\n`;
-  message += `   - Pasaporte: ${pass.passport} (Emisión: ${pass.country} | Vence: ${pass.expiry})\n`;
+  message += `   - Pasaporte: ${pass.passport} (Emisión: ${pass.country} | Vence: ${pass.expiry} | F. Nacimiento: ${pass.dob})\n`;
   message += `   - Email: ${pass.email}\n`;
   message += `   - Teléfono: ${pass.phone} (Alt: ${pass.altPhone || 'Ninguno'})\n\n`;
   
