@@ -668,15 +668,17 @@
             </div>
           </div>
 
-          <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1.5px solid rgba(16, 185, 129, 0.15); border-radius: var(--border-radius); font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 24px;">
+          <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1.5px solid rgba(16, 185, 129, 0.15); border-radius: var(--border-radius); font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 20px;">
             🔒 <strong>Paso Final Operativo:</strong> Tu reserva ya está emitida en el sistema GDS global, en pocos minutos te llegará a tu correo tu código de reserva. Para mayor comodidad, haz clic en el botón de abajo para enviar tu comprobante, recibir tu CODIGO DE RESERVA emitido por la aerolínea de forma directa en tu WhatsApp y activar tu Web Check-in.
           </div>
 
-        </div>
-        <div class="modal-footer" style="justify-content: center; background-color: rgba(16, 185, 129, 0.05); border-top-color: rgba(16, 185, 129, 0.15);">
-          <button class="btn btn-primary" onclick="sendReceiptToWhatsApp()" style="background-color: var(--accent); border-color: var(--accent); font-size: 15px; padding: 12px 30px; border-radius: 30px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); font-weight: 700;">
-            ENVIAR RESERVA VIA WHATSAPP <i class="fab fa-whatsapp"></i>
-          </button>
+          <!-- BOTÓN DE CONFIRMACIÓN UBICADO DIRECTAMENTE EN EL FLUJO DE LECTURA SCROLLABLE -->
+          <div style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 10px;">
+            <button class="btn btn-primary" onclick="sendReceiptToWhatsApp()" style="background-color: var(--accent); border-color: var(--accent); font-size: 15px; padding: 14px 40px; border-radius: 30px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); font-weight: 700; width: 100%; max-width: 400px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+              ENVIAR RESERVA VIA WHATSAPP <i class="fab fa-whatsapp" style="font-size: 18px;"></i>
+            </button>
+          </div>
+
         </div>
       </div>
 
