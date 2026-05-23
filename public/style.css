@@ -1440,3 +1440,56 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: 1.2fr 0.8fr;
   }
 }
+
+/* ==========================================================================
+   ADICIONES: ICONOS DE ORIGEN Y DESTINO (INPUTS Y TICKETS)
+   ========================================================================== */
+
+/* Posicionamiento de los iconos de avión dentro de los inputs */
+.input-inner-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--text-muted);
+  font-size: 16px;
+  pointer-events: none;
+  transition: var(--transition);
+  z-index: 2;
+}
+
+.form-group input.with-icon {
+  padding-left: 44px !important;
+}
+
+.form-group input.with-icon:focus ~ .input-inner-icon,
+.input-wrapper:focus-within .input-inner-icon {
+  color: var(--accent) !important;
+}
+
+/* Puntos de origen (círculo verde) y destino (anillo con borde) en el ticket */
+.timeline-line-visual::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--accent); /* Punto Origen Verde Esmeralda */
+  z-index: 2;
+}
+
+.timeline-line-visual::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--primary); /* Anillo Destino Navy */
+  border: 2px solid var(--border-color);
+  z-index: 2;
+}
+
