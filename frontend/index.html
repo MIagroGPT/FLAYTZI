@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flytzi — Buscador Inteligente de Vuelos con Millas</title>
+  <meta name="description" content="Flytzi busca y optimiza tarifas de vuelos internacionales basándose en inventario de millas validado en tiempo real. Obtén hasta un 40% de descuento.">
+  
+  <!-- Tipografías Premium -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome para Iconos Elegantes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="style.css?v=2.0">
+</head>
+<body>
+
+  <!-- HEADER / NAVEGACIÓN -->
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="/">
+          <span class="logo-text">FL<span class="logo-accent">Y</span>TZI</span>
+          <span class="logo-tag">PUNTOS & MILLAS</span>
+        </a>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="#garantias" class="nav-link">Garantías</a></li>
+          <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
+          <li><a href="#nosotros" class="nav-link">Metodología</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="https://wa.me/523314790654" target="_blank" class="btn btn-outline">
+          <i class="fab fa-whatsapp"></i> Soporte Concierge
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECCIÓN HERO + BUSCADOR HÍBRIDO -->
+  <section class="hero-section">
+    <div class="hero-bg-overlay">
+      <svg class="flight-routes-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100,300 Q300,100 500,250 T900,100" fill="none" stroke="rgba(16, 185, 129, 0.22)" stroke-width="2" stroke-dasharray="8,4" />
+        <path d="M50,150 Q250,50 450,200 T850,150" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+        <circle cx="500" cy="250" r="5" fill="#10b981" />
+        <circle cx="900" cy="100" r="4" fill="#10b981" opacity="0.8" />
+        <g class="animated-plane">
+          <path d="M-6,0 L6,-3 L3,-12 L5,-13 L10,-5 L18,-7 L20,-5 L12,-2 L14,5 L11,6 L9,0 L3,1 Z" fill="#10b981" transform="scale(1.2)" />
+        </g>
+      </svg>
+    </div>
+    <div class="container hero-container">
+      <div class="hero-content">
+        <div class="badge-premium">
+          <i class="fa-solid fa-shield-halved"></i> 100% Inventario Real Validado
+        </div>
+        <h1 class="hero-title">
+          Vuela en Business con Millas con hasta un <span class="text-highlight">40% de descuento</span>
+        </h1>
+        <p class="hero-subtitle">
+          Buscamos disponibilidad real de Award Travel en tiempo real en múltiples aerolíneas asociadas. Asegura tu cupo antes de pagar de forma 100% garantizada.
+        </p>
+      </div>
+
+      <!-- BUSCADOR STYLE SKYSCANNER -->
+      <div class="search-panel-wrapper">
+        <div class="search-panel">
+          <!-- Tipo de Viaje Pestañas -->
+          <div class="trip-type-tabs">
+            <button class="tab-btn active" id="tab-roundtrip" onclick="setTripType('roundtrip')">
+              <i class="fa-solid fa-repeat"></i> Ida y Vuelta
+            </button>
+            <button class="tab-btn" id="tab-oneway" onclick="setTripType('oneway')">
+              <i class="fa-solid fa-arrow-right"></i> Solo Ida
+            </button>
+          </div>
+
+          <!-- Formulario de Búsqueda -->
+          <form id="search-form" onsubmit="handleSearch(event)" autocomplete="off">
+            <div class="form-row inputs-grid">
+              
+              <!-- ORIGEN -->
+              <div class="form-group autocomplete-group" id="origin-group">
+                <label for="origin-input"><i class="fa-solid fa-location-arrow"></i> Origen</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-plane-departure input-inner-icon"></i>
+                  <input class="with-icon" type="text" id="origin-input" placeholder="Ciudad o Aeropuerto" required>
+                  <input type="hidden" id="origin-code">
+                  <span class="clear-btn" id="clear-origin"><i class="fa-solid fa-xmark"></i></span>
+                </div>
+                <div class="autocomplete-dropdown" id="origin-dropdown"></div>
+              </div>
+
+              <!-- BOTÓN INTERCAMBIO -->
+              <div class="swap-button-container">
+                <button type="button" class="btn-swap" onclick="swapLocations()" title="Intercambiar Origen y Destino">
+                  <i class="fa-solid fa-right-left"></i>
+                </button>
+              </div>
+
+              <!-- DESTINO -->
+              <div class="form-group autocomplete-group" id="dest-group">
+                <label for="dest-input"><i class="fa-solid fa-location-dot"></i> Destino</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-plane-arrival input-inner-icon"></i>
+                  <input class="with-icon" type="text" id="dest-input" placeholder="Ciudad o Aeropuerto" required>
+                  <input type="hidden" id="dest-code">
+                  <span class="clear-btn" id="clear-dest"><i class="fa-solid fa-xmark"></i></span>
+                </div>
+                <div class="autocomplete-dropdown" id="dest-dropdown"></div>
+              </div>
+
+              <!-- FECHA SALIDA -->
+              <div class="form-group">
+                <label for="departure-date"><i class="fa-regular fa-calendar-check"></i> Salida</label>
+                <input type="date" id="departure-date" required>
+              </div>
+
+              <!-- FECHA REGRESO -->
+              <div class="form-group" id="return-date-group">
+                <label for="return-date"><i class="fa-regular fa-calendar-check"></i> Regreso</label>
+                <input type="date" id="return-date" required>
+              </div>
+
+            </div>
+
+            <div class="form-row selectors-grid">
+              <!-- PASAJEROS -->
+              <div class="form-group compact-group">
+                <label for="passengers-select"><i class="fa-solid fa-users"></i> Pasajeros</label>
+                <select id="passengers-select">
+                  <option value="1">1 Pasajero</option>
+                  <option value="2">2 Pasajeros</option>
+                  <option value="3">3 Pasajeros</option>
+                  <option value="4">4 Pasajeros</option>
+                  <option value="5">5+ Pasajeros</option>
+                </select>
+              </div>
+
+              <!-- CLASE -->
+              <div class="form-group compact-group">
+                <label for="class-select"><i class="fa-solid fa-crown"></i> Clase</label>
+                <select id="class-select">
+                  <option value="economy">Económica</option>
+                  <option value="business">Business / Primera</option>
+                </select>
+              </div>
+
+              <!-- BOTÓN BUSCAR -->
+              <div class="search-btn-container">
+                <button type="submit" class="btn btn-primary btn-search" id="btn-submit-search">
+                  <span>Buscar en Inventario</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </div>
+            </div>
+            <div style="display: flex; gap: 24px; margin-top: 15px; padding: 0 4px; flex-wrap: wrap;">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-dark); font-size: 13px; font-weight: 600; user-select: none;">
+                <input type="checkbox" id="flex-dates-check" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                <span>📅 Fechas Flexibles (+/- 3 días)</span>
+              </label>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENEDOR DE RESULTADOS DE BÚSQUEDA -->
+  <section class="results-section" id="results-section" style="display: none;">
+    <div class="container">
+      <div class="results-header">
+        <h2 class="section-title-small" id="results-title">Vuelos Disponibles en Inventario</h2>
+        <div class="results-meta">
+          <span id="results-count">0 vuelos disponibles</span>
+          <span class="divider">|</span>
+          <span class="badge-discount-info"><i class="fa-solid fa-shield-check"></i> Tarifas basadas en millas reales pre-verificadas</span>
+        </div>
+      </div>
+
+      <!-- Filtros de Resultados -->
+      <div class="results-filters">
+        <span class="filter-label"><i class="fa-solid fa-sliders"></i> Filtrar por:</span>
+        <button class="filter-btn active" onclick="filterResults('all')">Todos</button>
+        <button class="filter-btn" onclick="filterResults('direct')">Vuelos Directos</button>
+        <button class="filter-btn" onclick="filterResults('cheapest')">Mejor Precio</button>
+      </div>
+
+      <!-- Loader -->
+      <div class="results-loader" id="results-loader" style="display: none;">
+        <div class="spinner"></div>
+        <p>Buscando disponibilidad e inventario de millas privadas en tiempo real...</p>
+        <span class="loader-sub">Verificando bases de datos de Award Travel autorizadas...</span>
+      </div>
+
+      <!-- Error o sin resultados con formulario de solicitud personalizado -->
+      <div class="results-empty" id="results-empty" style="display: none;">
+        <div class="empty-card" style="max-width: 600px; margin: 0 auto; padding: 30px; background: #fff; border-radius: 12px; border: 1.5px solid var(--border-color); text-align: center;">
+          <i class="fa-solid fa-plane-slash" style="font-size: 48px; color: var(--text-muted); margin-bottom: 15px;"></i>
+          <h3 style="font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 8px;">No hay inventario inmediato validado</h3>
+          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5;">
+            No encontramos disponibilidad validada automática para esta ruta en las fechas indicadas. 
+            <strong>¡No te preocupes!</strong> Nuestro equipo de conserjería puede buscar y validar disponibilidad manualmente en menos de 2 horas. Déjanos tu solicitud:
+          </p>
+          <button class="btn btn-primary" onclick="openManualRequestModal()" style="padding: 12px 24px; font-size: 14px; font-weight: 700;">
+            <i class="fa-solid fa-paper-plane"></i> Solicitar Búsqueda Manual Gratuita
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de Tarjetas de Vuelo -->
+      <div class="flights-list" id="flights-list">
+        <!-- Generado dinámicamente desde JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN DE CONFIANZA: LAS 3 GARANTÍAS FLYTZI -->
+  <section class="guarantees-section" id="garantias">
+    <div class="container">
+      <div class="section-intro">
+        <span class="section-badge">Alta Seguridad Financiera</span>
+        <h2 class="section-title">El Estándar de Confianza Flytzi</h2>
+        <p class="section-subtitle">Operamos bajo una metodología de optimización inteligente con protecciones contractuales completas para tu tranquilidad.</p>
+      </div>
+
+      <div class="guarantees-grid">
+        <div class="guarantee-card">
+          <div class="guarantee-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3 class="guarantee-title">Embarque Protegido</h3>
+          <p class="guarantee-desc">
+            Ante cualquier eventualidad con la aerolínea (cancelaciones o retrasos), gestionamos tu reubicación inmediata en vuelos comerciales o la reemisión del pase de abordar sin costo extra.
+          </p>
+        </div>
+
+        <div class="guarantee-card">
+          <div class="guarantee-icon">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+          </div>
+          <h3 class="guarantee-title">Tarifa Transparente</h3>
+          <p class="guarantee-desc">
+            Los precios cotizados son finales. Incluyen todas las tasas de aeropuerto, impuestos gubernamentales y cargos operativos. Olvídate de sorpresas desagradables al reservar.
+          </p>
+        </div>
+
+        <div class="guarantee-card">
+          <div class="guarantee-icon">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h3 class="guarantee-title">Web Check-in Siempre Garantizado</h3>
+          <p class="guarantee-desc">
+            Tienes la seguridad absoluta de que siempre podrás realizar el Web Check-in de tu vuelo sin contratiempos directamente en la plataforma oficial de la aerolínea utilizando tu código de reserva.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN DE TESTIMONIOS -->
+  <section class="testimonials-section" id="testimonios">
+    <div class="container">
+      <div class="section-intro">
+        <span class="section-badge">Clientes Satisfechos</span>
+        <h2 class="section-title">Experiencias de Viajeros Exclusivos</h2>
+        <p class="section-subtitle">Historias de clientes corporativos y viajeros frecuentes que han optimizado su presupuesto con nuestras tarifas privadas.</p>
+      </div>
+
+      <div class="carousel-container">
+        <div class="carousel-track-wrapper">
+          <div class="carousel-track" id="carousel-track">
+            
+            <div class="testimonial-slide">
+              <div class="testimonial-card">
+                <div class="user-info">
+                  <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+                  <div>
+                    <h4 class="user-name">Rodrigo Espinosa</h4>
+                    <span class="user-role">Viajero Frecuente / Consultor Financiero</span>
+                  </div>
+                </div>
+                <div class="boarding-pass-preview">
+                  <div class="pass-header">
+                    <span>BOARDING PASS</span>
+                    <span class="pass-logo">FLYTZI</span>
+                  </div>
+                  <div class="pass-body">
+                    <div class="pass-airport">
+                      <span class="pass-code">MEX</span>
+                      <span class="pass-city">CDMX</span>
+                    </div>
+                    <div class="pass-plane"><i class="fa-solid fa-plane"></i></div>
+                    <div class="pass-airport text-right">
+                      <span class="pass-code">MAD</span>
+                      <span class="pass-city">Madrid</span>
+                    </div>
+                  </div>
+                  <div class="pass-footer">
+                    <span>CLASE: BUSINESS</span>
+                    <span>AHORRO: 40%</span>
+                  </div>
+                </div>
+                <p class="testimonial-text">
+                  "Increíble servicio. Reservé un vuelo en clase Business a Madrid a mitad del precio regular de mercado. El concierge me asistió en el Check-in y todo el vuelo estuvo perfecto. Altamente recomendado para empresas."
+                </p>
+              </div>
+            </div>
+
+            <div class="testimonial-slide">
+              <div class="testimonial-card">
+                <div class="user-info">
+                  <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                  <div>
+                    <h4 class="user-name">Sofía Martell</h4>
+                    <span class="user-role">Diseñadora UX / Viajes Digitales</span>
+                  </div>
+                </div>
+                <div class="boarding-pass-preview secondary-pass">
+                  <div class="pass-header">
+                    <span>BOARDING PASS</span>
+                    <span class="pass-logo">FLYTZI</span>
+                  </div>
+                  <div class="pass-body">
+                    <div class="pass-airport">
+                      <span class="pass-code">MEX</span>
+                      <span class="pass-city">CDMX</span>
+                    </div>
+                    <div class="pass-plane"><i class="fa-solid fa-plane"></i></div>
+                    <div class="pass-airport text-right">
+                      <span class="pass-code">JFK</span>
+                      <span class="pass-city">Nueva York</span>
+                    </div>
+                  </div>
+                  <div class="pass-footer">
+                    <span>CLASE: ECONÓMICA</span>
+                    <span>AHORRO: 30%</span>
+                  </div>
+                </div>
+                <p class="testimonial-text">
+                  "Siempre usaba buscadores tradicionales pensando que daban el mejor precio. Con Flytzi ahorré 30% en mi boleto de CDMX a Nueva York. Dejé mis datos y en menos de 2 horas me mandaron mi link de pago de Stripe."
+                </p>
+              </div>
+            </div>
+
+            <div class="testimonial-slide">
+              <div class="testimonial-card">
+                <div class="user-info">
+                  <div class="avatar"><i class="fa-solid fa-user-shield"></i></div>
+                  <div>
+                    <h4 class="user-name">Carlos Mendoza</h4>
+                    <span class="user-role">Director de Logística</span>
+                  </div>
+                </div>
+                <div class="boarding-pass-preview tertiary-pass">
+                  <div class="pass-header">
+                    <span>BOARDING PASS</span>
+                    <span class="pass-logo">FLYTZI</span>
+                  </div>
+                  <div class="pass-body">
+                    <div class="pass-airport">
+                      <span class="pass-code">BOG</span>
+                      <span class="pass-city">Bogotá</span>
+                    </div>
+                    <div class="pass-plane"><i class="fa-solid fa-plane"></i></div>
+                    <div class="pass-airport text-right">
+                      <span class="pass-code">CDG</span>
+                      <span class="pass-city">París</span>
+                    </div>
+                  </div>
+                  <div class="pass-footer">
+                    <span>CLASE: BUSINESS</span>
+                    <span>AHORRO: 40%</span>
+                  </div>
+                </div>
+                <p class="testimonial-text">
+                  "Teníamos dudas por la metodología de optimización, pero la garantía de Embarque Protegido nos dio la confianza. El soporte 24/7 nos resolvió un cambio de itinerario de Lufthansa inmediatamente. Servicio de 5 estrellas."
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <button class="carousel-btn prev-btn" id="prev-btn" onclick="slidePrev()"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="carousel-btn next-btn" id="next-btn" onclick="slideNext()"><i class="fa-solid fa-chevron-right"></i></button>
+
+        <div class="carousel-dots" id="carousel-dots">
+          <span class="dot active" onclick="goToSlide(0)"></span>
+          <span class="dot" onclick="goToSlide(1)"></span>
+          <span class="dot" onclick="goToSlide(2)"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN METODOLOGÍA -->
+  <section class="methodology-section" id="nosotros">
+    <div class="container">
+      <div class="methodology-grid">
+        <div class="methodology-content">
+          <span class="section-badge">¿Cómo lo hacemos?</span>
+          <h2 class="section-title">El Motor de Optimización Flytzi</h2>
+          <p class="methodology-intro">
+            A diferencia de las agencias de viajes tradicionales que solo revenden tarifas comerciales con un margen de ganancia, Flytzi opera a un nivel más profundo.
+          </p>
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-num">01</div>
+              <div class="step-text">
+                <h4>Validación de Millas en Tiempo Real</h4>
+                <p>Nuestro programador y bots de Playwright escanean las aerolíneas aliadas para consolidar un inventario real y confirmado de disponibilidad de asientos de millas (Award Travel).</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">02</div>
+              <div class="step-text">
+                <h4>Solicitud y Doble Validación de Seguridad</h4>
+                <p>Cuando solicitas una reserva de inventario, nuestro equipo de conserjería bloquea inmediatamente los cupos con las aerolíneas para garantizar que tu tarifa no varíe.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">03</div>
+              <div class="step-text">
+                <h4>Pago Seguro con Stripe y Emisión</h4>
+                <p>Una vez confirmada la reserva en firme por el conserje, recibes un enlace oficial y seguro de Stripe. Pagas, se emiten los boletos con millas, y recibes tu código PNR oficial en minutos.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="methodology-visual">
+          <div class="trust-badge-large">
+            <div class="badge-icon"><i class="fa-solid fa-award"></i></div>
+            <h3>99.8%</h3>
+            <p>Tasa de Embarques Exitosos</p>
+            <span class="badge-sub">Más de 14,000 vuelos protegidos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <div class="container footer-container">
+      <div class="footer-info">
+        <span class="footer-logo">FLYTZI</span>
+        <p class="footer-tagline">Optimización inteligente y segura de tarifas internacionales privadas en dólares americanos.</p>
+        <p class="footer-copy">&copy; 2026 Flytzi Aero Privado. Todos los derechos reservados.</p>
+      </div>
+      <div class="footer-links-group">
+        <h4>Enlaces Útiles</h4>
+        <ul>
+          <li><a href="#garantias">Nuestras Garantías</a></li>
+          <li><a href="#testimonios">Testimonios de Clientes</a></li>
+          <li><a href="#nosotros">Nuestra Metodología</a></li>
+        </ul>
+      </div>
+      <div class="footer-certifications">
+        <h4>Socios de Confianza y Canales</h4>
+        <div class="cert-logos">
+          <span><i class="fa-solid fa-plane"></i> IATA Partner</span>
+          <span><i class="fa-solid fa-shield"></i> SSL Secured</span>
+          <span><i class="fa-solid fa-circle-check"></i> Verified</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL DE RESERVAS FLYTZI 2.0 -->
+  <div id="booking-modal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 650px; max-height: 90vh; overflow-y: auto !important;">
+      
+      <!-- Paso 1: Formulario de Datos del Pasajero -->
+      <div id="booking-step-form" class="booking-step">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-plane-departure text-highlight"></i> Datos de Pasajeros y Reserva</h3>
+          <span class="modal-close" onclick="closeBookingModal()">&times;</span>
+        </div>
+        <form id="passenger-data-form" onsubmit="submitBookingRequest(event)">
+          <div class="modal-body">
+            
+            <!-- Resumen Rápido del Vuelo -->
+            <div class="booking-flight-summary" id="booking-flight-summary" style="margin-bottom: 20px; padding: 12px; background: var(--bg-light); border-radius: var(--border-radius); border: 1.5px solid var(--border-color);">
+              <!-- Llenado dinámicamente con JS -->
+            </div>
+
+            <!-- Grid de Formulario de Pasajero -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group" style="grid-column: span 2;">
+                <label for="pass-name"><i class="fa-solid fa-user"></i> Nombre y Apellidos Completos (Como en Pasaporte)</label>
+                <input type="text" id="pass-name" placeholder="Ej: Rodrigo Espinosa Mendoza" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-passport"><i class="fa-solid fa-passport"></i> Número de Pasaporte</label>
+                <input type="text" id="pass-passport" placeholder="Ej: P98210432" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-expiry"><i class="fa-regular fa-calendar-times"></i> Fecha de Vencimiento Pasaporte</label>
+                <input type="date" id="pass-expiry" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-country"><i class="fa-solid fa-globe"></i> País de Emisión del Pasaporte</label>
+                <input type="text" id="pass-country" placeholder="Ej: México" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-dob"><i class="fa-solid fa-cake-candles"></i> Fecha de Nacimiento</label>
+                <input type="date" id="pass-dob" required>
+              </div>
+              <div class="form-group" style="grid-column: span 2;">
+                <label for="pass-email"><i class="fa-solid fa-envelope"></i> Correo Electrónico</label>
+                <input type="email" id="pass-email" placeholder="Ej: rodrigo@empresa.com" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-phone"><i class="fa-solid fa-phone"></i> Teléfono Principal (Móvil)</label>
+                <input type="tel" id="pass-phone" placeholder="Ej: +52 55 4321 0987" required>
+              </div>
+              <div class="form-group">
+                <label for="pass-alt-phone"><i class="fa-solid fa-square-phone"></i> Número Alternativo de Contacto</label>
+                <input type="tel" id="pass-alt-phone" placeholder="Ej: +52 55 9876 5432" required>
+              </div>
+            </div>
+
+            <!-- Checkbox de Políticas de Datos -->
+            <div style="margin-top: 20px; padding: 12px; background: rgba(16, 185, 129, 0.05); border-radius: var(--border-radius); border: 1.5px solid rgba(16, 185, 129, 0.15);">
+              <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-dark); font-weight: 500;">
+                <input type="checkbox" id="accept-data-policy" required style="width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px;">
+                <span>He leído y acepto expresamente la <a href="javascript:openPrivacyModal()" style="color: var(--accent); font-weight: 700; text-decoration: underline;">Política de Confidencialidad y Protección de Datos</a> de Flytzi Aero Privado. Acepto que mis datos se usarán estrictamente para verificar y emitir la reserva oficial.</span>
+              </label>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeBookingModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-booking">Confirmar Solicitud de Reserva <i class="fa-solid fa-plane-circle-check"></i></button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Paso 2: Confirmación de Solicitud de Reserva Exitosa -->
+      <div id="booking-step-success" class="booking-step" style="display: none; text-align: center;">
+        <div class="modal-header" style="background-color: rgba(16, 185, 129, 0.05); border-bottom-color: rgba(16, 185, 129, 0.15);">
+          <h3 style="color: #0f9d58;"><i class="fa-solid fa-circle-check"></i> Solicitud Registrada Correctamente</h3>
+          <span class="modal-close" onclick="closeBookingModal()">&times;</span>
+        </div>
+        <div class="modal-body" style="padding: 30px;">
+          
+          <div class="success-checkmark-wrapper" style="margin-bottom: 20px;">
+            <div class="success-icon" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 2.5px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto; color: var(--accent); font-size: 40px;">
+              <i class="fa-solid fa-check"></i>
+            </div>
+          </div>
+
+          <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; color: var(--primary); margin-bottom: 8px;">¡Solicitud de Reserva Registrada!</h2>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Hemos bloqueado preliminarmente tus cupos. Un conserje verificará tu disponibilidad de millas en menos de 2 horas.</p>
+
+          <!-- Detalles del Ticket Generado -->
+          <div class="receipt-box" style="text-align: left; padding: 20px; border-radius: var(--border-radius); background: var(--bg-light); border: 1.5px solid var(--border-color); font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.6; margin-bottom: 24px;">
+            <div style="border-bottom: 1.5px dashed var(--border-color); padding-bottom: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary);">RESUMEN DE SOLICITUD</span>
+              <span class="badge-saving-tag" style="background: rgba(217, 119, 6, 0.1); color: #d97706; padding: 2px 8px; border-radius: 4px; font-weight: 700;">PENDIENTE DE PAGO</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;">
+              <div><strong>Pasajero Titular:</strong> <span id="rec-pass-name">-</span></div>
+              <div><strong>Pasaporte:</strong> <span id="rec-pass-passport">-</span></div>
+              <div><strong>Email:</strong> <span id="rec-pass-email">-</span></div>
+              <div><strong>Contacto:</strong> <span id="rec-pass-phone">-</span></div>
+              <div style="grid-column: span 2; margin-top: 4px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                <strong>Ruta Solicitada:</strong> <span id="rec-flight-route">-</span>
+              </div>
+              <div style="grid-column: span 2;">
+                <strong>Código de Vuelo:</strong> <span id="rec-flight-code">-</span>
+              </div>
+              <div style="grid-column: span 2;">
+                <strong>Equipaje Seleccionado:</strong> <span id="rec-flight-baggage">-</span>
+              </div>
+              <div style="grid-column: span 2; margin-top: 4px; border-top: 1px solid var(--border-color); padding-top: 8px; font-size: 14px;">
+                <strong style="color: var(--primary);">Precio Tarifa Privada:</strong> <strong id="rec-flight-total" style="color: var(--accent); font-size: 16px;">-</strong>
+              </div>
+              <div style="grid-column: span 2; font-size: 11px; color: var(--text-muted); margin-top: 8px; display: flex; flex-direction: column; gap: 2px;">
+                <div>🆔 ID DE SOLICITUD: <strong id="rec-booking-id" style="color: var(--primary); font-family: monospace;">-</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1.5px solid rgba(16, 185, 129, 0.15); border-radius: var(--border-radius); font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 20px;">
+            💼 <strong>¿Qué sigue ahora?</strong> Nuestro equipo de conserjes recibirá tu solicitud. Tras la validación, recibirás por WhatsApp y correo tu enlace oficial de **Stripe** para concretar el pago y emitir de forma inmediata tu pase de abordar y código localizador PNR.
+          </div>
+
+          <!-- BOTÓN DE ENVIAR WHATSAPP -->
+          <div style="display: flex; justify-content: center; margin-top: 15px; margin-bottom: 15px;">
+            <button class="btn btn-primary" onclick="sendRequestToWhatsApp()" style="background-color: var(--accent); border-color: var(--accent); font-size: 15px; padding: 14px 40px; border-radius: 30px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); font-weight: 700; width: 100%; max-width: 400px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 25px;">
+              ACELERAR REVISIÓN VÍA WHATSAPP <i class="fab fa-whatsapp" style="font-size: 18px;"></i>
+            </button>
+          </div>
+          <div style="height: 35px; width: 100%;"></div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="floating-privacy-badge" onclick="openPrivacyModal()">
+    <i class="fa-solid fa-shield-halved"></i> <span>Privacidad de Datos</span>
+  </div>
+
+  <!-- Modal de Confidencialidad -->
+  <div id="privacy-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-lock text-highlight"></i> Directiva de Confidencialidad & Protección de Datos</h3>
+        <span class="modal-close" onclick="closePrivacyModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p class="intro-text">En <strong>Flytzi Aero Privado</strong>, la seguridad y el anonimato de tu información son pilares institucionales. Procesamos tus datos bajo el estándar internacional de cifrado bancario militar.</p>
+        
+        <div class="policy-section">
+          <h4><i class="fa-solid fa-user-shield"></i> 1. Blindaje de Información de Pasajeros</h4>
+          <p>Toda la información personal, números de pasaporte y detalles de contacto proporcionados para la emisión de boletos se encriptan bajo protocolos AES-256 en bases de datos desconectadas de internet público. Solo se asocian temporalmente al itinerario para la validación oficial en el NDC de Alaska Airlines.</p>
+        </div>
+
+        <div class="policy-section">
+          <h4><i class="fa-solid fa-circle-check"></i> 2. Cero Fugas y Uso Exclusivo</h4>
+          <p>Tus datos son procesados bajo políticas estrictas de no-divulgación (NDA). Flytzi garantiza que tu información jamás será vendida, compartida o utilizada con fines comerciales ajenos a la emisión de tu boleto. Toda la consulta de inventario por Inteligencia Artificial se realiza mediante tokens cifrados anónimos.</p>
+        </div>
+
+        <div class="policy-section">
+          <h4><i class="fa-solid fa-credit-card"></i> 3. Seguridad en Pagos Exclusivos</h4>
+          <p>La liquidación de tu tarifa de oportunidad privada se procesa bajo certificación de cumplimiento PCI-DSS Nivel 1. Los datos financieros sensibles nunca se guardan en nuestros servidores locales y cuentan con protección total contra contratiempos.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closePrivacyModal()">Aceptar y Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts JavaScript -->
+  <script src="app.js?v=2.0"></script>
+</body>
+</html>
