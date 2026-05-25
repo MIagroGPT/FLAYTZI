@@ -1,0 +1,299 @@
+{
+  "name": "Flytzi Award Inventory Scanner",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 */6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "c62fbdfb-c01d-407f-be9d-4767428ea950",
+      "name": "Cron Trigger (Cada 6 horas)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        380,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, origin, destination, priority FROM routes WHERE active = true ORDER BY priority ASC;"
+      },
+      "id": "e2ba3472-88ee-449b-98cf-b0d00f681a95",
+      "name": "Obtener Rutas Activas",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        580,
+        240
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "flytzi_postgres_cred"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const datesToScan = [15, 30, 45, 60]; // Días desde hoy\nconst cabins = ['economy', 'business'];\nconst output = [];\n\nfor (const item of items) {\n  const route = item.json;\n  \n  datesToScan.forEach(days => {\n    const targetDate = new Date();\n    targetDate.setDate(targetDate.getDate() + days);\n    const dateStr = targetDate.toISOString().split('T')[0];\n    \n    cabins.forEach(cabin => {\n      output.push({\n        json: {\n          route_id: route.id,\n          origin: route.origin,\n          destination: route.destination,\n          date: dateStr,\n          cabin: cabin\n        }\n      });\n    });\n  });\n}\n\nreturn output;"
+      },
+      "id": "ab708f31-872f-410a-8bf8-2a819b16acb8",
+      "name": "Generar Fechas y Cabinas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "bc8c7d42-ef06-4447-b7cd-a7894a821e25",
+      "name": "Split in Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        980,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://playwright:3001/scan",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"origin\": \"{{ $json.origin }}\",\n  \"destination\": \"{{ $json.destination }}\",\n  \"departure_date\": \"{{ $json.date }}\",\n  \"cabin\": \"{{ $json.cabin }}\"\n}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "e93297a7-198e-4a61-8b01-8319ad02be71",
+      "name": "Consultar Playwright Worker",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1200,
+        210
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = $input.first().json.results || [];\nreturn results.map(f => ({\n  json: {\n    origin: f.origin,\n    destination: f.destination,\n    departure_date: f.departure_date,\n    cabin: f.cabin,\n    airline: f.airline,\n    airline_code: f.airline_code,\n    flight_number: f.flight_number,\n    stops: f.stops,\n    duration_minutes: f.duration_minutes,\n    miles_required: f.miles_required,\n    taxes_usd: f.taxes_usd,\n    price_to_customer: f.price_to_customer,\n    price_market: f.price_market,\n    seats_available: f.seats_available,\n    source_url: f.source_url\n  }\n}));"
+      },
+      "id": "cf6beee2-db51-404c-ae12-d8c728340d85",
+      "name": "Preparar Vuelos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        210
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO award_inventory (\n  origin, destination, departure_date, cabin, airline, airline_code,\n  flight_number, stops, duration_minutes, miles_required, taxes_usd,\n  price_to_customer, price_market, seats_available, source_url, status, last_checked\n) VALUES (\n  '{{ $json.origin }}', '{{ $json.destination }}', '{{ $json.departure_date }}', '{{ $json.cabin }}',\n  '{{ $json.airline }}', '{{ $json.airline_code }}', '{{ $json.flight_number }}', {{ $json.stops }},\n  {{ $json.duration_minutes }}, {{ $json.miles_required }}, {{ $json.taxes_usd }},\n  {{ $json.price_to_customer }}, {{ $json.price_market }}, {{ $json.seats_available }},\n  '{{ $json.source_url }}', 'available', NOW()\n)\nON CONFLICT (origin, destination, departure_date, cabin, flight_number)\nDO UPDATE SET\n  miles_required = EXCLUDED.miles_required,\n  taxes_usd = EXCLUDED.taxes_usd,\n  price_to_customer = EXCLUDED.price_to_customer,\n  price_market = EXCLUDED.price_market,\n  seats_available = EXCLUDED.seats_available,\n  status = 'available',\n  last_checked = NOW();"
+      },
+      "id": "e2ba3472-88ee-449b-98cf-b0d00f681a96",
+      "name": "Guardar Inventario",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1640,
+        210
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "flytzi_postgres_cred"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status\n) VALUES (\n  '{{ $('Split in Batches').item.json.route_id }}',\n  '{{ $('Split in Batches').item.json.origin }}',\n  '{{ $('Split in Batches').item.json.destination }}',\n  '{{ $('Split in Batches').item.json.date }}',\n  NOW() - INTERVAL '1 minute',\n  NOW(),\n  {{ $input.first().json.results_count || 0 }},\n  'success'\n);"
+      },
+      "id": "e2ba3472-88ee-449b-98cf-b0d00f681a97",
+      "name": "Registrar Log Éxito",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        140
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "flytzi_postgres_cred"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status, error_message\n) VALUES (\n  '{{ $('Split in Batches').item.json.route_id }}',\n  '{{ $('Split in Batches').item.json.origin }}',\n  '{{ $('Split in Batches').item.json.destination }}',\n  '{{ $('Split in Batches').item.json.date }}',\n  NOW(),\n  NOW(),\n  0,\n  'failed',\n  'Error en el HTTP Request o tiempo de respuesta excedido.'\n);"
+      },
+      "id": "e2ba3472-88ee-449b-98cf-b0d00f681a98",
+      "name": "Registrar Log Fallo",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        380
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "flytzi_postgres_cred"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE award_inventory \nSET status = 'expired' \nWHERE expires_at < NOW() \n  AND status = 'available';"
+      },
+      "id": "e2ba3472-88ee-449b-98cf-b0d00f681a99",
+      "name": "Expirar Inventario Viejo",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        560
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "flytzi_postgres_cred"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Cron Trigger (Cada 6 horas)": {
+      "main": [
+        [
+          {
+            "node": "Obtener Rutas Activas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Rutas Activas": {
+      "main": [
+        [
+          {
+            "node": "Generar Fechas y Cabinas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Fechas y Cabinas": {
+      "main": [
+        [
+          {
+            "node": "Split in Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split in Batches": {
+      "main": [
+        [
+          {
+            "node": "Consultar Playwright Worker",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Expirar Inventario Viejo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Playwright Worker": {
+      "main": [
+        [
+          {
+            "node": "Preparar Vuelos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar Log Fallo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Vuelos": {
+      "main": [
+        [
+          {
+            "node": "Guardar Inventario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Inventario": {
+      "main": [
+        [
+          {
+            "node": "Registrar Log Éxito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Log Éxito": {
+      "main": [
+        [
+          {
+            "node": "Split in Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Log Fallo": {
+      "main": [
+        [
+          {
+            "node": "Split in Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "f90ea262-b7e1-455b-b9d0-1c0f64858b9f",
+  "id": "flytzi_scanner_workflow"
+}

@@ -43,7 +43,8 @@ CREATE TABLE award_inventory (
   last_checked      TIMESTAMPTZ DEFAULT NOW(),
   expires_at        TIMESTAMPTZ,                     -- Cambiado a columna normal para evitar error de inmutabilidad
   created_at        TIMESTAMPTZ DEFAULT NOW(),
-  updated_at        TIMESTAMPTZ DEFAULT NOW()
+  updated_at        TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(origin, destination, departure_date, cabin, flight_number)
 );
 
 -- 4. TABLA: reservations (Solicitudes de reserva)
