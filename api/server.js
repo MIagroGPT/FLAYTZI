@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -8,6 +9,12 @@ const PORT = process.env.PORT || 4000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// En desarrollo, servir estáticos del frontend para facilitar pruebas locales E2E
+if (process.env.NODE_ENV !== 'production') {
+  app.use(express.static(path.join(__dirname, '..', 'frontend')));
+  console.log('[Dev Server] Sirviendo archivos estáticos del frontend en http://localhost:4000');
+}
 
 // Importar rutas de la API
 const airportsRoute = require('./routes/airports');
