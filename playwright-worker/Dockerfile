@@ -6,8 +6,9 @@ WORKDIR /app
 # Copiar archivos de dependencias
 COPY package*.json ./
 
-# Instalar dependencias del proyecto (incluye playwright en la versión correspondiente)
-RUN npm ci --only=production
+# Instalar dependencias del proyecto
+RUN npm install --omit=dev
+
 
 # Copiar todo el código del scraper
 COPY . .
