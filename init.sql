@@ -55,7 +55,8 @@ CREATE TABLE reservations (
   passenger_email     VARCHAR(200) NOT NULL,
   passenger_phone     VARCHAR(50),
   passport_number     VARCHAR(50),
-  passport_country    VARCHAR(5),
+  passport_country    VARCHAR(100),
+
   passport_expiry     DATE,
   date_of_birth       DATE,
   origin              VARCHAR(3) NOT NULL,
