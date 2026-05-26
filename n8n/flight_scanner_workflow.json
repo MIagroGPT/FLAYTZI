@@ -162,7 +162,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE award_inventory \nSET status = 'expired' \nWHERE expires_at < NOW() \n  AND status = 'available';"
+        "query": "DELETE FROM award_inventory \nWHERE last_checked < NOW() - INTERVAL '2 hours';"
       },
       "id": "e2ba3472-88ee-449b-98cf-b0d00f681a99",
       "name": "Expirar Inventario Viejo",
