@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flytzi — Optimización Inteligente de Tarifas Aéreas Privadas</title>
-  <meta name="description" content="Flytzi optimiza tarifas de vuelos internacionales hacia Europa y EE. UU. obteniendo hasta un 40% de descuento. Garantía de embarque y monitoreo 24/7.">
+  <title>Flytzi — Buscador Inteligente de Vuelos con Millas</title>
+  <meta name="description" content="Flytzi busca y optimiza tarifas de vuelos internacionales basándose en inventario de millas validado en tiempo real. Obtén hasta un 40% de descuento.">
   
   <!-- Tipografías Premium -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Estilos CSS -->
-  <link rel="stylesheet" href="style.css?v=1.7">
+  <link rel="stylesheet" href="style.css?v=2.0">
 </head>
 <body>
 
@@ -25,11 +25,12 @@
       <div class="logo">
         <a href="/">
           <span class="logo-text">FL<span class="logo-accent">Y</span>TZI</span>
-          <span class="logo-tag">AERO PRIVADO</span>
+          <span class="logo-tag">PUNTOS & MILLAS</span>
         </a>
       </div>
       <nav class="main-nav">
         <ul>
+          <li><a href="#rutas-activas" class="nav-link">Rutas Disponibles</a></li>
           <li><a href="#garantias" class="nav-link">Garantías</a></li>
           <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
           <li><a href="#nosotros" class="nav-link">Metodología</a></li>
@@ -47,43 +48,25 @@
   <section class="hero-section">
     <div class="hero-bg-overlay">
       <svg class="flight-routes-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Rutas aéreas curvas -->
         <path d="M100,300 Q300,100 500,250 T900,100" fill="none" stroke="rgba(16, 185, 129, 0.22)" stroke-width="2" stroke-dasharray="8,4" />
         <path d="M50,150 Q250,50 450,200 T850,150" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
-        <path d="M200,350 Q500,150 800,280" fill="none" stroke="rgba(16, 185, 129, 0.12)" stroke-width="1" />
-        
-        <!-- Nodos de ciudades -->
-        <circle cx="100" cy="300" r="4" fill="#10b981" opacity="0.6" />
         <circle cx="500" cy="250" r="5" fill="#10b981" />
         <circle cx="900" cy="100" r="4" fill="#10b981" opacity="0.8" />
-        <circle cx="200" cy="350" r="3" fill="#ffffff" opacity="0.4" />
-        <circle cx="800" cy="280" r="4" fill="#ffffff" opacity="0.5" />
-        
-        <!-- Avión animado a lo largo del trayecto -->
         <g class="animated-plane">
-          <!-- Dibujo de un Jet en SVG -->
           <path d="M-6,0 L6,-3 L3,-12 L5,-13 L10,-5 L18,-7 L20,-5 L12,-2 L14,5 L11,6 L9,0 L3,1 Z" fill="#10b981" transform="scale(1.2)" />
         </g>
       </svg>
-      <!-- Silueta de Jet Privado Premium en flotación -->
-      <div class="hero-jet-silhouette">
-        <svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10,30 C35,27 65,25 100,30 C108,31 115,33 117,30 C117,27 108,23 88,21 C70,20 52,19 28,24 C16,26 5,28 2,29 C0,30 2,31 10,30 Z" fill="rgba(255,255,255,0.065)" />
-          <path d="M50,22 L72,6 L76,6 L62,22 Z" fill="rgba(255,255,255,0.04)" />
-          <path d="M54,26 L62,44 L66,44 L59,26 Z" fill="rgba(255,255,255,0.04)" />
-        </svg>
-      </div>
     </div>
     <div class="container hero-container">
       <div class="hero-content">
         <div class="badge-premium">
-          <i class="fa-solid fa-plane-departure"></i> Acceso Exclusivo a Tarifas Privadas
+          <i class="fa-solid fa-shield-halved"></i> 100% Inventario Real Validado
         </div>
         <h1 class="hero-title">
-          Optimizamos tus vuelos internacionales con hasta un <span class="text-highlight">40% de descuento</span>
+          Vuela en Business con Millas con hasta un <span class="text-highlight">40% de descuento</span>
         </h1>
         <p class="hero-subtitle">
-          Metabuscador inteligente y motor de optimización que valida inventarios privados en tiempo real para ofrecerte la tarifa más competitiva del mercado.
+          Buscamos disponibilidad real de Award Travel en tiempo real en múltiples aerolíneas asociadas. Asegura tu cupo antes de pagar de forma 100% garantizada.
         </p>
       </div>
 
@@ -174,7 +157,7 @@
               <!-- BOTÓN BUSCAR -->
               <div class="search-btn-container">
                 <button type="submit" class="btn btn-primary btn-search" id="btn-submit-search">
-                  <span>Buscar Tarifas Privadas</span> <i class="fa-solid fa-magnifying-glass"></i>
+                  <span>Buscar en Inventario</span> <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
               </div>
             </div>
@@ -195,11 +178,11 @@
   <section class="results-section" id="results-section" style="display: none;">
     <div class="container">
       <div class="results-header">
-        <h2 class="section-title-small" id="results-title">Vuelos encontrados</h2>
+        <h2 class="section-title-small" id="results-title">Vuelos Disponibles en Inventario</h2>
         <div class="results-meta">
           <span id="results-count">0 vuelos disponibles</span>
           <span class="divider">|</span>
-          <span class="badge-discount-info"><i class="fa-solid fa-calculator"></i> Descuento dinámico aplicado por destino</span>
+          <span class="badge-discount-info"><i class="fa-solid fa-shield-check"></i> Tarifas basadas en millas reales pre-verificadas</span>
         </div>
       </div>
 
@@ -215,19 +198,464 @@
       <div class="results-loader" id="results-loader" style="display: none;">
         <div class="spinner"></div>
         <p>Buscando disponibilidad e inventario de millas privadas en tiempo real...</p>
-        <span class="loader-sub">Optimizando tarifas con algoritmos de alta confianza...</span>
+        <span class="loader-sub">Verificando bases de datos de Award Travel autorizadas...</span>
       </div>
 
-      <!-- Error o sin resultados -->
+      <!-- Error o sin resultados con formulario de solicitud personalizado -->
       <div class="results-empty" id="results-empty" style="display: none;">
-        <i class="fa-solid fa-plane-slash"></i>
-        <h3>No se encontraron vuelos</h3>
-        <p>Intenta cambiar las fechas o los aeropuertos seleccionados. Recuerda que nuestra cobertura premium opera exclusivamente en vuelos hacia/dentro de Estados Unidos, hacia/dentro de Europa, y conexiones directas entre Estados Unidos y Europa.</p>
+        <div class="empty-card" style="max-width: 600px; margin: 0 auto; padding: 30px; background: #fff; border-radius: 12px; border: 1.5px solid var(--border-color); text-align: center;">
+          <i class="fa-solid fa-plane-slash" style="font-size: 48px; color: var(--text-muted); margin-bottom: 15px;"></i>
+          <h3 style="font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 8px;">No hay inventario inmediato validado</h3>
+          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5;">
+            No encontramos disponibilidad validada automática para esta ruta en las fechas indicadas. 
+            <strong>¡No te preocupes!</strong> Nuestro equipo de conserjería puede buscar y validar disponibilidad manualmente en menos de 2 horas. Déjanos tu solicitud:
+          </p>
+          <button class="btn btn-primary" onclick="openManualRequestModal()" style="padding: 12px 24px; font-size: 14px; font-weight: 700;">
+            <i class="fa-solid fa-paper-plane"></i> Solicitar Búsqueda Manual Gratuita
+          </button>
+        </div>
       </div>
 
       <!-- Lista de Tarjetas de Vuelo -->
       <div class="flights-list" id="flights-list">
         <!-- Generado dinámicamente desde JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN: GUÍA DE RUTAS ACTIVAS (12 RUTAS ESTRELLA) -->
+  <section class="routes-guide-section" id="rutas-activas">
+    <div class="container">
+      <div class="section-intro">
+        <span class="section-badge"><i class="fa-solid fa-star"></i> Rutas Estrella Habilitadas</span>
+        <h2 class="section-title">Nuestras 12 Rutas de Alta Frecuencia</h2>
+        <p class="section-subtitle">Escaneamos estas rutas clave de forma continua en cabinas Business y Económica. Selecciona una ruta para iniciar tu búsqueda instantánea.</p>
+      </div>
+
+      <div class="routes-table-wrapper">
+        <table class="routes-table">
+          <thead>
+            <tr>
+              <th>Origen</th>
+              <th></th>
+              <th>Destino</th>
+              <th>Frecuencia de Escaneo</th>
+              <th>Cabinas Disponibles</th>
+              <th>Ahorro Promedio</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- RUTA 1: MEX ➔ MAD -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 40%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MEX', 'CDMX (MEX)', 'MAD', 'Madrid (MAD)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 2: MAD ➔ MEX -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 40%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MAD', 'Madrid (MAD)', 'MEX', 'CDMX (MEX)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 3: MEX ➔ MIA -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Miami (MIA)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 30%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MEX', 'CDMX (MEX)', 'MIA', 'Miami (MIA)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 4: MIA ➔ MEX -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Miami (MIA)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 30%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MIA', 'Miami (MIA)', 'MEX', 'CDMX (MEX)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 5: MEX ➔ JFK -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Nueva York (JFK)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 35%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MEX', 'CDMX (MEX)', 'JFK', 'Nueva York (JFK)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 6: JFK ➔ MEX -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Nueva York (JFK)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 35%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('JFK', 'Nueva York (JFK)', 'MEX', 'CDMX (MEX)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 7: MEX ➔ LHR -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Londres (LHR)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 40%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MEX', 'CDMX (MEX)', 'LHR', 'Londres (LHR)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 8: LHR ➔ MEX -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Londres (LHR)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 40%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('LHR', 'Londres (LHR)', 'MEX', 'CDMX (MEX)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 9: MIA ➔ MAD -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Miami (MIA)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 35%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MIA', 'Miami (MIA)', 'MAD', 'Madrid (MAD)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 10: MAD ➔ MIA -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Miami (MIA)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 35%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MAD', 'Madrid (MAD)', 'MIA', 'Miami (MIA)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 11: JFK ➔ MAD -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Nueva York (JFK)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 38%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('JFK', 'Nueva York (JFK)', 'MAD', 'Madrid (MAD)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 12: MAD ➔ JFK -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Nueva York (JFK)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 38%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MAD', 'Madrid (MAD)', 'JFK', 'Nueva York (JFK)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -242,7 +670,6 @@
       </div>
 
       <div class="guarantees-grid">
-        <!-- Garantía 1 -->
         <div class="guarantee-card">
           <div class="guarantee-icon">
             <i class="fa-solid fa-shield-halved"></i>
@@ -253,7 +680,6 @@
           </p>
         </div>
 
-        <!-- Garantía 2 -->
         <div class="guarantee-card">
           <div class="guarantee-icon">
             <i class="fa-solid fa-file-invoice-dollar"></i>
@@ -264,7 +690,6 @@
           </p>
         </div>
 
-        <!-- Garantía 3 -->
         <div class="guarantee-card">
           <div class="guarantee-icon">
             <i class="fa-solid fa-circle-check"></i>
@@ -287,12 +712,10 @@
         <p class="section-subtitle">Historias de clientes corporativos y viajeros frecuentes que han optimizado su presupuesto con nuestras tarifas privadas.</p>
       </div>
 
-      <!-- CARRUSEL DE TESTIMONIOS -->
       <div class="carousel-container">
         <div class="carousel-track-wrapper">
           <div class="carousel-track" id="carousel-track">
             
-            <!-- Slide 1 -->
             <div class="testimonial-slide">
               <div class="testimonial-card">
                 <div class="user-info">
@@ -329,7 +752,6 @@
               </div>
             </div>
 
-            <!-- Slide 2 -->
             <div class="testimonial-slide">
               <div class="testimonial-card">
                 <div class="user-info">
@@ -361,18 +783,17 @@
                   </div>
                 </div>
                 <p class="testimonial-text">
-                  "Siempre usaba buscadores tradicionales pensando que daban el mejor precio. Con Flytzi ahorré 30% en mi boleto de CDMX a Nueva York. El botón de reserva me mandó a un chat de WhatsApp donde en minutos emitieron mi boleto. ¡Excelente!"
+                  "Siempre usaba buscadores tradicionales pensando que daban el mejor precio. Con Flytzi ahorré 30% en mi boleto de CDMX a Nueva York. Dejé mis datos y en menos de 2 horas me mandaron mi link de pago de Stripe."
                 </p>
               </div>
             </div>
 
-            <!-- Slide 3 -->
             <div class="testimonial-slide">
               <div class="testimonial-card">
                 <div class="user-info">
                   <div class="avatar"><i class="fa-solid fa-user-shield"></i></div>
                   <div>
-                    <h4 class="user-name">Ing. Carlos Mendoza</h4>
+                    <h4 class="user-name">Carlos Mendoza</h4>
                     <span class="user-role">Director de Logística</span>
                   </div>
                 </div>
@@ -406,11 +827,9 @@
           </div>
         </div>
 
-        <!-- Botones de Navegación del Carrusel -->
         <button class="carousel-btn prev-btn" id="prev-btn" onclick="slidePrev()"><i class="fa-solid fa-chevron-left"></i></button>
         <button class="carousel-btn next-btn" id="next-btn" onclick="slideNext()"><i class="fa-solid fa-chevron-right"></i></button>
 
-        <!-- Indicadores -->
         <div class="carousel-dots" id="carousel-dots">
           <span class="dot active" onclick="goToSlide(0)"></span>
           <span class="dot" onclick="goToSlide(1)"></span>
@@ -420,7 +839,7 @@
     </div>
   </section>
 
-  <!-- SECCIÓN METODOLOGÍA / CÓMO FUNCIONA -->
+  <!-- SECCIÓN METODOLOGÍA -->
   <section class="methodology-section" id="nosotros">
     <div class="container">
       <div class="methodology-grid">
@@ -434,22 +853,22 @@
             <div class="step-item">
               <div class="step-num">01</div>
               <div class="step-text">
-                <h4>Metabúsqueda con Inteligencia Artificial</h4>
-                <p>Nuestra Inteligencia Artificial avanzada cruza y analiza en tiempo real las bases de datos globales de consolidadores, mayoristas e inventarios de millas corporativas, identificando al instante oportunidades ocultas de optimización con el máximo nivel de seguridad y precisión para tu viaje.</p>
+                <h4>Validación de Millas en Tiempo Real</h4>
+                <p>Nuestro programador y bots de Playwright escanean las aerolíneas aliadas para consolidar un inventario real y confirmado de disponibilidad de asientos de millas (Award Travel).</p>
               </div>
             </div>
             <div class="step-item">
               <div class="step-num">02</div>
               <div class="step-text">
-                <h4>Cálculo de Optimización Dinámica</h4>
-                <p>Aplicamos nuestro motor algorítmico exclusivo para reestructurar tarifas de rutas internacionales (ahorrando 40% a Europa y 30% a EE. UU.) para emitir las mejores oportunidades flexibles de itinerarios corporativos, garantizando la máxima protección y validez oficial en tus boletos.</p>
+                <h4>Solicitud y Doble Validación de Seguridad</h4>
+                <p>Cuando solicitas una reserva de inventario, nuestro equipo de conserjería bloquea inmediatamente los cupos con las aerolíneas para garantizar que tu tarifa no varíe.</p>
               </div>
             </div>
             <div class="step-item">
               <div class="step-num">03</div>
               <div class="step-text">
-                <h4>Reserva Segura y Pago de Oportunidad</h4>
-                <p>Seleccionas tu itinerario óptimo, completas los datos de los pasajeros de forma 100% blindada aceptando nuestras estrictas políticas de confidencialidad, y liquidas de manera directa la tarifa de oportunidad exclusiva para emitir tu reserva oficial al instante.</p>
+                <h4>Pago Seguro con Stripe y Emisión</h4>
+                <p>Una vez confirmada la reserva en firme por el conserje, recibes un enlace oficial y seguro de Stripe. Pagas, se emiten los boletos con millas, y recibes tu código PNR oficial en minutos.</p>
               </div>
             </div>
           </div>
@@ -460,13 +879,6 @@
             <h3>99.8%</h3>
             <p>Tasa de Embarques Exitosos</p>
             <span class="badge-sub">Más de 14,000 vuelos protegidos</span>
-          </div>
-          <div class="card-security-preview">
-            <div class="card-sec-header">
-              <i class="fa-solid fa-lock"></i>
-              <span>Emisión Cifrada de Boleto</span>
-            </div>
-            <p>El inventario de millas y tarifas corporativas se asocia de forma totalmente legal y cifrada a tu pasaporte. Viajas con boleto oficial de la aerolínea operadora.</p>
           </div>
         </div>
       </div>
@@ -500,19 +912,17 @@
     </div>
   </footer>
 
-  <!-- FLOATING BADGE & MODAL FOR DATA CONFIDENTIALITY -->
-  <!-- Botón Flotante de Privacidad -->
-  <!-- MÓDULO DE RESERVA & PASARELA DE PAGO STRIPE (SIMULADA) -->
+  <!-- MODAL DE RESERVAS FLYTZI 2.0 -->
   <div id="booking-modal" class="modal-backdrop">
     <div class="modal-card" style="max-width: 650px; max-height: 90vh; overflow-y: auto !important;">
       
       <!-- Paso 1: Formulario de Datos del Pasajero -->
       <div id="booking-step-form" class="booking-step">
         <div class="modal-header">
-          <h3><i class="fa-solid fa-plane-departure text-highlight"></i> 1. Datos de Pasajeros y Reserva</h3>
+          <h3><i class="fa-solid fa-plane-departure text-highlight"></i> Datos de Pasajeros y Reserva</h3>
           <span class="modal-close" onclick="closeBookingModal()">&times;</span>
         </div>
-        <form id="passenger-data-form" onsubmit="goToPaymentStep(event)">
+        <form id="passenger-data-form" onsubmit="submitBookingRequest(event)">
           <div class="modal-body">
             
             <!-- Resumen Rápido del Vuelo -->
@@ -560,108 +970,49 @@
             <div style="margin-top: 20px; padding: 12px; background: rgba(16, 185, 129, 0.05); border-radius: var(--border-radius); border: 1.5px solid rgba(16, 185, 129, 0.15);">
               <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-dark); font-weight: 500;">
                 <input type="checkbox" id="accept-data-policy" required style="width: 18px; height: 18px; accent-color: var(--primary); margin-top: 2px;">
-                <span>He leído y acepto expresamente la <a href="javascript:openPrivacyModal()" style="color: var(--accent); font-weight: 700; text-decoration: underline;">Política de Confidencialidad y Protección de Datos</a> de Flytzi Aero Privado. Acepto que mis datos de pasaporte se usarán estrictamente para la emisión oficial del boleto.</span>
+                <span>He leído y acepto expresamente la <a href="javascript:openPrivacyModal()" style="color: var(--accent); font-weight: 700; text-decoration: underline;">Política de Confidencialidad y Protección de Datos</a> de Flytzi Aero Privado. Acepto que mis datos se usarán estrictamente para verificar y emitir la reserva oficial.</span>
               </label>
             </div>
 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline" onclick="closeBookingModal()">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Continuar al Pago Seguro <i class="fa-solid fa-arrow-right"></i></button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-booking">Confirmar Solicitud de Reserva <i class="fa-solid fa-plane-circle-check"></i></button>
           </div>
         </form>
       </div>
 
-      <!-- Paso 2: Pasarela de Pago Stripe (Simulada) -->
-      <div id="booking-step-payment" class="booking-step" style="display: none;">
-        <div class="modal-header">
-          <h3><i class="fa-solid fa-credit-card text-highlight"></i> 2. Pasarela de Pago Seguro</h3>
-          <span class="modal-close" onclick="closeBookingModal()">&times;</span>
-        </div>
-        <form id="stripe-payment-form" onsubmit="processStripePayment(event)">
-          <div class="modal-body">
-            
-            <!-- Resumen de Facturación -->
-            <div class="stripe-billing-summary" id="stripe-billing-summary" style="margin-bottom: 24px; padding: 16px; background: var(--bg-light); border-radius: var(--border-radius); border: 1.5px solid var(--border-color);">
-              <!-- Llenado dinámicamente con JS -->
-            </div>
-
-            <!-- Interfaz de Pago Stripe -->
-            <div class="stripe-box" style="padding: 20px; border: 1.5px solid rgba(110, 120, 240, 0.4); border-radius: var(--border-radius); background: #fafbff; box-shadow: 0 4px 12px rgba(110, 120, 240, 0.05);">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1.5px solid #eceffd; padding-bottom: 12px;">
-                <span style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px; color: #6772e5; display: flex; align-items: center; gap: 8px;">
-                  <i class="fab fa-stripe" style="font-size: 32px;"></i> Elementos de Pago
-                </span>
-                <span style="font-size: 11px; font-weight: 700; color: #a1afbe; background: #eceffd; padding: 4px 8px; border-radius: 4px; text-transform: uppercase;">Modo de Pruebas</span>
-              </div>
-
-              <!-- Formulario de Tarjeta de Crédito -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div class="form-group" style="grid-column: span 2;">
-                  <label style="color: #6772e5; font-size: 11px;"><i class="fa-solid fa-credit-card"></i> Número de Tarjeta</label>
-                  <input type="text" id="stripe-card-number" placeholder="4242 4242 4242 4242" maxlength="19" required style="border-color: rgba(110, 120, 240, 0.25); background: #ffffff;">
-                </div>
-                <div class="form-group">
-                  <label style="color: #6772e5; font-size: 11px;"><i class="fa-regular fa-calendar"></i> Fecha Expiración</label>
-                  <input type="text" id="stripe-card-expiry" placeholder="MM/AA" maxlength="5" required style="border-color: rgba(110, 120, 240, 0.25); background: #ffffff;">
-                </div>
-                <div class="form-group">
-                  <label style="color: #6772e5; font-size: 11px;"><i class="fa-solid fa-lock"></i> CVC</label>
-                  <input type="password" id="stripe-card-cvc" placeholder="Ej: 123" maxlength="4" required style="border-color: rgba(110, 120, 240, 0.25); background: #ffffff;">
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                  <label style="color: #6772e5; font-size: 11px;"><i class="fa-solid fa-user-tag"></i> Nombre del Titular de la Tarjeta</label>
-                  <input type="text" id="stripe-card-holder" placeholder="Ej: Rodrigo Espinosa Mendoza" required style="border-color: rgba(110, 120, 240, 0.25); background: #ffffff;">
-                </div>
-              </div>
-
-              <div style="margin-top: 16px; display: flex; align-items: center; gap: 8px; font-size: 11px; color: #a1afbe; font-weight: 500;">
-                <i class="fa-solid fa-lock" style="color: #10b981;"></i> Conexión encriptada SSL de 256 bits y cumplimiento PCI-DSS Nivel 1.
-              </div>
-            </div>
-
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline" onclick="goToStep('form')"><i class="fa-solid fa-arrow-left"></i> Atrás</button>
-            <button type="submit" class="btn btn-primary" id="stripe-submit-btn" style="background-color: #6772e5; border-color: #6772e5;">
-              <span>Pagar con Stripe</span> <i class="fab fa-stripe-s"></i>
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <!-- Paso 3: Confirmación de Pago Exitoso -->
+      <!-- Paso 2: Confirmación de Solicitud de Reserva Exitosa -->
       <div id="booking-step-success" class="booking-step" style="display: none; text-align: center;">
         <div class="modal-header" style="background-color: rgba(16, 185, 129, 0.05); border-bottom-color: rgba(16, 185, 129, 0.15);">
-          <h3 style="color: #0f9d58;"><i class="fa-solid fa-circle-check"></i> Transacción Aprobada Exitosamente</h3>
+          <h3 style="color: #0f9d58;"><i class="fa-solid fa-circle-check"></i> Solicitud Registrada Correctamente</h3>
           <span class="modal-close" onclick="closeBookingModal()">&times;</span>
         </div>
         <div class="modal-body" style="padding: 30px;">
           
           <div class="success-checkmark-wrapper" style="margin-bottom: 20px;">
-            <div class="success-icon" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 2.5px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto; color: var(--accent); font-size: 40px; animation: bounceIn 0.6s ease;">
+            <div class="success-icon" style="width: 80px; height: 80px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 2.5px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto; color: var(--accent); font-size: 40px;">
               <i class="fa-solid fa-check"></i>
             </div>
           </div>
 
-          <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; color: var(--primary); margin-bottom: 8px;">¡Muchas Gracias por tu Pago!</h2>
-          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">La pasarela de Stripe ha confirmado la transacción del inventario de forma segura y exitosa.</p>
+          <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; color: var(--primary); margin-bottom: 8px;">¡Solicitud de Reserva Registrada!</h2>
+          <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Hemos bloqueado preliminarmente tus cupos. Un conserje verificará tu disponibilidad de millas en menos de 2 horas.</p>
 
           <!-- Detalles del Ticket Generado -->
           <div class="receipt-box" style="text-align: left; padding: 20px; border-radius: var(--border-radius); background: var(--bg-light); border: 1.5px solid var(--border-color); font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.6; margin-bottom: 24px;">
             <div style="border-bottom: 1.5px dashed var(--border-color); padding-bottom: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary);">DETALLES DEL RECIBO</span>
-              <span class="badge-saving-tag" style="background: rgba(16, 185, 129, 0.1); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-weight: 700;">CONFIRMADO</span>
+              <span style="font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary);">RESUMEN DE SOLICITUD</span>
+              <span class="badge-saving-tag" style="background: rgba(217, 119, 6, 0.1); color: #d97706; padding: 2px 8px; border-radius: 4px; font-weight: 700;">PENDIENTE DE PAGO</span>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;">
               <div><strong>Pasajero Titular:</strong> <span id="rec-pass-name">-</span></div>
               <div><strong>Pasaporte:</strong> <span id="rec-pass-passport">-</span></div>
-              <div><strong>F. de Nacimiento:</strong> <span id="rec-pass-dob">-</span></div>
               <div><strong>Email:</strong> <span id="rec-pass-email">-</span></div>
               <div><strong>Contacto:</strong> <span id="rec-pass-phone">-</span></div>
               <div style="grid-column: span 2; margin-top: 4px; border-top: 1px solid var(--border-color); padding-top: 8px;">
-                <strong>Ruta Reservada:</strong> <span id="rec-flight-route">-</span>
+                <strong>Ruta Solicitada:</strong> <span id="rec-flight-route">-</span>
               </div>
               <div style="grid-column: span 2;">
                 <strong>Código de Vuelo:</strong> <span id="rec-flight-code">-</span>
@@ -670,26 +1021,24 @@
                 <strong>Equipaje Seleccionado:</strong> <span id="rec-flight-baggage">-</span>
               </div>
               <div style="grid-column: span 2; margin-top: 4px; border-top: 1px solid var(--border-color); padding-top: 8px; font-size: 14px;">
-                <strong style="color: var(--primary);">Monto Pagado:</strong> <strong id="rec-flight-total" style="color: var(--accent); font-size: 16px;">-</strong>
+                <strong style="color: var(--primary);">Precio Tarifa Privada:</strong> <strong id="rec-flight-total" style="color: var(--accent); font-size: 16px;">-</strong>
               </div>
               <div style="grid-column: span 2; font-size: 11px; color: var(--text-muted); margin-top: 8px; display: flex; flex-direction: column; gap: 2px;">
-                <div>🔑 CÓDIGO LOCALIZADOR: <strong id="rec-flight-locator" style="color: var(--primary);">-</strong></div>
-                <div>💳 STRIPE CHARGE ID: <strong id="rec-stripe-id" style="color: var(--primary);">-</strong></div>
+                <div>🆔 ID DE SOLICITUD: <strong id="rec-booking-id" style="color: var(--primary); font-family: monospace;">-</strong></div>
               </div>
             </div>
           </div>
 
           <div style="padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1.5px solid rgba(16, 185, 129, 0.15); border-radius: var(--border-radius); font-size: 13px; font-weight: 500; color: var(--text-dark); margin-bottom: 20px;">
-            🔒 <strong>Paso Final Operativo:</strong> Tu reserva ya está emitida en el sistema GDS global, en pocos minutos te llegará a tu correo tu código de reserva. Para mayor comodidad, haz clic en el botón de abajo para enviar tu comprobante, recibir tu CODIGO DE RESERVA emitido por la aerolínea de forma directa en tu WhatsApp y activar tu Web Check-in.
+            💼 <strong>¿Qué sigue ahora?</strong> Nuestro equipo de conserjes recibirá tu solicitud. Tras la validación, recibirás por WhatsApp y correo tu enlace oficial de **Stripe** para concretar el pago y emitir de forma inmediata tu pase de abordar y código localizador PNR.
           </div>
 
-          <!-- BOTÓN DE CONFIRMACIÓN UBICADO DIRECTAMENTE EN EL FLUJO DE LECTURA SCROLLABLE -->
+          <!-- BOTÓN DE ENVIAR WHATSAPP -->
           <div style="display: flex; justify-content: center; margin-top: 15px; margin-bottom: 15px;">
-            <button class="btn btn-primary" onclick="sendReceiptToWhatsApp()" style="background-color: var(--accent); border-color: var(--accent); font-size: 15px; padding: 14px 40px; border-radius: 30px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); font-weight: 700; width: 100%; max-width: 400px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 25px;">
-              ENVIAR RESERVA VIA WHATSAPP <i class="fab fa-whatsapp" style="font-size: 18px;"></i>
+            <button class="btn btn-primary" onclick="sendRequestToWhatsApp()" style="background-color: var(--accent); border-color: var(--accent); font-size: 15px; padding: 14px 40px; border-radius: 30px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); font-weight: 700; width: 100%; max-width: 400px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 25px;">
+              ACELERAR REVISIÓN VÍA WHATSAPP <i class="fab fa-whatsapp" style="font-size: 18px;"></i>
             </button>
           </div>
-          <!-- Espaciador de seguridad al final para evitar cortes de scroll -->
           <div style="height: 35px; width: 100%;"></div>
 
         </div>
@@ -702,7 +1051,7 @@
     <i class="fa-solid fa-shield-halved"></i> <span>Privacidad de Datos</span>
   </div>
 
-  <!-- Estructura del Modal de Confidencialidad -->
+  <!-- Modal de Confidencialidad -->
   <div id="privacy-modal" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
@@ -734,6 +1083,6 @@
   </div>
 
   <!-- Scripts JavaScript -->
-  <script src="app.js?v=1.9"></script>
+  <script src="app.js?v=2.0"></script>
 </body>
 </html>

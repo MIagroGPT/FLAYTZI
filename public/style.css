@@ -1728,3 +1728,292 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* ==========================================================================
+   NUEVA SECCIÓN: GUÍA DE RUTAS ACTIVAS Y DISPONIBLES (12 RUTAS ESTRELLA)
+   ========================================================================== */
+.routes-guide-section {
+  padding: 80px 0;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.5) 0%, rgba(241, 245, 249, 0.8) 100%);
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.routes-guide-section::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.routes-guide-section::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  left: -5%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(11, 25, 44, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.routes-table-wrapper {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--border-radius-lg);
+  border: 1.5px solid rgba(226, 232, 240, 0.8);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  margin-top: 30px;
+  transition: var(--transition);
+}
+
+.routes-table-wrapper:hover {
+  box-shadow: 0 25px 50px -12px rgba(11, 25, 44, 0.08);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.routes-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+}
+
+.routes-table th {
+  background: var(--primary);
+  color: var(--bg-white);
+  padding: 18px 24px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+}
+
+.routes-table th:first-child {
+  border-top-left-radius: 18px;
+}
+
+.routes-table th:last-child {
+  border-top-right-radius: 18px;
+}
+
+.routes-table td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+  color: var(--text-main);
+  font-size: 14.5px;
+  transition: var(--transition);
+}
+
+.routes-table tr:last-child td {
+  border-bottom: none;
+}
+
+.routes-table tr {
+  transition: var(--transition);
+}
+
+.routes-table tr:hover {
+  background-color: rgba(16, 185, 129, 0.03);
+}
+
+/* Celdas específicas */
+.route-cell-airport {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.route-cell-airport i {
+  color: var(--accent);
+  font-size: 16px;
+  background: var(--accent-light);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.route-cell-direction {
+  text-align: center;
+  color: var(--accent);
+  font-size: 18px;
+  width: 60px;
+}
+
+.route-cell-direction i {
+  animation: pulseArrow 2s infinite ease-in-out;
+}
+
+@keyframes pulseArrow {
+  0%, 100% { transform: translateX(0) scale(1); opacity: 0.8; }
+  50% { transform: translateX(3px) scale(1.1); opacity: 1; }
+}
+
+.badge-scan {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--primary-light);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-scan i {
+  color: #10b981;
+  font-size: 10px;
+  animation: pulseGreen 1.5s infinite alternate;
+}
+
+@keyframes pulseGreen {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+.cabin-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.badge-cabin {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.badge-cabin.business {
+  background-color: rgba(11, 25, 44, 0.08);
+  color: var(--primary);
+  border: 1px solid rgba(11, 25, 44, 0.15);
+}
+
+.badge-cabin.economy {
+  background-color: var(--accent-light);
+  color: var(--accent);
+  border: 1px solid rgba(15, 157, 88, 0.15);
+}
+
+.saving-highlight {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  color: #10b981;
+  font-size: 16px;
+  background: linear-gradient(120deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.02) 100%);
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.btn-quick-select {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 8px;
+  background-color: var(--accent);
+  color: var(--bg-white);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-quick-select:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 8px rgba(15, 157, 88, 0.2);
+}
+
+/* DISEÑO ULTRA RESPONSIVO PARA MÓVILES */
+@media (max-width: 992px) {
+  .routes-table th {
+    display: none;
+  }
+  
+  .routes-table, .routes-table tbody, .routes-table tr, .routes-table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .routes-table tr {
+    margin-bottom: 20px;
+    background: var(--bg-white);
+    border-radius: var(--border-radius);
+    border: 1.5px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    padding: 16px;
+  }
+  
+  .routes-table tr:hover {
+    background-color: var(--bg-white);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+  
+  .routes-table td {
+    padding: 8px 0;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    text-align: right;
+  }
+  
+  .routes-table td::before {
+    content: attr(data-label);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+    margin-right: 15px;
+  }
+  
+  .route-cell-airport {
+    justify-content: flex-end;
+    font-size: 13.5px;
+  }
+  
+  .route-cell-direction {
+    display: none !important;
+  }
+  
+  .saving-highlight {
+    font-size: 14px;
+    padding: 2px 8px;
+  }
+  
+  .btn-quick-select {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+    padding: 10px;
+  }
+}
+
+
