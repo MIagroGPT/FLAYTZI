@@ -143,6 +143,7 @@ router.get('/search', async (req, res) => {
               stopDetails: out.stops > 0 ? `${out.stops} escala(s)` : 'Directo',
               cabinClass: out.cabin === 'business' ? 'Business / Primera' : 'Económica',
               passengers: reqPassengers,
+              seatsAvailable: Math.min(out.seats_available, inb.seats_available),
               pricing: {
                 officialPrice: priceOfficial,
                 flytziPrice: priceFlytzi,
@@ -210,6 +211,7 @@ router.get('/search', async (req, res) => {
           stopDetails: out.stops > 0 ? `${out.stops} escala(s)` : 'Directo',
           cabinClass: out.cabin === 'business' ? 'Business / Primera' : 'Económica',
           passengers: reqPassengers,
+          seatsAvailable: out.seats_available,
           pricing: {
             officialPrice: priceOfficial,
             flytziPrice: priceFlytzi,

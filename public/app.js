@@ -351,6 +351,17 @@ function renderFlightCards(flights) {
       `;
     }
 
+    // Construir badge dinámico de asientos disponibles
+    let seatsBadgeHTML = '';
+    const sa = parseInt(flight.seatsAvailable) || 1;
+    if (sa === 1) {
+      seatsBadgeHTML = `<span class="flight-badge-pill" style="background: rgba(239, 68, 68, 0.08); color: #ef4444; font-weight: 700; border: 1px solid rgba(239, 68, 68, 0.15); font-size: 11px;"><i class="fa-solid fa-fire"></i> ¡Último asiento disponible!</span>`;
+    } else if (sa === 2) {
+      seatsBadgeHTML = `<span class="flight-badge-pill" style="background: rgba(245, 158, 11, 0.08); color: #d97706; font-weight: 700; border: 1px solid rgba(245, 158, 11, 0.15); font-size: 11px;"><i class="fa-solid fa-triangle-exclamation"></i> Solo 2 asientos disponibles</span>`;
+    } else {
+      seatsBadgeHTML = `<span class="flight-badge-pill" style="background: rgba(16, 185, 129, 0.08); color: var(--accent); font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.15); font-size: 11px;"><i class="fa-solid fa-circle-check"></i> ${sa} asientos disponibles</span>`;
+    }
+
     card.innerHTML = `
       <div class="flight-main-info">
         ${outboundHTML}
@@ -363,7 +374,7 @@ function renderFlightCards(flights) {
           <span class="flight-badge-pill badge-cabin"><i class="fa-solid fa-crown"></i> Clase ${flight.cabinClass}</span>
           <span class="flight-badge-pill badge-passengers"><i class="fa-solid fa-user"></i> ${flight.passengers} Pasajero(s)</span>
           <span class="flight-badge-pill badge-saving-tag"><i class="fa-solid fa-tags"></i> Ahorro Neto: ${savingFormatted}</span>
-          <span class="flight-badge-pill" style="background: rgba(16, 185, 129, 0.1); color: var(--accent); font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.2); font-size: 11px;"><i class="fa-solid fa-gem"></i> Inventario Autorizado</span>
+          ${seatsBadgeHTML}
         </div>
 
         <div class="baggage-selector-block" style="margin: 12px 0; padding: 10px; background: rgba(16, 185, 129, 0.05); border-radius: var(--border-radius); border: 1px dashed rgba(16, 185, 129, 0.2);">
