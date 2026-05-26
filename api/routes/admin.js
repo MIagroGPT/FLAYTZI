@@ -190,4 +190,36 @@ router.post('/bookings/:id/issue', auth, async (req, res) => {
   }
 });
 
+// PUT /api/admin/bookings/:id - Actualizar estado o datos de una reserva
+router.put('/bookings/:id', auth, async (req, res) => {
+  const { id } = req.params;
+  const { status, pnr_code, admin_notes } = req.body;
+
+  try {
+    const fields = [];
+    const params = [id];
+    let idx = 2;
+
+    if (status !== undefined) { fields.push(`status = $${idx++}`); params.push(status); }
+    if (pnr_code !== undefined) { fields.push(`pnr_code = $${idx++}`); params.push(pnr_code ? pnr_code.toUpperCase() : null); }
+    if (admin_notes !== undefined) { fields.push(`admin_notes = $${idx++}`); params.push(admin_notes); }
+
+    if (fields.length === 0) {
+      return res.status(400).json({ error: 'No se enviaron campos para actualizar.' });
+    }
+
+    const query = `UPDATE reservations SET ${fields.join(', ')}, updated_at = NOW() WHERE id = $1 RETURNING *`;
+    const { rows } = await db.query(query, params);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Reserva no encontrada.' });
+    }
+
+    res.json({ success: true, reservation: rows[0] });
+  } catch (error) {
+    console.error("[Admin Update Booking Error]:", error);
+    res.status(500).json({ error: 'Error al actualizar la reserva.' });
+  }
+});
+
 module.exports = router;

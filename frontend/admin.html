@@ -1,0 +1,2219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flytzi - Panel Administrativo</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-dark: #070F1E;
+      --bg-card: rgba(15, 23, 42, 0.45);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(0, 242, 254, 0.4);
+      --primary: #00F2FE;
+      --primary-gradient: linear-gradient(135deg, #00F2FE 0%, #4FACFE 100%);
+      --accent: #0F9D58;
+      --accent-gradient: linear-gradient(135deg, #0F9D58 0%, #1db954 100%);
+      --danger: #FF4B5C;
+      --warning: #F5A623;
+      --info: #3b82f6;
+      --text-main: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --transition-speed: 0.3s;
+      --border-radius: 16px;
+      --shadow-premium: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --font-outfit: 'Outfit', sans-serif;
+      --font-inter: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 10% 20%, rgba(0, 242, 254, 0.05) 0px, transparent 50%),
+        radial-gradient(at 90% 80%, rgba(15, 157, 88, 0.04) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(79, 172, 254, 0.03) 0px, transparent 60%);
+      background-attachment: fixed;
+      font-family: var(--font-inter);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 242, 254, 0.3);
+    }
+
+    /* GLASSMORPHISM CONTAINER */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-premium);
+    }
+
+    /* ========================================== */
+    /* LOGIN SCREEN STYLE */
+    /* ========================================== */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 420px;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .logo-container {
+      margin-bottom: 30px;
+    }
+
+    .logo-container img {
+      max-height: 50px;
+    }
+
+    .logo-text {
+      font-family: var(--font-outfit);
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+      display: inline-block;
+    }
+
+    .logo-badge {
+      font-size: 11px;
+      background: rgba(0, 242, 254, 0.12);
+      color: var(--primary);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: inline-block;
+      margin-top: 5px;
+    }
+
+    .login-title {
+      font-family: var(--font-outfit);
+      font-size: 20px;
+      font-weight: 600;
+      color: #FFF;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      transition: var(--transition-speed);
+    }
+
+    .form-control {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 15px 12px 42px;
+      color: #FFF;
+      font-family: var(--font-inter);
+      font-size: 14px;
+      outline: none;
+      transition: var(--transition-speed);
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+    }
+
+    .form-control:focus + i {
+      color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font-outfit);
+      font-size: 15px;
+      font-weight: 700;
+      color: #000;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-speed);
+    }
+
+    .btn-primary {
+      background: var(--primary-gradient);
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .error-msg {
+      color: var(--danger);
+      background: rgba(255, 75, 92, 0.08);
+      border: 1px solid rgba(255, 75, 92, 0.2);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+      margin-bottom: 20px;
+      display: none;
+      text-align: left;
+    }
+
+    /* ========================================== */
+    /* DASHBOARD LAYOUT STYLE */
+    /* ========================================== */
+    .dashboard-container {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Modern Navigation Header */
+    header {
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(7, 15, 30, 0.6);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-logo .logo-text {
+      font-size: 22px;
+      margin-bottom: 0;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-family: var(--font-outfit);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-speed);
+    }
+
+    .tab-btn:hover {
+      color: #FFF;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      color: #000;
+      background: var(--primary-gradient);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-badge {
+      font-size: 13px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-badge i {
+      color: var(--primary);
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid rgba(255, 75, 92, 0.3);
+      color: var(--danger);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-speed);
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 75, 92, 0.1);
+      border-color: var(--danger);
+    }
+
+    /* Main Area */
+    main {
+      flex: 1;
+      padding: 30px 40px;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Active sections */
+    .tab-section {
+      display: none;
+    }
+
+    .tab-section.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========================================== */
+    /* STATS GRID */
+    /* ========================================== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+      right: -10px;
+      bottom: -10px;
+      border-radius: 50%;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .stat-icon.total { background: rgba(0, 242, 254, 0.12); color: var(--primary); border: 1px solid rgba(0, 242, 254, 0.2); }
+    .stat-icon.pending { background: rgba(245, 166, 35, 0.12); color: var(--warning); border: 1px solid rgba(245, 166, 35, 0.2); }
+    .stat-icon.confirmed { background: rgba(15, 157, 88, 0.12); color: #2ec4b6; border: 1px solid rgba(15, 157, 88, 0.2); }
+    .stat-icon.paid { background: rgba(59, 130, 246, 0.12); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
+    .stat-icon.issued { background: rgba(16, 185, 129, 0.12); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.2); }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-value {
+      font-family: var(--font-outfit);
+      font-size: 24px;
+      font-weight: 700;
+      color: #FFF;
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ========================================== */
+    /* FILTERS & SEARCH */
+    /* ========================================== */
+    .controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+      min-width: 250px;
+    }
+
+    .search-wrapper i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.35);
+      border: 1px solid var(--border-color);
+      padding: 10px 15px 10px 42px;
+      color: #FFF;
+      border-radius: 10px;
+      font-family: var(--font-inter);
+      font-size: 14px;
+      outline: none;
+      transition: var(--transition-speed);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .filter-options {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .select-premium {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-color);
+      color: #FFF;
+      padding: 10px 15px;
+      border-radius: 10px;
+      outline: none;
+      font-family: var(--font-inter);
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition-speed);
+    }
+
+    .select-premium:focus {
+      border-color: var(--primary);
+    }
+
+    .select-premium option {
+      background: var(--bg-dark);
+      color: #FFF;
+    }
+
+    .btn-action-outline {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-main);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-speed);
+    }
+
+    .btn-action-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: #FFF;
+    }
+
+    /* ========================================== */
+    /* RESERVATIONS TAB - CARDS LIST */
+    /* ========================================== */
+    .bookings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .booking-card {
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      transition: var(--transition-speed);
+      overflow: hidden;
+    }
+
+    .booking-card:hover {
+      border-color: rgba(0, 242, 254, 0.25);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .booking-card.expanded {
+      border-color: rgba(0, 242, 254, 0.4);
+    }
+
+    /* Card Header Brief */
+    .booking-header {
+      padding: 20px;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 80px 2fr 1.5fr 1fr 1.2fr 40px;
+      align-items: center;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    @media (max-width: 1024px) {
+      .booking-header {
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 12px;
+      }
+      .booking-header .arrow-col {
+        grid-column: span 2;
+        text-align: center;
+      }
+    }
+
+    .route-visual {
+      font-family: var(--font-outfit);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #FFF;
+    }
+
+    .route-arrow {
+      color: var(--primary);
+      font-size: 11px;
+    }
+
+    .passenger-brief {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .passenger-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: #FFF;
+    }
+
+    .passenger-contact {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .flight-brief {
+      display: flex;
+      flex-direction: column;
+      font-size: 13px;
+    }
+
+    .flight-brief strong {
+      color: #FFF;
+    }
+
+    .price-brief {
+      font-family: var(--font-outfit);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      width: fit-content;
+    }
+
+    .status-badge.pending_validation { background: rgba(245, 166, 35, 0.08); color: var(--warning); border: 1px solid rgba(245, 166, 35, 0.2); }
+    .status-badge.validated { background: rgba(46, 196, 182, 0.08); color: #2ec4b6; border: 1px solid rgba(46, 196, 182, 0.2); }
+    .status-badge.payment_link_sent { background: rgba(59, 130, 246, 0.08); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
+    .status-badge.paid { background: rgba(16, 185, 129, 0.08); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.2); }
+    .status-badge.issuing { background: rgba(236, 72, 153, 0.08); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.2); }
+    .status-badge.issued { background: rgba(0, 242, 254, 0.08); color: var(--primary); border: 1px solid rgba(0, 242, 254, 0.2); }
+    .status-badge.cancelled { background: rgba(255, 75, 92, 0.08); color: var(--danger); border: 1px solid rgba(255, 75, 92, 0.2); }
+
+    .arrow-col {
+      text-align: right;
+      color: var(--text-muted);
+      transition: var(--transition-speed);
+    }
+
+    .booking-card.expanded .arrow-col {
+      transform: rotate(180deg);
+      color: var(--primary);
+    }
+
+    /* Card Details Body (Expanded) */
+    .booking-details {
+      display: none;
+      padding: 25px;
+      border-top: 1px solid var(--border-color);
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .booking-card.expanded .booking-details {
+      display: block;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; max-height: 0; }
+      to { opacity: 1; max-height: 2000px; }
+    }
+
+    /* SPLIT GRID VIEW: LEFT DATA, RIGHT WHATSAPP */
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 25px;
+    }
+
+    @media (max-width: 900px) {
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Panel: Info Cards */
+    .detail-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .detail-title {
+      font-family: var(--font-outfit);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      padding-bottom: 8px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px 20px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-item label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    .info-item span {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #FFF;
+    }
+
+    /* Action controllers in left panel */
+    .admin-controls-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    @media (max-width: 480px) {
+      .admin-controls-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .notes-box {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      color: #FFF;
+      font-family: var(--font-inter);
+      font-size: 13px;
+      resize: vertical;
+      min-height: 80px;
+      margin-top: 5px;
+      outline: none;
+    }
+
+    .notes-box:focus {
+      border-color: var(--primary);
+    }
+
+    /* Right Panel: WhatsApp Preview Bubble */
+    .whatsapp-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .whatsapp-bubble {
+      background: #0b141a;
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      flex: 1;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      color: #e9edef;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      max-height: 380px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .whatsapp-header-badge {
+      background: #075e54;
+      color: #fff;
+      font-family: var(--font-inter);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .whatsapp-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .btn-wa-copy {
+      background: rgba(37, 211, 102, 0.12);
+      border: 1px solid rgba(37, 211, 102, 0.3);
+      color: #25D366;
+      font-weight: 700;
+    }
+
+    .btn-wa-copy:hover {
+      background: #25D366;
+      color: #000;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-wa-chat {
+      background: #25D366;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .btn-wa-chat:hover {
+      background: #1db954;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+      transform: translateY(-1px);
+    }
+
+    /* General action buttons */
+    .btn-stripe {
+      background: rgba(99, 91, 255, 0.12);
+      border: 1px solid rgba(99, 91, 255, 0.3);
+      color: #7a73ff;
+      font-weight: 700;
+    }
+
+    .btn-stripe:hover {
+      background: #635BFF;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
+    }
+
+    .btn-issue {
+      background: rgba(0, 242, 254, 0.12);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .btn-issue:hover {
+      background: var(--primary-gradient);
+      color: #000;
+      box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
+    }
+
+    .btn-save-notes {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #FFF;
+      font-weight: 600;
+      margin-top: 8px;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    .btn-save-notes:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* ========================================== */
+    /* TAB 2: ROUTES LIST STYLE */
+    /* ========================================== */
+    .routes-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 900px) {
+      .routes-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Routes list table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      font-family: var(--font-outfit);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    td {
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13.5px;
+      color: var(--text-main);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    /* Toggle Switch (Premium Glassmorphic) */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: var(--text-muted);
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background: var(--accent-gradient);
+      border-color: rgba(15, 157, 88, 0.4);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(22px);
+      background-color: #FFF;
+    }
+
+    /* Add route form card */
+    .add-route-card {
+      padding: 25px;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+    }
+
+    .add-route-card h3 {
+      font-family: var(--font-outfit);
+      font-size: 18px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .add-route-card h3 i {
+      color: var(--primary);
+    }
+
+    /* ========================================== */
+    /* MODALS & OVERLAYS */
+    /* ========================================== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(7, 15, 30, 0.85);
+      backdrop-filter: blur(10px);
+      justify-content: center;
+      align-items: center;
+      z-index: 500;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 460px;
+      padding: 30px;
+      position: relative;
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition-speed);
+    }
+
+    .modal-close:hover {
+      color: var(--danger);
+    }
+
+    .modal-title {
+      font-family: var(--font-outfit);
+      font-size: 18px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-title i {
+      color: var(--primary);
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .toast {
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      padding: 15px 25px;
+      border-radius: 10px;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-premium);
+      animation: toastSlideIn 0.3s ease-out;
+      font-size: 13.5px;
+      font-weight: 500;
+      min-width: 280px;
+    }
+
+    .toast.success { border-color: rgba(15, 157, 88, 0.4); }
+    .toast.success i { color: var(--accent); }
+    .toast.error { border-color: rgba(255, 75, 92, 0.4); }
+    .toast.error i { color: var(--danger); }
+    .toast.info { border-color: rgba(0, 242, 254, 0.4); }
+    .toast.info i { color: var(--primary); }
+
+    @keyframes toastSlideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast-closing {
+      animation: toastSlideOut 0.3s forwards;
+    }
+
+    @keyframes toastSlideOut {
+      to { transform: translateX(100px); opacity: 0; }
+    }
+
+    /* Spinner loader */
+    .spinner-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(7, 15, 30, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 10;
+      justify-content: center;
+      align-items: center;
+      border-radius: var(--border-radius);
+    }
+
+    .spinner-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* PNR text display */
+    .pnr-box-highlight {
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--primary);
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px dashed rgba(0, 242, 254, 0.3);
+      padding: 5px 12px;
+      border-radius: 6px;
+      display: inline-block;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================== -->
+  <!-- 1. LOGIN SCREEN -->
+  <!-- ========================================== -->
+  <div id="login-screen" class="login-container">
+    <div class="login-box glass-card">
+      <div class="logo-container">
+        <span class="logo-text">FLYTZI</span>
+        <div><span class="logo-badge">Módulo Administrativo</span></div>
+      </div>
+      <h2 class="login-title">Iniciar Sesión de Conserjería</h2>
+      
+      <div id="login-error" class="error-msg"></div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Usuario</label>
+          <div class="input-wrapper">
+            <input type="text" id="username" class="form-control" placeholder="Ej. admin" required value="admin">
+            <i class="fa-solid fa-user"></i>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Contraseña Administrativa</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" class="form-control" placeholder="••••••••••••" required>
+            <i class="fa-solid fa-lock"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="btn-login-submit">
+          Ingresar al Tablero <i class="fa-solid fa-right-to-bracket"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. DASHBOARD MAIN VIEW -->
+  <!-- ========================================== -->
+  <div id="dashboard-screen" class="dashboard-container">
+    <header>
+      <div class="header-logo">
+        <span class="logo-text">FLYTZI</span>
+        <span class="logo-badge">Admin</span>
+      </div>
+      
+      <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('reservations-tab', this)">
+          <i class="fa-solid fa-plane-arrival"></i> Reservaciones
+        </button>
+        <button class="tab-btn" onclick="switchTab('routes-tab', this)">
+          <i class="fa-solid fa-globe"></i> Configuración de Rutas
+        </button>
+      </div>
+
+      <div class="user-profile">
+        <div class="user-badge">
+          <i class="fa-solid fa-circle-user"></i> <span id="admin-user-name">Administrador</span>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()">
+          Cerrar Sesión <i class="fa-solid fa-power-off"></i>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- ========================================== -->
+      <!-- TAB 1: RESERVATIONS SECTION -->
+      <!-- ========================================== -->
+      <section id="reservations-tab" class="tab-section active">
+        <!-- Dashboard Summary Stats -->
+        <div class="stats-grid">
+          <div class="stat-card glass-card">
+            <div class="stat-icon total"><i class="fa-solid fa-clipboard-list"></i></div>
+            <div class="stat-info">
+              <span id="stat-total" class="stat-value">0</span>
+              <span class="stat-label">Total Solicitudes</span>
+            </div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-icon pending"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="stat-info">
+              <span id="stat-pending" class="stat-value">0</span>
+              <span class="stat-label">Pendientes</span>
+            </div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-icon confirmed"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-info">
+              <span id="stat-confirmed" class="stat-value">0</span>
+              <span class="stat-label">Confirmadas</span>
+            </div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-icon paid"><i class="fa-solid fa-credit-card"></i></div>
+            <div class="stat-info">
+              <span id="stat-paid" class="stat-value">0</span>
+              <span class="stat-label">Pagadas</span>
+            </div>
+          </div>
+          <div class="stat-card glass-card">
+            <div class="stat-icon issued"><i class="fa-solid fa-plane"></i></div>
+            <div class="stat-info">
+              <span id="stat-issued" class="stat-value">0</span>
+              <span class="stat-label">Billetes Emitidos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Row -->
+        <div class="controls-row">
+          <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="booking-search" class="search-input" placeholder="Buscar por Nombre, Pasaporte, Ruta o ID..." oninput="filterBookings()">
+          </div>
+          
+          <div class="filter-options">
+            <select id="status-filter" class="select-premium" onchange="filterBookings()">
+              <option value="all">Todos los Estados</option>
+              <option value="pending_validation">Pendientes de Validación</option>
+              <option value="validated">Validados / Confirmados</option>
+              <option value="payment_link_sent">Link de Pago Enviado</option>
+              <option value="paid">Pagados</option>
+              <option value="issuing">Emitiendo PNR</option>
+              <option value="issued">Emitidos</option>
+              <option value="cancelled">Cancelados</option>
+            </select>
+
+            <button class="btn-action-outline" onclick="loadBookingsData()">
+              Actualizar <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bookings Container Cards -->
+        <div class="glass-card" style="position: relative; padding: 25px; min-height: 250px;">
+          <div id="bookings-loader" class="spinner-overlay"><div class="spinner"></div></div>
+          
+          <div id="bookings-empty-state" style="text-align: center; padding: 50px 20px; display: none;">
+            <i class="fa-solid fa-folder-open" style="font-size: 50px; color: var(--text-muted); margin-bottom: 15px;"></i>
+            <h3 style="color: #FFF; margin-bottom: 5px;">No se encontraron solicitudes</h3>
+            <p style="color: var(--text-muted); font-size: 14px;">Intenta cambiar los filtros de búsqueda o regístralas en el metabuscador.</p>
+          </div>
+
+          <div id="bookings-list-container" class="bookings-list">
+            <!-- Dynamic Booking Cards Render here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 2: ROUTES SECTION -->
+      <!-- ========================================== -->
+      <section id="routes-tab" class="tab-section">
+        <div class="routes-layout">
+          <!-- Routes Table -->
+          <div class="table-container glass-card" style="position: relative; min-height: 300px; padding: 15px 0;">
+            <div id="routes-loader" class="spinner-overlay"><div class="spinner"></div></div>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th>Origen</th>
+                  <th>Destino</th>
+                  <th>Intervalo</th>
+                  <th>Prioridad</th>
+                  <th>Último Escaneo</th>
+                  <th>Estado (n8n Scan)</th>
+                  <th>Notas</th>
+                </tr>
+              </thead>
+              <tbody id="routes-table-body">
+                <!-- Dynamic route rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Add Route Card Form -->
+          <div class="glass-card add-route-card">
+            <h3><i class="fa-solid fa-route"></i> Añadir Ruta Estrella</h3>
+            <form id="add-route-form">
+              <div class="form-group" style="margin-bottom: 15px;">
+                <label for="route-origin">Aeropuerto Origen (IATA)</label>
+                <input type="text" id="route-origin" class="form-control" style="padding-left: 15px;" placeholder="Ej. MIA" maxlength="3" required>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 15px;">
+                <label for="route-destination">Aeropuerto Destino (IATA)</label>
+                <input type="text" id="route-destination" class="form-control" style="padding-left: 15px;" placeholder="Ej. MAD" maxlength="3" required>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 15px;">
+                <label for="route-priority">Prioridad de Escaneo</label>
+                <select id="route-priority" class="select-premium" style="width: 100%;">
+                  <option value="1">1 (Máxima frecuencia)</option>
+                  <option value="2">2 (Intermedio)</option>
+                  <option value="3" selected>3 (Normal)</option>
+                  <option value="5">5 (Bajo)</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 15px;">
+                <label for="route-interval">Intervalo de Escaneo (Horas)</label>
+                <input type="number" id="route-interval" class="form-control" style="padding-left: 15px;" placeholder="Ej. 6" min="1" max="24" value="6" required>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label for="route-notes">Notas / Destino estrella</label>
+                <textarea id="route-notes" class="notes-box" placeholder="Ej. Hub prioritario Iberia"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary">
+                Guardar Nueva Ruta <i class="fa-solid fa-circle-plus"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3. DIALOG MODAL: ISSUE TICKET PNR -->
+  <!-- ========================================== -->
+  <div id="issue-modal" class="modal-overlay">
+    <div class="modal-content glass-card">
+      <button class="modal-close" onclick="closeIssueModal()"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="modal-title"><i class="fa-solid fa-plane-circle-check"></i> Emitir Localizador PNR</h3>
+      
+      <form id="issue-form">
+        <input type="hidden" id="issue-booking-id">
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="pnr-code-input">Código Localizador PNR de la Aerolínea</label>
+          <input type="text" id="pnr-code-input" class="form-control" style="padding-left: 15px; font-weight: 700; letter-spacing: 1.5px;" placeholder="Ej. XF8YQD" maxlength="10" required>
+          <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px; line-height: 1.3;">
+            Al registrar el localizador en firme, el estado de la reserva se actualizará a <strong>EMITIDO</strong> y se registrará la fecha y hora actual de la emisión.
+          </p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Registrar PNR y Confirmar Emisión <i class="fa-solid fa-ticket"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Area -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ========================================== -->
+  <!-- 4. CORE CONTROLLER JS -->
+  <!-- ========================================== -->
+  <script>
+    // Configuración Base de API
+    const API_BASE_URL = ''; // En EasyPanel las peticiones van al mismo dominio
+    let jwtToken = localStorage.getItem('flytzi_admin_token') || '';
+    let globalBookings = [];
+    let globalRoutes = [];
+
+    // Al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      if (jwtToken) {
+        showDashboard();
+      } else {
+        showLogin();
+      }
+
+      // Handler Login Form
+      document.getElementById('login-form').addEventListener('submit', handleLogin);
+      // Handler Add Route Form
+      document.getElementById('add-route-form').addEventListener('submit', handleAddRoute);
+      // Handler Issue Form
+      document.getElementById('issue-form').addEventListener('submit', submitIssueTicket);
+    });
+
+    // Muestra pantalla de login
+    function showLogin() {
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('dashboard-screen').style.display = 'none';
+      document.getElementById('password').value = '';
+    }
+
+    // Muestra pantalla de dashboard e inicia cargas
+    function showDashboard() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard-screen').style.display = 'flex';
+      loadBookingsData();
+      loadRoutesData();
+    }
+
+    // Cerrar sesión
+    function handleLogout() {
+      localStorage.removeItem('flytzi_admin_token');
+      jwtToken = '';
+      showToast('Sesión cerrada con éxito', 'info');
+      showLogin();
+    }
+
+    // Iniciar Sesión (Llama a POST /api/admin/login)
+    function handleLogin(e) {
+      e.preventDefault();
+      const password = document.getElementById('password').value;
+      const username = document.getElementById('username').value;
+      const btn = document.getElementById('btn-login-submit');
+      const errorDiv = document.getElementById('login-error');
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Validando credenciales...`;
+      errorDiv.style.display = 'none';
+
+      fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Contraseña incorrecta o usuario inválida.');
+        return res.json();
+      })
+      .then(data => {
+        if (data.token) {
+          jwtToken = data.token;
+          localStorage.setItem('flytzi_admin_token', jwtToken);
+          document.getElementById('admin-user-name').textContent = username || 'Administrador';
+          showToast('Bienvenido al sistema Flytzi', 'success');
+          showDashboard();
+        } else {
+          throw new Error('No se recibió token del servidor.');
+        }
+      })
+      .catch(err => {
+        errorDiv.textContent = err.message || 'Error al conectar con la API.';
+        errorDiv.style.display = 'block';
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = `Ingresar al Tablero <i class="fa-solid fa-right-to-bracket"></i>`;
+      });
+    }
+
+    // Switch de pestañas
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+
+      if (tabId === 'reservations-tab') {
+        loadBookingsData();
+      } else if (tabId === 'routes-tab') {
+        loadRoutesData();
+      }
+    }
+
+    // ==========================================
+    // CARGAR RESERVACIONES DESDE LA API
+    // ==========================================
+    function loadBookingsData() {
+      const loader = document.getElementById('bookings-loader');
+      loader.classList.add('active');
+
+      fetch('/api/admin/bookings', {
+        headers: { 'Authorization': `Bearer ${jwtToken}` }
+      })
+      .then(res => {
+        if (res.status === 401) {
+          handleLogout();
+          throw new Error('Sesión expirada.');
+        }
+        if (!res.ok) throw new Error('Error al obtener reservaciones.');
+        return res.json();
+      })
+      .then(data => {
+        globalBookings = data;
+        renderBookingsList(data);
+        calculateStats(data);
+      })
+      .catch(err => {
+        console.error(err);
+        showToast('Error al actualizar las reservaciones', 'error');
+      })
+      .finally(() => {
+        loader.classList.remove('active');
+      });
+    }
+
+    // Calcular estadísticas
+    function calculateStats(bookings) {
+      document.getElementById('stat-total').textContent = bookings.length;
+      document.getElementById('stat-pending').textContent = bookings.filter(b => b.status === 'pending_validation').length;
+      document.getElementById('stat-confirmed').textContent = bookings.filter(b => b.status === 'validated').length;
+      document.getElementById('stat-paid').textContent = bookings.filter(b => b.status === 'paid').length;
+      document.getElementById('stat-issued').textContent = bookings.filter(b => b.status === 'issued').length;
+    }
+
+    // Renderizar tarjetas de reservas
+    function renderBookingsList(bookings) {
+      const container = document.getElementById('bookings-list-container');
+      const emptyState = document.getElementById('bookings-empty-state');
+      container.innerHTML = '';
+
+      if (bookings.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+
+      bookings.forEach(booking => {
+        const card = document.createElement('div');
+        card.className = 'booking-card glass-card';
+        card.id = `booking-card-${booking.id}`;
+
+        const createdDate = new Date(booking.created_at).toLocaleDateString('es-ES', {
+          day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+        });
+
+        const cabinLabel = booking.cabin === 'business' ? 'Clase Business / Primera' : 'Clase Económica';
+        const passengersLabel = `${booking.passengers} Pasajero(s)`;
+
+        // Generar texto exacto formateado como se manda por WhatsApp
+        const formattedWhatsappText = generateWhatsAppText(booking);
+
+        card.innerHTML = `
+          <!-- Breve vista general -->
+          <div class="booking-header" onclick="toggleCardExpand('${booking.id}')">
+            <div class="route-visual">
+              <span>${booking.origin}</span>
+              <i class="fa-solid fa-arrow-right route-arrow"></i>
+              <span>${booking.destination}</span>
+            </div>
+            <div class="passenger-brief">
+              <span class="passenger-name">${booking.passenger_name}</span>
+              <span class="passenger-contact"><i class="fa-solid fa-phone"></i> ${booking.passenger_phone || 'Sin cel'} • ${booking.passenger_email}</span>
+            </div>
+            <div class="flight-brief">
+              <strong>Salida: ${formatDateInput(booking.departure_date)}</strong>
+              ${booking.return_date ? `<span>Regreso: ${formatDateInput(booking.return_date)}</span>` : '<span style="color: var(--text-muted);">Solo ida</span>'}
+            </div>
+            <div class="price-brief">
+              $${Number(booking.price_quoted).toLocaleString('en-US', {minimumFractionDigits: 0})} USD
+            </div>
+            <div>
+              <span class="status-badge ${booking.status}">
+                ${translateStatus(booking.status)}
+              </span>
+            </div>
+            <div class="arrow-col">
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+
+          <!-- Módulo Detallado Split (Expanded) -->
+          <div class="booking-details">
+            <div class="split-grid">
+              
+              <!-- IZQUIERDA: FORMULARIOS Y DETALLES -->
+              <div>
+                <div class="detail-card">
+                  <div class="detail-title"><i class="fa-solid fa-passport"></i> Datos del Pasajero & Pasaporte</div>
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <label>Nombre Completo</label>
+                      <span>${booking.passenger_name}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>Pasaporte / Documento</label>
+                      <span>${booking.passport_number || 'No especificado'}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>País Emisor Pasaporte</label>
+                      <span>${booking.passport_country || 'No especificado'}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>Vencimiento Pasaporte</label>
+                      <span>${booking.passport_expiry ? formatDateInput(booking.passport_expiry) : 'No especificado'}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>Fecha de Nacimiento</label>
+                      <span>${booking.date_of_birth ? formatDateInput(booking.date_of_birth) : 'No especificado'}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>Registrado en la Web</label>
+                      <span style="font-size:12px; color: var(--text-muted);">${createdDate}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="detail-card">
+                  <div class="detail-title"><i class="fa-solid fa-plane-departure"></i> Detalles del Itinerario Cotizado</div>
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <label>Ruta (Aeropuertos)</label>
+                      <span>${booking.origin} ➔ ${booking.destination}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>Cabina</label>
+                      <span>${cabinLabel}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>Fecha Salida</label>
+                      <span>${formatDateInput(booking.departure_date)}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>Fecha Regreso</label>
+                      <span>${booking.return_date ? formatDateInput(booking.return_date) : 'Solo ida (One-Way)'}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>Pasajeros</label>
+                      <span>${passengersLabel}</span>
+                    </div>
+                    <div class="info-item">
+                      <label>Precio Cotizado Flytzi</label>
+                      <strong style="color: var(--primary); font-size:16px;">$${Number(booking.price_quoted).toLocaleString('en-US', {minimumFractionDigits: 0})} USD</strong>
+                    </div>
+                  </div>
+                  
+                  ${booking.pnr_code ? `
+                    <div style="margin-top: 15px; padding: 10px; background: rgba(0, 242, 254, 0.05); border-radius: 8px; border: 1px solid rgba(0, 242, 254, 0.15); display: flex; justify-content: space-between; align-items: center;">
+                      <div class="info-item">
+                        <label style="color: var(--primary);">Código Localizador PNR</label>
+                        <span class="pnr-box-highlight">${booking.pnr_code}</span>
+                      </div>
+                      <div class="info-item" style="text-align: right;">
+                        <label>Emitido Por</label>
+                        <span style="font-size:11px;">${booking.issued_by || 'Sistema'}</span>
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+
+                <!-- CONTROLES Y ACTUALIZACIONES DE ESTADO -->
+                <div class="detail-card">
+                  <div class="detail-title"><i class="fa-solid fa-sliders"></i> Acciones del Operador</div>
+                  
+                  <div class="admin-controls-grid">
+                    <div class="form-group">
+                      <label>Cambiar Estado de la Solicitud</label>
+                      <select class="select-premium" style="width: 100%; margin-top: 5px;" onchange="updateBookingStatus('${booking.id}', this.value)">
+                        <option value="pending_validation" ${booking.status === 'pending_validation' ? 'selected' : ''}>🟡 Pendiente de Validación</option>
+                        <option value="validated" ${booking.status === 'validated' ? 'selected' : ''}>🟢 Validado / Confirmado</option>
+                        <option value="payment_link_sent" ${booking.status === 'payment_link_sent' ? 'selected' : ''}>🔵 Link de Pago Enviado</option>
+                        <option value="paid" ${booking.status === 'paid' ? 'selected' : ''}>💳 Pagado</option>
+                        <option value="issuing" ${booking.status === 'issuing' ? 'selected' : ''}>⚙️ Emitiendo PNR</option>
+                        <option value="issued" ${booking.status === 'issued' ? 'selected' : ''}>✈️ Emitido</option>
+                        <option value="cancelled" ${booking.status === 'cancelled' ? 'selected' : ''}>🔴 Cancelado</option>
+                      </select>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;">
+                      <!-- Botón Generar Stripe -->
+                      <button class="btn btn-stripe" style="padding: 10px; font-size: 13px;" onclick="generatePaymentLink('${booking.id}')">
+                        Generar Pago Stripe <i class="fa-brands fa-stripe-s"></i>
+                      </button>
+                      
+                      <!-- Botón Emitir PNR -->
+                      <button class="btn btn-issue" style="padding: 10px; font-size: 13px;" onclick="openIssueModal('${booking.id}')">
+                        Emitir Billete (PNR) <i class="fa-solid fa-ticket"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Campo de notas administrativas -->
+                  <div style="margin-top: 15px;">
+                    <label style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Notas Administrativas Privadas</label>
+                    <textarea class="notes-box" id="notes-${booking.id}" placeholder="Escribe detalles internos, notas de millas o acuerdos de pago...">${booking.admin_notes || ''}</textarea>
+                    <button class="btn btn-save-notes" onclick="saveAdminNotes('${booking.id}')">
+                      Guardar Notas <i class="fa-solid fa-floppy-disk"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DERECHA: FORMATO WHATSAPP PARA VALIDACIÓN ÁGIL -->
+              <div class="whatsapp-container">
+                <div class="detail-title" style="color: #25D366; border-color: rgba(37,211,102,0.15);">
+                  <i class="fa-brands fa-whatsapp"></i> Mensaje Enviado por WhatsApp por el Usuario
+                </div>
+                
+                <div class="whatsapp-bubble">
+                  <div class="whatsapp-header-badge">Detalle del Chat</div>${formattedWhatsappText}
+                </div>
+                
+                <div class="whatsapp-actions">
+                  <button class="btn btn-wa-copy" onclick="copyWhatsappTextToClipboard('${booking.id}')">
+                    Copiar Formato WhatsApp <i class="fa-solid fa-copy"></i>
+                  </button>
+                  <button class="btn btn-wa-chat" onclick="openCustomerWhatsAppChat('${booking.passenger_phone}', '${booking.id}')">
+                    Abrir Chat WhatsApp <i class="fa-brands fa-whatsapp"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Toggle expandir tarjeta
+    function toggleCardExpand(bookingId) {
+      const card = document.getElementById(`booking-card-${bookingId}`);
+      
+      // Si ya está expandido, lo cerramos
+      if (card.classList.contains('expanded')) {
+        card.classList.remove('expanded');
+      } else {
+        // Cerramos cualquier otro expandido para mantener orden visual
+        document.querySelectorAll('.booking-card.expanded').forEach(c => c.classList.remove('expanded'));
+        card.classList.add('expanded');
+      }
+    }
+
+    // Formateador de Fechas amigable
+    function formatDateInput(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      // Para evitar corrupciones de timezone local, desglosamos año-mes-día
+      const parts = dateStr.split('T')[0].split('-');
+      if (parts.length === 3) {
+        const year = parts[0];
+        const monthIndex = parseInt(parts[1]) - 1;
+        const day = parts[2];
+        const localDate = new Date(year, monthIndex, day);
+        return localDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+      return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    // Traducir estados a español amigable
+    function translateStatus(status) {
+      switch (status) {
+        case 'pending_validation': return '🟡 Pendiente';
+        case 'validated': return '🟢 Validado';
+        case 'payment_link_sent': return '🔵 Pago Enviado';
+        case 'paid': return '💳 Pagado';
+        case 'issuing': return '⚙️ Emitiendo';
+        case 'issued': return '✈️ Emitido';
+        case 'cancelled': return '🔴 Cancelado';
+        default: return status.toUpperCase();
+      }
+    }
+
+    // Filtrar solicitudes en base a inputs de búsqueda y estado
+    function filterBookings() {
+      const searchQuery = document.getElementById('booking-search').value.toLowerCase().trim();
+      const statusFilter = document.getElementById('status-filter').value;
+
+      const filtered = globalBookings.filter(booking => {
+        const matchesStatus = (statusFilter === 'all' || booking.status === statusFilter);
+        
+        const name = (booking.passenger_name || '').toLowerCase();
+        const passport = (booking.passport_number || '').toLowerCase();
+        const route = `${booking.origin} ${booking.destination}`.toLowerCase();
+        const id = (booking.id || '').toLowerCase();
+        const email = (booking.passenger_email || '').toLowerCase();
+
+        const matchesQuery = !searchQuery || 
+                             name.includes(searchQuery) ||
+                             passport.includes(searchQuery) ||
+                             route.includes(searchQuery) ||
+                             id.includes(searchQuery) ||
+                             email.includes(searchQuery);
+
+        return matchesStatus && matchesQuery;
+      });
+
+      renderBookingsList(filtered);
+    }
+
+    // ==========================================
+    // ACCIONES ADMINISTRATIVAS SOBRE RESERVAS
+    // ==========================================
+
+    // 1. Actualizar Estado (PUT /api/admin/bookings/:id)
+    function updateBookingStatus(id, newStatus) {
+      fetch(`/api/admin/bookings/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al actualizar el estado de la reserva');
+        return res.json();
+      })
+      .then(data => {
+        showToast('Estado actualizado a: ' + translateStatus(newStatus), 'success');
+        
+        // Actualizar datos en memoria local para no tener que refrescar toda la API
+        const idx = globalBookings.findIndex(b => b.id === id);
+        if (idx !== -1) {
+          globalBookings[idx].status = newStatus;
+          calculateStats(globalBookings);
+          
+          // Actualizar visualmente el badge de la cabecera
+          const cardHeader = document.querySelector(`#booking-card-${id} .booking-header`);
+          if (cardHeader) {
+            const badge = cardHeader.querySelector('.status-badge');
+            if (badge) {
+              badge.className = `status-badge ${newStatus}`;
+              badge.textContent = translateStatus(newStatus);
+            }
+          }
+        }
+      })
+      .catch(err => {
+        showToast(err.message, 'error');
+      });
+    }
+
+    // 2. Generar Enlace de Pago Stripe
+    function generatePaymentLink(id) {
+      const card = document.getElementById(`booking-card-${id}`);
+      const btn = card.querySelector('.btn-stripe');
+      
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generando Enlace Stripe...`;
+
+      fetch(`/api/admin/bookings/${id}/generate-payment`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${jwtToken}` }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al generar enlace de pago de Stripe.');
+        return res.json();
+      })
+      .then(data => {
+        if (data.stripe_payment_url) {
+          navigator.clipboard.writeText(data.stripe_payment_url);
+          showToast('¡Link copiado al portapapeles con éxito!', 'success');
+          
+          // Abrir link en pestaña nueva
+          window.open(data.stripe_payment_url, '_blank');
+
+          // Recargar datos
+          loadBookingsData();
+        }
+      })
+      .catch(err => {
+        showToast(err.message, 'error');
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = `Generar Pago Stripe <i class="fa-brands fa-stripe-s"></i>`;
+      });
+    }
+
+    // 3. Emitir PNR - Abrir Modal
+    function openIssueModal(id) {
+      document.getElementById('issue-booking-id').value = id;
+      document.getElementById('pnr-code-input').value = '';
+      document.getElementById('issue-modal').classList.add('active');
+    }
+
+    function closeIssueModal() {
+      document.getElementById('issue-modal').classList.remove('active');
+    }
+
+    // Emitir PNR - Submit
+    function submitIssueTicket(e) {
+      e.preventDefault();
+      const id = document.getElementById('issue-booking-id').value;
+      const pnr_code = document.getElementById('pnr-code-input').value.trim().toUpperCase();
+
+      if (!pnr_code) {
+        showToast('El código PNR es requerido.', 'error');
+        return;
+      }
+
+      fetch(`/api/admin/bookings/${id}/issue`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`
+        },
+        body: JSON.stringify({ pnr_code, issued_by: 'Conserjería Panel Web' })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al registrar la emisión del billete.');
+        return res.json();
+      })
+      .then(data => {
+        showToast('¡Billete emitido y PNR registrado correctamente!', 'success');
+        closeIssueModal();
+        loadBookingsData();
+      })
+      .catch(err => {
+        showToast(err.message, 'error');
+      });
+    }
+
+    // 4. Guardar notas administrativas
+    function saveAdminNotes(id) {
+      const notes = document.getElementById(`notes-${id}`).value.trim();
+      
+      fetch(`/api/admin/bookings/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`
+        },
+        body: JSON.stringify({ admin_notes: notes })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al guardar las notas.');
+        return res.json();
+      })
+      .then(data => {
+        showToast('Notas administrativas guardadas.', 'success');
+        
+        // Actualizar local
+        const idx = globalBookings.findIndex(b => b.id === id);
+        if (idx !== -1) {
+          globalBookings[idx].admin_notes = notes;
+        }
+      })
+      .catch(err => {
+        showToast(err.message, 'error');
+      });
+    }
+
+    // ==========================================
+    // WHATSAPP TEXT GENERATOR & HANDLERS
+    // ==========================================
+    
+    // Genera el bloque de texto exacto
+    function generateWhatsAppText(booking) {
+      const isFlexible = booking.inventory_id ? 'Pre-validado' : 'Requiere búsqueda manual';
+      const cabinLabel = booking.cabin === 'business' ? 'Business / Primera' : 'Económica';
+
+      let message = `¡Hola Flytzi! He registrado una solicitud de reserva desde el metabuscador web. A continuación los detalles:\n\n`;
+      message += `🆔 ID SOLICITUD: ${booking.id}\n`;
+      message += `🚦 ESTADO: PENDING_VALIDATION\n\n`;
+      
+      message += `👤 DATOS DEL PASAJERO:\n`;
+      message += `   - Nombre: ${booking.passenger_name}\n`;
+      message += `   - Pasaporte: ${booking.passport_number || 'N/A'} (País: ${booking.passport_country || 'N/A'} | Vence: ${booking.passport_expiry ? booking.passport_expiry.split('T')[0] : 'N/A'})\n`;
+      message += `   - Email: ${booking.passenger_email}\n`;
+      message += `   - Celular: ${booking.passenger_phone || 'N/A'}\n\n`;
+      
+      message += `✈️ VUELO SOLICITADO:\n`;
+      message += `   - Ruta: ${booking.origin} a ${booking.destination}\n`;
+      message += `   - Fecha de Salida: ${booking.departure_date.split('T')[0]} (${cabinLabel})\n`;
+      if (booking.return_date) {
+        message += `   - Fecha de Regreso: ${booking.return_date.split('T')[0]}\n`;
+      }
+      message += `   - Pasajeros: ${booking.passengers}\n`;
+      message += `   - Inventario de Millas: ${isFlexible}\n\n`;
+
+      message += `💰 TARIFA PRIVADA: $${Number(booking.price_quoted).toLocaleString('en-US', {minimumFractionDigits: 0})} USD\n\n`;
+      message += `Quedo a la espera de que validen la disponibilidad final en firme para recibir mi enlace seguro de pago por Stripe. ¡Muchas gracias!`;
+
+      return message;
+    }
+
+    // Copiar mensaje al portapapeles
+    function copyWhatsappTextToClipboard(id) {
+      const booking = globalBookings.find(b => b.id === id);
+      if (!booking) return;
+
+      const text = generateWhatsAppText(booking);
+      navigator.clipboard.writeText(text);
+      showToast('¡Texto formateado de WhatsApp copiado!', 'success');
+    }
+
+    // Abrir chat de WhatsApp
+    function openCustomerWhatsAppChat(phone, id) {
+      const booking = globalBookings.find(b => b.id === id);
+      if (!booking) return;
+
+      if (!phone) {
+        showToast('Esta reserva no cuenta con teléfono celular.', 'error');
+        return;
+      }
+
+      // Limpiar caracteres del teléfono para enlace de WhatsApp
+      const cleanPhone = phone.replace(/[^0-9]/g, '');
+      const text = `Hola ${booking.passenger_name}, somos del soporte premium de Flytzi. Hemos recibido tu solicitud de vuelo ${booking.origin} ➔ ${booking.destination} por $${Number(booking.price_quoted).toLocaleString('en-US')} USD.`;
+      
+      const waUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(text)}`;
+      window.open(waUrl, '_blank');
+    }
+
+
+    // ==========================================
+    // TAB 2: GESTIÓN DE RUTAS (Playwright targets)
+    // ==========================================
+
+    function loadRoutesData() {
+      const loader = document.getElementById('routes-loader');
+      loader.classList.add('active');
+
+      fetch('/api/admin/routes', {
+        headers: { 'Authorization': `Bearer ${jwtToken}` }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al obtener rutas.');
+        return res.json();
+      })
+      .then(data => {
+        globalRoutes = data;
+        renderRoutesTable(data);
+      })
+      .catch(err => {
+        showToast(err.message, 'error');
+      })
+      .finally(() => {
+        loader.classList.remove('active');
+      });
+    }
+
+    // Renderizar la tabla de rutas
+    function renderRoutesTable(routes) {
+      const tbody = document.getElementById('routes-table-body');
+      tbody.innerHTML = '';
+
+      if (routes.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No hay rutas configuradas para escaneo en la base de datos.</td></tr>`;
+        return;
+      }
+
+      routes.forEach(route => {
+        const lastScanned = route.last_scanned ? new Date(route.last_scanned).toLocaleDateString('es-ES', {
+          day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+        }) : '<span style="color:var(--text-muted)">Nunca</span>';
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td style="font-weight: 700; color: #FFF;">${route.origin}</td>
+          <td style="font-weight: 700; color: #FFF;">${route.destination}</td>
+          <td>Cada ${route.scan_interval}h</td>
+          <td>Prioridad ${route.priority}</td>
+          <td>${lastScanned}</td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" ${route.active ? 'checked' : ''} onchange="toggleRouteActive('${route.id}', this.checked)">
+              <span class="slider"></span>
+            </label>
+          </td>
+          <td style="color:var(--text-muted); font-size:12px;">${route.notes || ''}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Activar/Desactivar Ruta (PUT /api/admin/routes/:id)
+    function toggleRouteActive(id, activeState) {
+      fetch(`/api/admin/routes/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`
+        },
+        body: JSON.stringify({ active: activeState })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al actualizar el estado de la ruta.');
+        return res.json();
+      })
+      .then(data => {
+        showToast(activeState ? 'Ruta ACTIVADA para Playwright' : 'Ruta DESACTIVADA del cron escaneo', 'info');
+      })
+      .catch(err => {
+        showToast(err.message, 'error');
+        loadRoutesData(); // Revertir visualmente el switch
+      });
+    }
+
+    // Agregar Nueva Ruta (POST /api/admin/routes)
+    function handleAddRoute(e) {
+      e.preventDefault();
+      
+      const origin = document.getElementById('route-origin').value.trim().toUpperCase();
+      const destination = document.getElementById('route-destination').value.trim().toUpperCase();
+      const priority = parseInt(document.getElementById('route-priority').value);
+      const scan_interval = parseInt(document.getElementById('route-interval').value);
+      const notes = document.getElementById('route-notes').value.trim();
+
+      if (origin.length !== 3 || destination.length !== 3) {
+        showToast('Los códigos IATA deben tener exactamente 3 caracteres.', 'error');
+        return;
+      }
+
+      fetch('/api/admin/routes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`
+        },
+        body: JSON.stringify({ origin, destination, priority, scan_interval, notes })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al crear la nueva ruta estrella. ¿Ruta ya existe?');
+        return res.json();
+      })
+      .then(data => {
+        showToast('¡Ruta estrella añadida con éxito!', 'success');
+        document.getElementById('add-route-form').reset();
+        loadRoutesData(); // Recargar tabla
+      })
+      .catch(err => {
+        showToast(err.message, 'error');
+      });
+    }
+
+
+    // ==========================================
+    // SISTEMA DE TOASTS FLUIDO
+    // ==========================================
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast glass-card ${type}`;
+
+      let icon = 'fa-circle-info';
+      if (type === 'success') icon = 'fa-circle-check';
+      if (type === 'error') icon = 'fa-triangle-exclamation';
+
+      toast.innerHTML = `
+        <i class="fa-solid ${icon}"></i>
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+
+      // Eliminar después de 4 segundos con animación fluida
+      setTimeout(() => {
+        toast.classList.add('toast-closing');
+        toast.addEventListener('animationend', () => {
+          toast.remove();
+        });
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
