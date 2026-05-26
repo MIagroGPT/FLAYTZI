@@ -2016,4 +2016,61 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* ==========================================================================
+   CORRECCIÓN GLOBAL DE OVERFLOW Y RESPONSIVIDAD MÓVIL
+   ========================================================================== */
+
+/* Evitar desborde horizontal en toda la plataforma */
+html, body {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* Responsividad para el Header y Navegación en Pantallas Pequeñas (Móviles) */
+@media (max-width: 767px) {
+  .header-container {
+    height: 60px;
+    padding: 0 16px;
+  }
+
+  .main-nav {
+    display: none !important; /* Ocultar menú enlaces en móvil para evitar colisión de elementos */
+  }
+
+  .logo-text {
+    font-size: 19px;
+    letter-spacing: 1px;
+  }
+
+  .logo-tag {
+    font-size: 7.5px;
+    letter-spacing: 1px;
+    margin-top: -2px;
+  }
+
+  .header-actions .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+}
+
+/* Optimización extra del buscador en dispositivos muy pequeños */
+@media (max-width: 576px) {
+  .search-panel {
+    padding: 20px 16px; /* Dar más espacio en pantalla reduciendo el padding interior */
+  }
+  
+  .trip-type-tabs {
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+  }
+  
+  .tab-btn {
+    padding: 6px 12px;
+    font-size: 12.5px;
+  }
+}
+
+
 
