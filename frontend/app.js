@@ -800,3 +800,38 @@ window.addEventListener('click', (event) => {
     closeBookingModal();
   }
 });
+
+// 12. SELECCIÓN RÁPIDA DE RUTAS ESTRELLA
+function quickSelectRoute(originCodeVal, originNameVal, destCodeVal, destNameVal) {
+  const originInput = document.getElementById('origin-input');
+  const destInput = document.getElementById('dest-input');
+  const originCode = document.getElementById('origin-code');
+  const destCode = document.getElementById('dest-code');
+  const clearOrigin = document.getElementById('clear-origin');
+  const clearDest = document.getElementById('clear-dest');
+
+  if (originInput && destInput && originCode && destCode) {
+    originInput.value = originNameVal;
+    originCode.value = originCodeVal;
+    searchState.originName = originNameVal;
+
+    destInput.value = destNameVal;
+    destCode.value = destCodeVal;
+    searchState.destName = destNameVal;
+
+    if (clearOrigin) clearOrigin.style.display = 'block';
+    if (clearDest) clearDest.style.display = 'block';
+
+    // Desplazar suavemente de regreso al formulario de búsqueda
+    const searchForm = document.getElementById('search-form');
+    if (searchForm) {
+      searchForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Enfocar en la fecha de salida para que sigan con su flujo
+      const depDate = document.getElementById('departure-date');
+      if (depDate) {
+        setTimeout(() => depDate.focus(), 800);
+      }
+    }
+  }
+}
+

@@ -30,6 +30,7 @@
       </div>
       <nav class="main-nav">
         <ul>
+          <li><a href="#rutas-activas" class="nav-link">Rutas Disponibles</a></li>
           <li><a href="#garantias" class="nav-link">Garantías</a></li>
           <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
           <li><a href="#nosotros" class="nav-link">Metodología</a></li>
@@ -218,6 +219,443 @@
       <!-- Lista de Tarjetas de Vuelo -->
       <div class="flights-list" id="flights-list">
         <!-- Generado dinámicamente desde JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN: GUÍA DE RUTAS ACTIVAS (12 RUTAS ESTRELLA) -->
+  <section class="routes-guide-section" id="rutas-activas">
+    <div class="container">
+      <div class="section-intro">
+        <span class="section-badge"><i class="fa-solid fa-star"></i> Rutas Estrella Habilitadas</span>
+        <h2 class="section-title">Nuestras 12 Rutas de Alta Frecuencia</h2>
+        <p class="section-subtitle">Escaneamos estas rutas clave de forma continua en cabinas Business y Económica. Selecciona una ruta para iniciar tu búsqueda instantánea.</p>
+      </div>
+
+      <div class="routes-table-wrapper">
+        <table class="routes-table">
+          <thead>
+            <tr>
+              <th>Origen</th>
+              <th></th>
+              <th>Destino</th>
+              <th>Frecuencia de Escaneo</th>
+              <th>Cabinas Disponibles</th>
+              <th>Ahorro Promedio</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- RUTA 1: MEX ➔ MAD -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 40%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MEX', 'CDMX (MEX)', 'MAD', 'Madrid (MAD)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 2: MAD ➔ MEX -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 40%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MAD', 'Madrid (MAD)', 'MEX', 'CDMX (MEX)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 3: MEX ➔ MIA -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Miami (MIA)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 30%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MEX', 'CDMX (MEX)', 'MIA', 'Miami (MIA)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 4: MIA ➔ MEX -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Miami (MIA)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 30%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MIA', 'Miami (MIA)', 'MEX', 'CDMX (MEX)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 5: MEX ➔ JFK -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Nueva York (JFK)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 35%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MEX', 'CDMX (MEX)', 'JFK', 'Nueva York (JFK)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 6: JFK ➔ MEX -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Nueva York (JFK)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 35%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('JFK', 'Nueva York (JFK)', 'MEX', 'CDMX (MEX)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 7: MEX ➔ LHR -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Londres (LHR)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 40%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MEX', 'CDMX (MEX)', 'LHR', 'Londres (LHR)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 8: LHR ➔ MEX -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Londres (LHR)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>CDMX (MEX)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 40%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('LHR', 'Londres (LHR)', 'MEX', 'CDMX (MEX)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 9: MIA ➔ MAD -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Miami (MIA)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 35%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MIA', 'Miami (MIA)', 'MAD', 'Madrid (MAD)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 10: MAD ➔ MIA -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Miami (MIA)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 35%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MAD', 'Madrid (MAD)', 'MIA', 'Miami (MIA)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 11: JFK ➔ MAD -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Nueva York (JFK)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 38%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('JFK', 'Nueva York (JFK)', 'MAD', 'Madrid (MAD)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- RUTA 12: MAD ➔ JFK -->
+            <tr>
+              <td data-label="Origen">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-departure"></i>
+                  <span>Madrid (MAD)</span>
+                </div>
+              </td>
+              <td class="route-cell-direction"><i class="fa-solid fa-right-long"></i></td>
+              <td data-label="Destino">
+                <div class="route-cell-airport">
+                  <i class="fa-solid fa-plane-arrival"></i>
+                  <span>Nueva York (JFK)</span>
+                </div>
+              </td>
+              <td data-label="Frecuencia de Escaneo">
+                <span class="badge-scan"><i class="fa-solid fa-circle"></i> Cada 12 horas</span>
+              </td>
+              <td data-label="Cabinas Disponibles">
+                <div class="cabin-badges">
+                  <span class="badge-cabin business">Business</span>
+                  <span class="badge-cabin economy">Económica</span>
+                </div>
+              </td>
+              <td data-label="Ahorro Promedio">
+                <span class="saving-highlight">Hasta 38%</span>
+              </td>
+              <td data-label="Acción">
+                <button class="btn-quick-select" onclick="quickSelectRoute('MAD', 'Madrid (MAD)', 'JFK', 'Nueva York (JFK)')">
+                  <span>Seleccionar</span> <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
