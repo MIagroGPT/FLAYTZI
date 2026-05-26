@@ -42,7 +42,8 @@
     },
     {
       "parameters": {
-        "jsCode": "const datesToScan = [15, 30, 45, 60]; // Días desde hoy\nconst cabins = ['economy', 'business'];\nconst output = [];\n\nfor (const item of items) {\n  const route = item.json;\n  \n  datesToScan.forEach(days => {\n    const targetDate = new Date();\n    targetDate.setDate(targetDate.getDate() + days);\n    const dateStr = targetDate.toISOString().split('T')[0];\n    \n    cabins.forEach(cabin => {\n      output.push({\n        json: {\n          route_id: route.id,\n          origin: route.origin,\n          destination: route.destination,\n          date: dateStr,\n          cabin: cabin\n        }\n      });\n    });\n  });\n}\n\nreturn output;"
+        "jsCode": "const datesToScan = Array.from({length: 15}, (_, i) => i + 1); // 1 a 15 días consecutivos\nconst cabins = ['economy', 'business'];\nconst output = [];\n\nfor (const item of items) {\n  const route = item.json;\n  \n  datesToScan.forEach(days => {\n    const targetDate = new Date();\n    targetDate.setDate(targetDate.getDate() + days);\n    const dateStr = targetDate.toISOString().split('T')[0];\n    \n    cabins.forEach(cabin => {\n      output.push({\n        json: {\n          route_id: route.id,\n          origin: route.origin,\n          destination: route.destination,\n          date: dateStr,\n          cabin: cabin\n        }\n      });\n    });\n  });\n}\n\nreturn output;"
+
       },
       "id": "ab708f31-872f-410a-8bf8-2a819b16acb8",
       "name": "Generar Fechas y Cabinas",
