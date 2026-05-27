@@ -124,7 +124,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status\n) VALUES (\n  '{{ $(\\'Split in Batches\\').item.json.route_id }}',\n  '{{ $(\\'Split in Batches\\').item.json.origin }}',\n  '{{ $(\\'Split in Batches\\').item.json.destination }}',\n  '{{ $(\\'Split in Batches\\').item.json.date }}',\n  NOW() - INTERVAL '1 minute',\n  NOW(),\n  {{ $(\\'Consultar Playwright Worker\\').item.json.results_count || 0 }},\n  'success'\n);"
+        "query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status\n) VALUES (\n  '{{ $(\"Split in Batches\").item.json.route_id }}',\n  '{{ $(\"Split in Batches\").item.json.origin }}',\n  '{{ $(\\"Split in Batches\").item.json.destination }}',\n  '{{ $(\\"Split in Batches\").item.json.date }}',\n  NOW() - INTERVAL '1 minute',\n  NOW(),\n  {{ $(\"Consultar Playwright Worker\").item.json.results_count || 0 }},\n  'success'\n);"
       },
       "id": "e2ba3472-88ee-449b-98cf-b0d00f681a97",
       "name": "Registrar Log Éxito",
@@ -143,7 +143,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status, error_message\n) VALUES (\n  '{{ $(\\'Split in Batches\\').item.json.route_id }}',\n  '{{ $(\\'Split in Batches\\').item.json.origin }}',\n  '{{ $(\\'Split in Batches\\').item.json.destination }}',\n  '{{ $(\\'Split in Batches\\').item.json.date }}',\n  NOW(),\n  NOW(),\n  0,\n  'failed',\n  'Error en el HTTP Request o tiempo de respuesta excedido.'\n);"
+        "query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status, error_message\n) VALUES (\n  '{{ $(\"Split in Batches\").item.json.route_id }}',\n  '{{ $(\"Split in Batches\").item.json.origin }}',\n  '{{ $(\\"Split in Batches\").item.json.destination }}',\n  '{{ $(\\"Split in Batches\").item.json.date }}',\n  NOW(),\n  NOW(),\n  0,\n  'failed',\n  'Error en el HTTP Request o tiempo de respuesta excedido.'\n);"
       },
       "id": "e2ba3472-88ee-449b-98cf-b0d00f681a98",
       "name": "Registrar Log Fallo",
