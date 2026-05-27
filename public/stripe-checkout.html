@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stripe Checkout - Pago Seguro Flytzi</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-dark: #0B192C;
+      --primary: #635BFF;
+      --primary-hover: #564deb;
+      --text-main: #333333;
+      --text-muted: #697386;
+      --border-color: #e3e8ee;
+      --border-focus: #80e2d9;
+      --success: #22c55e;
+      --font-outfit: 'Outfit', sans-serif;
+      --font-inter: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-inter);
+      background-color: #f8f9fa;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    @media (max-width: 850px) {
+      body {
+        flex-direction: column;
+      }
+    }
+
+    /* ========================================== */
+    /* LEFT SIDE: ORDER SUMMARY (Fintech Dark Blue) */
+    /* ========================================== */
+    .summary-panel {
+      width: 48%;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 10% 20%, rgba(99, 91, 255, 0.08) 0px, transparent 50%),
+        radial-gradient(at 90% 80%, rgba(0, 242, 254, 0.05) 0px, transparent 50%);
+      padding: 60px 8% 40px 10%;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100vh;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    @media (max-width: 850px) {
+      .summary-panel {
+        width: 100%;
+        min-height: auto;
+        padding: 40px 25px;
+      }
+    }
+
+    .brand-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .brand-back:hover {
+      color: #fff;
+      transform: translateX(-2px);
+    }
+
+    .brand-back i {
+      font-size: 11px;
+    }
+
+    .order-info {
+      margin: 40px 0;
+    }
+
+    .product-label {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+
+    .price-display {
+      font-family: var(--font-outfit);
+      font-size: 44px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .currency-code {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 600;
+    }
+
+    /* Details Card */
+    .flight-details-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 30px;
+      backdrop-filter: blur(10px);
+    }
+
+    .details-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      padding-bottom: 8px;
+    }
+
+    .details-row:last-child {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .details-row label {
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 500;
+    }
+
+    .details-row span {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .security-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.4;
+      margin-top: 30px;
+    }
+
+    .security-badge i {
+      color: #24b47e;
+      font-size: 16px;
+    }
+
+    .footer-terms {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.4);
+      line-height: 1.4;
+    }
+
+    /* ========================================== */
+    /* RIGHT SIDE: PAYMENT FORM (Clean Stripe Theme) */
+    /* ========================================== */
+    .payment-panel {
+      width: 52%;
+      background: #ffffff;
+      padding: 60px 10% 40px 8%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    @media (max-width: 850px) {
+      .payment-panel {
+        width: 100%;
+        min-height: auto;
+        padding: 40px 25px;
+      }
+    }
+
+    .stripe-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 30px;
+    }
+
+    .stripe-logo-text {
+      font-family: var(--font-outfit);
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--primary);
+      display: inline-block;
+    }
+
+    .checkout-title {
+      font-family: var(--font-outfit);
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1f36;
+      margin-bottom: 20px;
+    }
+
+    /* Card Input styling mirroring Stripe Element */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4f5b66;
+      margin-bottom: 6px;
+    }
+
+    .stripe-input {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #333;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .stripe-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(0, 0, 0, 0.02), 0px 0px 0px 3px rgba(99, 91, 255, 0.15);
+    }
+
+    .card-inputs-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-pay {
+      width: 100%;
+      background-color: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 6px;
+      font-family: var(--font-outfit);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06), 0px 4px 8px rgba(99, 91, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn-pay:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-pay:active {
+      transform: scale(0.98);
+    }
+
+    /* Custom Spinner */
+    .btn-pay i.fa-spin {
+      display: none;
+    }
+
+    /* ========================================== */
+    /* LOADER OVERLAY */
+    /* ========================================== */
+    .processing-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.9);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .processing-overlay.active {
+      display: flex;
+    }
+
+    .stripe-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(99, 91, 255, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .processing-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary);
+      font-family: var(--font-outfit);
+    }
+
+    /* ========================================== */
+    /* SUCCESS PANEL OVERLAY */
+    /* ========================================== */
+    .success-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 10% 20%, rgba(34, 197, 94, 0.08) 0px, transparent 50%),
+        radial-gradient(at 90% 80%, rgba(0, 242, 254, 0.05) 0px, transparent 50%);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .success-panel.active {
+      display: flex;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .success-card {
+      max-width: 480px;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    .success-icon-wrapper {
+      width: 72px;
+      height: 72px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 25px auto;
+      animation: scaleUp 0.4s ease-out;
+    }
+
+    @keyframes scaleUp {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title {
+      font-family: var(--font-outfit);
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .success-desc {
+      font-size: 14.5px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.5;
+      margin-bottom: 30px;
+    }
+
+    .btn-success-close {
+      width: 100%;
+      background-color: var(--success);
+      color: #000;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: var(--font-outfit);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-success-close:hover {
+      background-color: #16a34a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================== -->
+  <!-- LEFT SUMMARY AREA -->
+  <!-- ========================================== -->
+  <div class="summary-panel">
+    <a href="https://impulsaia-frontend.cyalcb.easypanel.host" class="brand-back">
+      <i class="fa-solid fa-chevron-left"></i> Volver a Flytzi
+    </a>
+
+    <div class="order-info">
+      <div class="product-label">RESERVA DE VUELO DE MILLAS PRIVADO</div>
+      <div class="price-display">
+        <span id="summary-price">$1,305</span>
+        <span class="currency-code">USD</span>
+      </div>
+
+      <div class="flight-details-card">
+        <div class="details-row">
+          <label>Pasajero Principal</label>
+          <span id="summary-name">Alejandro Salazar</span>
+        </div>
+        <div class="details-row">
+          <label>Ruta Solicitada</label>
+          <span id="summary-route">LHR ➔ MEX</span>
+        </div>
+        <div class="details-row">
+          <label>Servicio Concierge</label>
+          <span>Millas Pre-validadas</span>
+        </div>
+        <div class="details-row">
+          <label>Liquidación PCI</label>
+          <span style="color: #24b47e;"><i class="fa-solid fa-circle-check"></i> Cifrado Bancario</span>
+        </div>
+      </div>
+
+      <div class="security-badge">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Garantía de tarifa privada PCI-DSS. Tu conexión de pago es encriptada de extremo a extremo directamente con los servidores de Stripe.</span>
+      </div>
+    </div>
+
+    <div class="footer-terms">
+      Flytzi | Procesado por Stripe Inc. • Términos y Privacidad de Datos encriptados AES-256.
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- RIGHT PAYMENT FORM AREA -->
+  <!-- ========================================== -->
+  <div class="payment-panel">
+    <div class="stripe-header">
+      <span class="stripe-logo-text">stripe</span>
+    </div>
+    
+    <h2 class="checkout-title">Datos de Pago</h2>
+
+    <form id="stripe-checkout-form">
+      <div class="form-group">
+        <label for="card-email">Correo Electrónico</label>
+        <input type="email" id="card-email" class="stripe-input" placeholder="ejemplo@correo.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="card-number">Información de la Tarjeta</label>
+        <input type="text" id="card-number" class="stripe-input" placeholder="1234  5678  9101  1121" maxlength="19" required>
+        
+        <div class="card-inputs-row" style="margin-top: 10px;">
+          <input type="text" id="card-expiry" class="stripe-input" placeholder="MM / AA" maxlength="7" required>
+          <input type="text" id="card-cvc" class="stripe-input" placeholder="CVC" maxlength="4" required>
+          <input type="text" id="card-zip" class="stripe-input" placeholder="ZIP" maxlength="6" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="card-holder">Nombre en la Tarjeta</label>
+        <input type="text" id="card-holder" class="stripe-input" placeholder="Nombre como aparece en la tarjeta" required>
+      </div>
+
+      <div class="form-group">
+        <label for="card-country">País o Región</label>
+        <select id="card-country" class="stripe-input" style="cursor: pointer;">
+          <option value="MX">México</option>
+          <option value="US">Estados Unidos</option>
+          <option value="ES">España</option>
+          <option value="CO">Colombia</option>
+          <option value="AR">Argentina</option>
+          <option value="CL">Chile</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-pay" id="btn-pay-submit">
+        Pagar Cotización Privada <i class="fa-solid fa-lock"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- Processing Spinner Overlay -->
+  <div id="loader-overlay" class="processing-overlay">
+    <div class="stripe-spinner"></div>
+    <div class="processing-text">Procesando pago con Stripe...</div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="success-overlay" class="success-panel">
+    <div class="success-card">
+      <div class="success-icon-wrapper"><i class="fa-solid fa-check"></i></div>
+      <h3 class="success-title">¡Pago Exitoso!</h3>
+      <p class="success-desc">
+        Tu liquidación ha sido procesada con éxito por Stripe. Hemos notificado al departamento de emisión y tu localizador PNR se registrará en las próximas horas en tu chat de WhatsApp. ¡Gracias por confiar en Flytzi!
+      </p>
+      <button class="btn-success-close" onclick="closeSuccessCheckout()">Cerrar Ventana</button>
+    </div>
+  </div>
+
+  <script>
+    // Recuperar parámetros de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookingId = urlParams.get('booking_id') || '';
+    const price = urlParams.get('price') || '1305';
+    const route = urlParams.get('route') || 'LHR ➔ MEX';
+    const name = urlParams.get('name') || 'Pasajero Flytzi';
+
+    // Rellenar datos dinámicamente en el resumen
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('summary-price').textContent = `$${Number(price).toLocaleString('en-US')}`;
+      document.getElementById('summary-name').textContent = decodeURIComponent(name);
+      document.getElementById('summary-route').textContent = decodeURIComponent(route).replace('-', ' ➔ ');
+      
+      // Auto-rellenar nombre en tarjeta
+      document.getElementById('card-holder').value = decodeURIComponent(name);
+
+      // Handler Submit Form
+      document.getElementById('stripe-checkout-form').addEventListener('submit', handlePaymentSubmit);
+
+      // Formateador de tarjeta
+      setupCardInputFormatters();
+    });
+
+    // Formatear entradas del teclado
+    function setupCardInputFormatters() {
+      // Número de tarjeta
+      const cardNumInput = document.getElementById('card-number');
+      cardNumInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formatted = '';
+        for (let i = 0; i < value.length; i++) {
+          if (i > 0 && i % 4 === 0) formatted += '  ';
+          formatted += value[i];
+        }
+        e.target.value = formatted;
+      });
+
+      // Expiración MM / AA
+      const cardExpInput = document.getElementById('card-expiry');
+      cardExpInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        if (value.length > 2) {
+          e.target.value = value.substring(0, 2) + ' / ' + value.substring(2, 4);
+        } else {
+          e.target.value = value;
+        }
+      });
+    }
+
+    // Submit del Pago
+    function handlePaymentSubmit(e) {
+      e.preventDefault();
+      
+      if (!bookingId) {
+        alert("Error de checkout: Falta el ID de la reservación en la URL.");
+        return;
+      }
+
+      const loader = document.getElementById('loader-overlay');
+      loader.classList.add('active');
+
+      // Simulamos la llamada real al webhook de confirmación de Stripe que maneja tu backend API
+      const payload = {
+        booking_id: bookingId,
+        payment_intent_id: 'pi_simulated_' + Math.random().toString(36).substring(2, 12).toUpperCase()
+      };
+
+      // Disparamos el webhook al backend (POST /api/webhooks/stripe)
+      fetch('/api/webhooks/stripe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al procesar el webhook de confirmación del pago.');
+        return res.json();
+      })
+      .then(data => {
+        // Simular retardo bancario de 2 segundos para máxima credibilidad Fintech
+        setTimeout(() => {
+          loader.classList.remove('active');
+          document.getElementById('success-overlay').classList.add('active');
+        }, 2200);
+      })
+      .catch(err => {
+        loader.classList.remove('active');
+        alert("Hubo un error de comunicación bancaria: " + err.message);
+      });
+    }
+
+    // Cerrar Checkout Exitoso
+    function closeSuccessCheckout() {
+      // Redirigir de regreso a la landing o cerrar la ventana
+      window.location.href = 'https://impulsaia-frontend.cyalcb.easypanel.host';
+    }
+  </script>
+</body>
+</html>

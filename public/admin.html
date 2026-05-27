@@ -1909,11 +1909,12 @@
       })
       .then(data => {
         if (data.stripe_payment_url) {
-          navigator.clipboard.writeText(data.stripe_payment_url);
+          const absoluteUrl = window.location.origin + data.stripe_payment_url;
+          navigator.clipboard.writeText(absoluteUrl);
           showToast('¡Link copiado al portapapeles con éxito!', 'success');
           
           // Abrir link en pestaña nueva
-          window.open(data.stripe_payment_url, '_blank');
+          window.open(absoluteUrl, '_blank');
 
           // Recargar datos
           loadBookingsData();

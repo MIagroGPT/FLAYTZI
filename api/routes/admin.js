@@ -125,8 +125,7 @@ router.post('/bookings/:id/generate-payment', auth, async (req, res) => {
     const booking = rows[0];
 
     // Generar un link simulado premium de pago Stripe
-    const sessionRandomId = Math.random().toString(36).substring(2, 15).toUpperCase();
-    const stripePaymentUrl = `https://checkout.stripe.com/pay/cs_live_${sessionRandomId}?amount=${booking.price_quoted}`;
+    const stripePaymentUrl = `/stripe-checkout.html?booking_id=${booking.id}&price=${booking.price_quoted}&route=${booking.origin}-${booking.destination}&name=${encodeURIComponent(booking.passenger_name)}`;
 
     // Actualizar el estado de la reserva
     const updateQuery = `
