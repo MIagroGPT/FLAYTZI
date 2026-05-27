@@ -7,13 +7,13 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 */6 * * *"
+              "expression": "0 */12 * * *"
             }
           ]
         }
       },
       "id": "c62fbdfb-c01d-407f-be9d-4767428ea950",
-      "name": "Cron Trigger (Cada 6 horas)",
+      "name": "Cron Trigger (Cada 12 horas)",
       "type": "n8n-nodes-base.cron",
       "typeVersion": 1,
       "position": [
@@ -180,7 +180,7 @@
     }
   ],
   "connections": {
-    "Cron Trigger (Cada 6 horas)": {
+    "Cron Trigger (Cada 12 horas)": {
       "main": [
         [
           {
