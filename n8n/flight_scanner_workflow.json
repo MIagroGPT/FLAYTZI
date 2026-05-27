@@ -75,7 +75,7 @@
         "url": "http://playwright:3001/scan",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"origin\": \"{{ $json.origin }}\",\n  \"destination\": \"{{ $json.destination }}\",\n  \"departure_date\": \"{{ $json.date }}\",\n  \"cabin\": \"{{ $json.cabin }}\"\n}",
+        "=jsonBody": "{\n  \"origin\": \"{{ $json.origin }}\",\n  \"destination\": \"{{ $json.destination }}\",\n  \"departure_date\": \"{{ $json.date }}\",\n  \"cabin\": \"{{ $json.cabin }}\"\n}",
         "options": {
           "timeout": 120000
         }
