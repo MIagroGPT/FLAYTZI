@@ -1899,6 +1899,53 @@
       btn.disabled = true;
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generando Enlace Stripe...`;
 
+      // Abrir pestaña en blanco inmediatamente para evitar el bloqueador de popups
+      const paymentWindow = window.open('', '_blank');
+      if (paymentWindow) {
+        paymentWindow.document.write(`
+          <html>
+            <head>
+              <title>Cargando Checkout Stripe...</title>
+              <style>
+                body {
+                  font-family: 'Inter', -apple-system, sans-serif;
+                  background-color: #0B192C;
+                  color: #fff;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                  align-items: center;
+                  height: 100vh;
+                  margin: 0;
+                }
+                .spinner {
+                  width: 50px;
+                  height: 50px;
+                  border: 4px solid rgba(255,255,255,0.1);
+                  border-top: 4px solid #635BFF;
+                  border-radius: 50%;
+                  animation: spin 1s linear infinite;
+                  margin-bottom: 20px;
+                }
+                @keyframes spin {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+                .text {
+                  font-size: 16px;
+                  font-weight: 500;
+                  color: rgba(255,255,255,0.8);
+                }
+              </style>
+            </head>
+            <body>
+              <div class="spinner"></div>
+              <div class="text">Abriendo pasarela de pago seguro...</div>
+            </body>
+          </html>
+        `);
+      }
+
       fetch(`/api/admin/bookings/${id}/generate-payment`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${jwtToken}` }
@@ -1909,18 +1956,28 @@
       })
       .then(data => {
         if (data.stripe_payment_url) {
-          navigator.clipboard.writeText(data.stripe_payment_url);
+          const absoluteUrl = window.location.origin + data.stripe_payment_url;
+          navigator.clipboard.writeText(absoluteUrl);
           showToast('¡Link copiado al portapapeles con éxito!', 'success');
           
-          // Abrir link en pestaña nueva
-          window.open(data.stripe_payment_url, '_blank');
+          // Redirigir la pestaña ya abierta al checkout de Stripe
+          if (paymentWindow) {
+            paymentWindow.location.href = absoluteUrl;
+          } else {
+            window.open(absoluteUrl, '_blank');
+          }
 
           // Recargar datos
           loadBookingsData();
+        } else {
+          throw new Error('No se recibió la URL de pago.');
         }
       })
       .catch(err => {
         showToast(err.message, 'error');
+        if (paymentWindow) {
+          paymentWindow.close();
+        }
       })
       .finally(() => {
         btn.disabled = false;
