@@ -217,7 +217,33 @@ router.put('/bookings/:id', auth, async (req, res) => {
     res.json({ success: true, reservation: rows[0] });
   } catch (error) {
     console.error("[Admin Update Booking Error]:", error);
-    res.status(500).json({ error: 'Error al actualizar la reserva.' });
+// POST /api/admin/clean-database - Limpiar base de datos dejando las rutas intactas
+router.post('/clean-database', auth, async (req, res) => {
+  try {
+    // Truncar las tablas secundarias de reservas, inventario, logs de escaneo y logs de búsqueda
+    await db.query('TRUNCATE TABLE reservations, award_inventory, scan_logs, search_logs CASCADE;');
+    
+    // Obtener recuentos actualizados para confirmación
+    const resCount = await db.query('SELECT COUNT(*) FROM reservations');
+    const invCount = await db.query('SELECT COUNT(*) FROM award_inventory');
+    const scanCount = await db.query('SELECT COUNT(*) FROM scan_logs');
+    const searchCount = await db.query('SELECT COUNT(*) FROM search_logs');
+    const routeCount = await db.query('SELECT COUNT(*) FROM routes');
+
+    res.json({
+      success: true,
+      message: 'Base de datos limpiada correctamente. Las rutas de escaneo se mantuvieron intactas.',
+      counts: {
+        reservations: parseInt(resCount.rows[0].count),
+        award_inventory: parseInt(invCount.rows[0].count),
+        scan_logs: parseInt(scanCount.rows[0].count),
+        search_logs: parseInt(searchCount.rows[0].count),
+        routes: parseInt(routeCount.rows[0].count)
+      }
+    });
+  } catch (error) {
+    console.error("[Admin Clean DB Error]:", error);
+    res.status(500).json({ error: 'Error interno al limpiar la base de datos.' });
   }
 });
 

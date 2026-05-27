@@ -1233,6 +1233,9 @@
       </div>
 
       <div class="user-profile">
+        <button class="btn-clean-db" onclick="confirmCleanDatabase()" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; margin-right: 15px;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'">
+          Limpiar BD <i class="fa-solid fa-trash-can"></i>
+        </button>
         <div class="user-badge">
           <i class="fa-solid fa-circle-user"></i> <span id="admin-user-name">Administrador</span>
         </div>
@@ -2240,6 +2243,42 @@
       })
       .catch(err => {
         showToast(err.message, 'error');
+      });
+    // 5. Limpieza Segura de Base de Datos (Excluyendo Rutas)
+    function confirmCleanDatabase() {
+      const confirmFirst = confirm("⚠️ ¡ADVERTENCIA DE SEGURIDAD! ⚠️\n\n¿Estás completamente seguro de que deseas limpiar la base de datos?\n\nEsta acción eliminará de forma permanente:\n- Todas las reservaciones y datos de pasajeros.\n- Todo el inventario de millas guardado.\n- Todos los registros de escaneo (logs) e historial.\n- Todo el historial de búsquedas.\n\nCONSERVACIÓN: Las rutas estrella de escaneo (origen, destino, prioridad, etc.) NO se eliminarán y se mantendrán intactas.\n\nEsta acción no se puede deshacer.");
+      
+      if (!confirmFirst) return;
+
+      const confirmSecond = confirm("⚠️ CONFIRMACIÓN DE DOS FACTORES ⚠️\n\n¿Realmente deseas proceder con la purga permanente de la base de datos?");
+      if (!confirmSecond) return;
+
+      showToast('Iniciando limpieza de base de datos...', 'info');
+
+      fetch('/api/admin/clean-database', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al purgar la base de datos.');
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          showToast('¡Base de datos purgada con éxito!', 'success');
+          alert(`¡Limpieza Exitosa!\n\nSe han purgado todas las tablas secundarias de la base de datos.\n\nRegistros restantes:\n- Reservaciones: 0\n- Inventario: 0\n- Logs de Escaneo: 0\n- Logs de Búsqueda: 0\n- Rutas de Escaneo (Conservadas): ${data.counts.routes}`);
+          // Recargar reservaciones para ver los cambios
+          loadBookingsData();
+        } else {
+          throw new Error(data.error || 'No se pudo limpiar la base de datos.');
+        }
+      })
+      .catch(err => {
+        showToast(err.message, 'error');
+        alert("Error de red o permisos: " + err.message);
       });
     }
 
