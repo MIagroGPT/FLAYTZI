@@ -285,7 +285,7 @@ function renderFlightCards(flights) {
     let outboundHTML = `
       <div class="itinerary-row ${flight.returnFlight ? '' : 'no-border'}">
         <div class="airline-info">
-          <div class="airline-logo-badge ${flight.operatingLogo || flight.logo}"><img src="https://pics.avs.io/64/64/${flight.operatingLogo || flight.logo}.png" alt="${flight.operatingLogo || flight.logo}" onerror="this.style.display='none'; this.parentNode.textContent='${flight.operatingLogo || flight.logo}'" style="width: 100%; height: 100%; object-fit: contain; padding: 4px; border-radius: inherit; display: block;"></div>
+          <div class="airline-logo-badge ${flight.operatingLogo || flight.logo}"><img src="https://pics.avs.io/200/80/${flight.operatingLogo || flight.logo}.png" alt="${flight.operatingLogo || flight.logo}" onerror="this.style.display='none'; this.parentNode.textContent='${flight.operatingLogo || flight.logo}'" style="width: 100%; height: 100%; object-fit: contain; padding: 4px; border-radius: inherit; display: block;"></div>
           <div class="airline-details">
             <span class="airline-name">${flight.airline}</span>
             <span style="font-size: 11px; color: var(--accent); font-weight: 700; margin-top: 1px;"><i class="fa-solid fa-circle-check"></i> Aerolínea Operadora: ${flight.operatingAirline || flight.airline}</span>
@@ -321,7 +321,7 @@ function renderFlightCards(flights) {
       inboundHTML = `
         <div class="itinerary-row no-border">
           <div class="airline-info">
-            <div class="airline-logo-badge ${ret.operatingLogo || ret.logo || flight.logo}"><img src="https://pics.avs.io/64/64/${ret.operatingLogo || ret.logo || flight.logo}.png" alt="${ret.operatingLogo || ret.logo || flight.logo}" onerror="this.style.display='none'; this.parentNode.textContent='${ret.operatingLogo || ret.logo || flight.logo}'" style="width: 100%; height: 100%; object-fit: contain; padding: 4px; border-radius: inherit; display: block;"></div>
+            <div class="airline-logo-badge ${ret.operatingLogo || ret.logo || flight.logo}"><img src="https://pics.avs.io/200/80/${ret.operatingLogo || ret.logo || flight.logo}.png" alt="${ret.operatingLogo || ret.logo || flight.logo}" onerror="this.style.display='none'; this.parentNode.textContent='${ret.operatingLogo || ret.logo || flight.logo}'" style="width: 100%; height: 100%; object-fit: contain; padding: 4px; border-radius: inherit; display: block;"></div>
             <div class="airline-details">
               <span class="airline-name">${ret.airline || flight.airline}</span>
               <span style="font-size: 11px; color: var(--accent); font-weight: 700; margin-top: 1px;"><i class="fa-solid fa-circle-check"></i> Aerolínea Operadora: ${ret.operatingAirline || ret.airline || flight.airline}</span>
