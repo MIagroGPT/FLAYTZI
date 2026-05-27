@@ -217,6 +217,10 @@ router.put('/bookings/:id', auth, async (req, res) => {
     res.json({ success: true, reservation: rows[0] });
   } catch (error) {
     console.error("[Admin Update Booking Error]:", error);
+    res.status(500).json({ error: 'Error al actualizar la reserva.' });
+  }
+});
+
 // POST /api/admin/clean-database - Limpiar base de datos dejando las rutas intactas
 router.post('/clean-database', auth, async (req, res) => {
   try {
