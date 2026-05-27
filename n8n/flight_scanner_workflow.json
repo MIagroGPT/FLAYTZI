@@ -75,7 +75,7 @@
         "url": "http://playwright:3001/scan",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\n  \"origin\": \"{{ $json.origin }}\",\n  \"destination\": \"{{ $json.destination }}\",\n  \"departure_date\": \"{{ $json.date }}\",\n  \"cabin\": \"{{ $json.cabin }}\"\n}",
+        "=jsonBody": "{\n  \"origin\": \"{{ $json.origin }}\",\n  \"destination\": \"{{ $json.destination }}\",\n  \"departure_date\": \"{{ $json.date }}\",\n  \"cabin\": \"{{ $json.cabin }}\"\n}",
         "options": {
           "timeout": 120000
         }
@@ -105,7 +105,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO award_inventory (\n  origin, destination, departure_date, cabin, airline, airline_code,\n  flight_number, stops, duration_minutes, miles_required, taxes_usd,\n  price_to_customer, price_market, seats_available, source_url, status, last_checked\n) VALUES (\n  '{{ $json.origin }}', '{{ $json.destination }}', '{{ $json.departure_date }}', '{{ $json.cabin }}',\n  '{{ $json.airline }}', '{{ $json.airline_code }}', '{{ $json.flight_number }}', {{ $json.stops }},\n  {{ $json.duration_minutes }}, {{ $json.miles_required }}, {{ $json.taxes_usd }},\n  {{ $json.price_to_customer }}, {{ $json.price_market }}, {{ $json.seats_available }},\n  '{{ $json.source_url }}', 'available', NOW()\n)\nON CONFLICT (origin, destination, departure_date, cabin, flight_number)\nDO UPDATE SET\n  miles_required = EXCLUDED.miles_required,\n  taxes_usd = EXCLUDED.taxes_usd,\n  price_to_customer = EXCLUDED.price_to_customer,\n  price_market = EXCLUDED.price_market,\n  seats_available = EXCLUDED.seats_available,\n  status = 'available',\n  last_checked = NOW();"
+        "=query": "INSERT INTO award_inventory (\n  origin, destination, departure_date, cabin, airline, airline_code,\n  flight_number, stops, duration_minutes, miles_required, taxes_usd,\n  price_to_customer, price_market, seats_available, source_url, status, last_checked\n) VALUES (\n  '{{ $json.origin }}', '{{ $json.destination }}', '{{ $json.departure_date }}', '{{ $json.cabin }}',\n  '{{ $json.airline }}', '{{ $json.airline_code }}', '{{ $json.flight_number }}', {{ $json.stops }},\n  {{ $json.duration_minutes }}, {{ $json.miles_required }}, {{ $json.taxes_usd }},\n  {{ $json.price_to_customer }}, {{ $json.price_market }}, {{ $json.seats_available }},\n  '{{ $json.source_url }}', 'available', NOW()\n)\nON CONFLICT (origin, destination, departure_date, cabin, flight_number)\nDO UPDATE SET\n  miles_required = EXCLUDED.miles_required,\n  taxes_usd = EXCLUDED.taxes_usd,\n  price_to_customer = EXCLUDED.price_to_customer,\n  price_market = EXCLUDED.price_market,\n  seats_available = EXCLUDED.seats_available,\n  status = 'available',\n  last_checked = NOW();"
       },
       "id": "e2ba3472-88ee-449b-98cf-b0d00f681a96",
       "name": "Guardar Inventario",
@@ -124,7 +124,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status\n) VALUES (\n  '{{ $('Split in Batches').item.json.route_id }}',\n  '{{ $('Split in Batches').item.json.origin }}',\n  '{{ $('Split in Batches').item.json.destination }}',\n  '{{ $('Split in Batches').item.json.date }}',\n  NOW() - INTERVAL '1 minute',\n  NOW(),\n  {{ $input.first().json.results_count || 0 }},\n  'success'\n);"
+        "=query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status\n) VALUES (\n  '{{ $(\\'Split in Batches\\').item.json.route_id }}',\n  '{{ $(\\'Split in Batches\\').item.json.origin }}',\n  '{{ $(\\'Split in Batches\\').item.json.destination }}',\n  '{{ $(\\'Split in Batches\\').item.json.date }}',\n  NOW() - INTERVAL '1 minute',\n  NOW(),\n  {{ $input.first().json.results_count || 0 }},\n  'success'\n);"
       },
       "id": "e2ba3472-88ee-449b-98cf-b0d00f681a97",
       "name": "Registrar Log Éxito",
@@ -143,7 +143,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status, error_message\n) VALUES (\n  '{{ $('Split in Batches').item.json.route_id }}',\n  '{{ $('Split in Batches').item.json.origin }}',\n  '{{ $('Split in Batches').item.json.destination }}',\n  '{{ $('Split in Batches').item.json.date }}',\n  NOW(),\n  NOW(),\n  0,\n  'failed',\n  'Error en el HTTP Request o tiempo de respuesta excedido.'\n);"
+        "=query": "INSERT INTO scan_logs (\n  route_id, origin, destination, scan_date, started_at, finished_at,\n  results_found, status, error_message\n) VALUES (\n  '{{ $(\\'Split in Batches\\').item.json.route_id }}',\n  '{{ $(\\'Split in Batches\\').item.json.origin }}',\n  '{{ $(\\'Split in Batches\\').item.json.destination }}',\n  '{{ $(\\'Split in Batches\\').item.json.date }}',\n  NOW(),\n  NOW(),\n  0,\n  'failed',\n  'Error en el HTTP Request o tiempo de respuesta excedido.'\n);"
       },
       "id": "e2ba3472-88ee-449b-98cf-b0d00f681a98",
       "name": "Registrar Log Fallo",
