@@ -2244,6 +2244,8 @@
       .catch(err => {
         showToast(err.message, 'error');
       });
+    }
+
     // 5. Limpieza Segura de Base de Datos (Excluyendo Rutas)
     function confirmCleanDatabase() {
       const confirmFirst = confirm("⚠️ ¡ADVERTENCIA DE SEGURIDAD! ⚠️\n\n¿Estás completamente seguro de que deseas limpiar la base de datos?\n\nEsta acción eliminará de forma permanente:\n- Todas las reservaciones y datos de pasajeros.\n- Todo el inventario de millas guardado.\n- Todos los registros de escaneo (logs) e historial.\n- Todo el historial de búsquedas.\n\nCONSERVACIÓN: Las rutas estrella de escaneo (origen, destino, prioridad, etc.) NO se eliminarán y se mantendrán intactas.\n\nEsta acción no se puede deshacer.");
