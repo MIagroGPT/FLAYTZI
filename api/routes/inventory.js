@@ -36,6 +36,17 @@ function getDurationFormatted(minutes) {
   return `${h}h ${m.toString().padStart(2, '0')}m`;
 }
 
+function calculateArrivalTime(depTimeStr, durationMinutes) {
+  if (!depTimeStr) return '12:00';
+  const duration = parseInt(durationMinutes) || 480; // 8 horas por defecto si es null
+  const [depH, depM] = depTimeStr.split(':').map(Number);
+  const totalDepMinutes = depH * 60 + depM;
+  const totalArrMinutes = totalDepMinutes + duration;
+  const arrH = Math.floor(totalArrMinutes / 60) % 24;
+  const arrM = totalArrMinutes % 60;
+  return `${String(arrH).padStart(2, '0')}:${String(arrM).padStart(2, '0')}`;
+}
+
 // GET /api/inventory/search
 router.get('/search', async (req, res) => {
   const { origin, destination, departure_date, return_date, cabin, passengers, flexDates } = req.query;
@@ -135,7 +146,7 @@ router.get('/search', async (req, res) => {
               destinationCity: getAirportCity(out.destination),
               destinationAirport: getAirportName(out.destination),
               depTime: '08:45', // En este flujo podemos pre-cargar o parsear del scraper
-              arrTime: '11:30',
+              arrTime: calculateArrivalTime('08:45', out.duration_minutes),
               depDate: getFormattedDate(out.departure_date),
               depDateRaw: outDateRaw,
               duration: getDurationFormatted(out.duration_minutes),
@@ -168,7 +179,7 @@ router.get('/search', async (req, res) => {
                 destinationCity: getAirportCity(inb.destination),
                 destinationAirport: getAirportName(inb.destination),
                 depTime: '17:15',
-                arrTime: '20:10',
+                arrTime: calculateArrivalTime('17:15', inb.duration_minutes),
                 depDate: getFormattedDate(inb.departure_date),
                 depDateRaw: inbDateRaw,
                 duration: getDurationFormatted(inb.duration_minutes),
@@ -203,7 +214,7 @@ router.get('/search', async (req, res) => {
           destinationCity: getAirportCity(out.destination),
           destinationAirport: getAirportName(out.destination),
           depTime: '08:45',
-          arrTime: '11:30',
+          arrTime: calculateArrivalTime('08:45', out.duration_minutes),
           depDate: getFormattedDate(out.departure_date),
           depDateRaw: outDateRaw,
           duration: getDurationFormatted(out.duration_minutes),
